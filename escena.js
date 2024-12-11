@@ -69,5 +69,6 @@ export function crearEscena() {
         actualizarVelocidad(cuboFisico.velocity.length());
     }
 
-    return { scene, camera, renderer, updatePhysics };
+    // Retornar todos los objetos necesarios
+    return { scene, camera, renderer, world, updatePhysics };
 }
