@@ -1,11 +1,6 @@
 import { crearEscena } from './escena.js';
 import { crearControles } from './controles.js';
 
-const controles = crearControles(camera, renderer);
-function animate() {
-    controles.update();
-    renderer.render(scene, camera);
-}
 const { scene, camera, renderer, updatePhysics } = crearEscena();
 
 function animate() {
