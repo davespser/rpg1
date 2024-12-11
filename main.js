@@ -92,7 +92,7 @@ function animate() {
 
     // Si el joystick está activo, aplicar fuerza al cubo físico
     if (joystick.active) {
-        const fuerza = config.joystick.sensibilidad * 100; // Ajustar según la sensibilidad deseada
+        const fuerza = config.joystick.sensibilidad * 20; // Ajustar según la sensibilidad deseada
 
         // Dirección del movimiento
         const direction = new THREE.Vector3(
