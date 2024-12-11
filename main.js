@@ -1,9 +1,10 @@
+import * as THREE from 'three';
+import * as CANNON from 'cannon-es'; // Ruta ya resuelta por el importmap
+
 import { crearEscena } from './escena.js';
 
-// Crear la escena, la cámara, el renderizador, el cubo y el mundo de físicas
-const { scene, camera, renderer, cube, world, cubeBody, updatePhysics } = crearEscena();
+const { scene, camera, renderer, updatePhysics } = crearEscena();
 
-// Función de animación
 function animate() {
     requestAnimationFrame(animate);
 
