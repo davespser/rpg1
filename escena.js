@@ -3,7 +3,7 @@ import * as CANNON from 'cannon-es';
 import { crearTerreno } from './terreno.js';
 import { crearCamara } from './camara.js';
 import { crearLuces } from './luces.js';
-
+import { crearControles } from './controles.js';
 export function crearEscena() {
     const scene = new THREE.Scene();
     const { luzAmbiental, luzDireccional } = crearLuces(scene);
@@ -32,6 +32,7 @@ export function crearEscena() {
     // Crear cámara en tercera persona
     const { camera, actualizarCamara } = crearCamara(cube);
 
+    const  controles = crearControles( camera, renderer);
     // Crear renderer
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -47,6 +48,7 @@ export function crearEscena() {
 
         // Actualizar cámara
         actualizarCamara();
+        controles.update();
     }
 
     return { scene, camera, renderer, updatePhysics };
