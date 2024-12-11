@@ -1,0 +1,33 @@
+/* Estilo general para la UI */
+#interfaz {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: white;
+    font-family: Arial, sans-serif;
+    z-index: 10;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    border-radius: 5px;
+    width: auto;
+}
+
+#interfaz h2 {
+    font-size: 20px;
+    margin: 0;
+}
+
+#interfaz button {
+    background-color: #ff5722;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 10px;
+    border-radius: 5px;
+}
+
+#interfaz button:hover {
+    background-color: #e64a19;
+}
