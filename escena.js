@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon';
+import { crearTerreno } from './terreno.js';
 
 // Función para crear la escena y el motor de físicas
 export function crearEscena() {
@@ -32,19 +33,22 @@ export function crearEscena() {
     cubeBody.addShape(new CANNON.Box(new CANNON.Vec3(1, 1, 1)));  // tamaño del cubo
     world.addBody(cubeBody);
 
+    // Crear el terreno
+    const terrenoBody = crearTerreno({ scene, world });
+
     // Posicionar la cámara
     camera.position.z = 10;
 
     // Función para actualizar la física
     function updatePhysics() {
         world.step(1 / 60);  // paso de simulación física (60 FPS)
-        
+
         // Actualizar la posición del cubo en Three.js según la física de Cannon.js
         if (cubeBody.position) {
             cube.position.copy(cubeBody.position);
         }
 
-        // Verificar si cubeBody.rotation está definido antes de copiar la rotación
+        // Actualizar la rotación del cubo en Three.js
         if (cubeBody.rotation) {
             cube.rotation.copy(cubeBody.rotation);
         }
