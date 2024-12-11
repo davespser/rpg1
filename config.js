@@ -18,7 +18,7 @@ export const config = {
         posicion: { left: '50%', top: '50%' },
         color: 'blue',
         tamaño: 150,
-        sensibilidad: 0.1,       // Sensibilidad del joystick para mover el cubo
+        sensibilidad: 0.5,       // Sensibilidad del joystick para mover el cubo
     },
     mundoFisico: {
         gravedad: -9.8,
