@@ -1,3 +1,8 @@
+
+// Importar configuraciones y Three.js
+import { config } from './config.js';
+import * as THREE from 'three';
+
 let joystick = null;
 
 export function iniciarJoystick(cubo, scene, camera, renderer) {
