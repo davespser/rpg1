@@ -82,7 +82,7 @@ joystickContainer.addEventListener('touchstart', handleJoystickStart);
 joystickContainer.addEventListener('touchmove', handleJoystickMove);
 joystickContainer.addEventListener('touchend', handleJoystickEnd);
 // Función de animación
-//// Función de animación
+//Función de animación
 function animate() {
     requestAnimationFrame(animate);
 
