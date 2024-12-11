@@ -1,9 +1,9 @@
-import Nipple from 'nipple';  // Asegúrate de que la ruta sea correcta
+// joystick.js
 
 let joystick = null;
 
 export function iniciarJoystick(cubo, scene, camera, renderer) {
-    // Crear el joystick en pantalla utilizando nipplejs
+    // Crear el joystick en pantalla utilizando nipplejs (que ya está cargado desde la CDN)
     joystick = nipplejs.create({
         zone: document.body,  // Define el área en la que se puede mover el joystick
         mode: 'static',        // El joystick es estático, no se mueve
@@ -32,8 +32,5 @@ export function iniciarJoystick(cubo, scene, camera, renderer) {
         // Cuando se deja de mover el joystick, restablecer el cubo a su posición inicial
         cubo.position.x = 0;
         cubo.position.y = 5;
-        // Opcional: Restablecer la cámara a su posición inicial si es necesario
-        camera.position.set(0, 5, 10);
-        camera.lookAt(cubo.position);
     });
 }
