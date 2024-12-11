@@ -33,6 +33,16 @@
 }
 
 /* Estilo para el joystick */
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+canvas {
+    display: block;  /* Asegurarse de que el lienzo ocupe toda la pantalla */
+}
+
 #nipplejs {
     position: absolute;
     bottom: 20px;
