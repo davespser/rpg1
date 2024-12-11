@@ -1,36 +1,46 @@
-
 // Importar configuraciones y Three.js
 import { config } from './config.js';
 import * as THREE from 'three';
 
-// joystick.js
+export function iniciarJoystick(cubo, world) {
+    const joystickArea = document.querySelector('#joystick'); // Contenedor del joystick
+    const joystickKnob = document.querySelector('#joystick .knob'); // Botón del joystick
+    let isDragging = false;
+    let startX = 0, startY = 0;
 
-import { Joystick } from 'virtual-joystick.js';
-
-let joystick = null;
-
-export function iniciarJoystick(cubo, scene, camera, renderer) {
-    // Crear el joystick en pantalla utilizando virtual-joystick.js
-    joystick = new Joystick({
-        container: document.body,  // El área donde aparece el joystick
-        size: 150,                 // Tamaño del joystick
-        mouseSupport: true,        // Soporte para usar el mouse (opcional)
+    // Event listeners para el joystick
+    joystickKnob.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
     });
 
-    joystick.onMove((x, y) => {
-        // Mover el cubo en función de las coordenadas del joystick
-        cubo.position.x += x * 0.1; // Mover en X
-        cubo.position.z += y * 0.1; // Mover en Z
+    window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
 
-        // Actualizar la posición de la cámara para que siga al cubo
-        camera.position.lerp(
-            cubo.position.clone().add(new THREE.Vector3(0, 2, 10)),
-            0.1 // Velocidad de seguimiento
-        );
-        camera.lookAt(cubo.position); // Hacer que la cámara mire al cubo
+        // Calcular desplazamientos
+        const deltaX = e.clientX - startX;
+        const deltaY = e.clientY - startY;
+
+        // Aplicar movimientos al cubo y ajustar el cuerpo físico
+        const movimientoX = deltaX * config.joystick.sensibilidad;
+        const movimientoZ = deltaY * config.joystick.sensibilidad;
+
+        cubo.position.x += movimientoX;
+        cubo.position.z += movimientoZ;
+
+        // Si estás usando Cannon-es, actualiza la posición del cuerpo físico
+        const cuboBody = world.bodies.find((body) => body.userData === 'cubo');
+        if (cuboBody) {
+            cuboBody.position.x = cubo.position.x;
+            cuboBody.position.z = cubo.position.z;
+        }
+
+        startX = e.clientX;
+        startY = e.clientY;
     });
 
-    joystick.onEnd(() => {
-        console.log('Joystick detenido.');
+    window.addEventListener('mouseup', () => {
+        isDragging = false;
     });
 }
