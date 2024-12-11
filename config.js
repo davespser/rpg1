@@ -13,13 +13,10 @@ export const config = {
         velocidadSeguimiento: 0.1, // Velocidad de seguimiento de la cámara
     },
     joystick: {
-        zona: 'body',            // Selector para el área donde aparece el joystick
-        modo: 'static',          // Modo del joystick (se podría ajustar si fuera dinámico)
-        posicion: { left: '50%', top: '50%' },
-        color: 'blue',
-        tamaño: 150,
-        sensibilidad: 0.1,       // Sensibilidad del joystick para mover el cubo
-    },
+    sensibilidad: 0.5,       // Sensibilidad para mover el cubo
+    posicion: { left: '20px', bottom: '20px' }, // Posición del joystick en pantalla
+    tamaño: 150,             // Tamaño del área del joystick
+},
     mundoFisico: {
         gravedad: -9.8,
     },
