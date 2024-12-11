@@ -21,10 +21,9 @@ if (!escena.cuboFisico) {
 }
 
 // Extraer los elementos de la escena
-const { scene, camera, renderer, world, updatePhysics, cuboFisico } = escena;
+const { scene, camera, renderer, world, updatePhysics, cuboFisico, cubo } = escena;
 
 // Variables para el joystick
-// Variables del joystick
 let joystick = {
     active: false,
     deltaX: 0,
@@ -81,41 +80,55 @@ function handleJoystickEnd() {
 joystickContainer.addEventListener('touchstart', handleJoystickStart);
 joystickContainer.addEventListener('touchmove', handleJoystickMove);
 joystickContainer.addEventListener('touchend', handleJoystickEnd);
+
 // Función de animación
-//Función de animación
+// Animación y actualización
 function animate() {
     requestAnimationFrame(animate);
 
     // Actualizar físicas
     updatePhysics();
 
-    // Movimiento basado en el joystick
+    // Si el joystick está activo, aplicar fuerza al cubo físico
     if (joystick.active) {
-        const fuerza = config.joystick.sensibilidad * 100; // Magnitud de la fuerza
+        const fuerza = config.joystick.sensibilidad * 100; // Ajustar según la sensibilidad deseada
 
-        // Dirección de movimiento (en base a la dirección del joystick)
+        // Dirección del movimiento
         const direction = new THREE.Vector3(
             joystick.deltaX / joystickRect.width,
-            0,  // No afectamos la altura, ya que el cubo se mueve en el plano
-            -(joystick.deltaY / joystickRect.height)
+            0, // No afectamos Y
+            -(joystick.deltaY / joystickRect.height) // Fuerza en Z
         );
 
-        // Asegurarse de que el cubo siempre se mueva en la dirección de la entrada
-        direction.normalize(); // Normalizamos para que la velocidad sea constante
+        // Normalizar para mantener velocidad constante
+        direction.normalize();
 
-        // Mover el cubo según la dirección calculada (sin afectación de rotación no deseada)
-        cubo.position.x += direction.x * fuerza * 0.1;
-        cubo.position.z += direction.z * fuerza * 0.1;
+        // Aplicar la fuerza al cubo físico
+        cuboFisico.applyForce(
+            new CANNON.Vec3(
+                direction.x * fuerza,  // Fuerza en X
+                0,                     // No afecta Y
+                direction.z * fuerza   // Fuerza en Z
+            ),
+            cuboFisico.position // Aplicar fuerza en el centro del cubo
+        );
 
-        // Hacer que la cámara siga al cubo
+        // Sincronizar el cubo visual con el cubo físico
+        cubo.position.copy(cuboFisico.position); // Sincronizar posición
+        cubo.rotation.setFromQuaternion(cuboFisico.rotation); // Sincronizar rotación
+
+        // Hacer que el cubo visual mire en la dirección del movimiento
+        const angle = Math.atan2(direction.x, direction.z);
+        cubo.rotation.y = angle; // Rotar en el eje Y
+
+        // Mover la cámara (si es necesario) siguiendo al cubo
         camera.position.lerp(cubo.position.clone().add(new THREE.Vector3(0, 2, 10)), 0.1);
         camera.lookAt(cubo.position);
-
-        // Asegurarse de que el cubo esté mirando hacia la dirección de movimiento
-        const angle = Math.atan2(direction.x, direction.z);
-        cubo.rotation.y = angle;  // Rotar solo en el eje Y para orientación
     }
 
     // Renderizar la escena
     renderer.render(scene, camera);
 }
+
+// Iniciar el bucle de animación
+animate();
