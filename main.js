@@ -1,6 +1,7 @@
 // Importar Three.js, Cannon-es y otras dependencias
 import * as THREE from 'three';  // Asegúrate de que THREE esté importado
 // Importar Three.js, Cannon-es y otras dependencias
+// Importar Three.js, Cannon-es y otras dependencias
 import * as CANNON from 'cannon-es';
 import { crearEscena } from './escena.js';
 import { config } from './config.js';
@@ -23,9 +24,11 @@ if (!escena.cuboFisico) {
 }
 
 // Extraer los elementos de la escena
-const { scene, camera, renderer, world, updatePhysics, cuboFisico } = escena;
+const { scene, camera, renderer, world, updatePhysics, cuboFisico, cubo } = escena;
 
 // Variables para el joystick
+let touchStartX = 0;
+let touchStartY = 0;
 let joystick = {
     active: false,
     deltaX: 0,
@@ -44,30 +47,32 @@ function handleJoystickStart(event) {
     joystick.active = true;
     joystickRect = joystickElement.getBoundingClientRect();
     knobRect = knob.getBoundingClientRect();
+
+    // Registrar las posiciones iniciales del toque
+    touchStartX = event.touches[0].clientX;
+    touchStartY = event.touches[0].clientY;
 }
 
 // Función para manejar el movimiento del joystick
 function handleJoystickMove(event) {
     if (!joystick.active) return;
 
-    const touch = event.touches[0] || event.changedTouches[0];
-    const x = touch.clientX - joystickRect.left - knobRect.width / 2;
-    const y = touch.clientY - joystickRect.top - knobRect.height / 2;
+    const deltaX = event.touches[0].clientX - touchStartX;
+    const deltaY = event.touches[0].clientY - touchStartY;
 
-    const maxDistance = joystickRect.width / 2;
-    const distance = Math.sqrt(x * x + y * y);
-    const angle = Math.atan2(y, x);
+    // Mover el cubo en los ejes X y Z
+    cubo.position.x += deltaX * 0.01; // Control en X
+    cubo.position.z -= deltaY * 0.01; // Control en Z (inverso para el eje Z)
 
-    // Limitar la perilla al radio máximo
-    if (distance > maxDistance) {
-        joystick.deltaX = Math.cos(angle) * maxDistance;
-        joystick.deltaY = Math.sin(angle) * maxDistance;
-    } else {
-        joystick.deltaX = x;
-        joystick.deltaY = y;
-    }
+    // Actualizar las posiciones iniciales para el siguiente movimiento
+    touchStartX = event.touches[0].clientX;
+    touchStartY = event.touches[0].clientY;
 
-    knob.style.transform = `translate(${joystick.deltaX}px, ${joystick.deltaY}px)`;
+    // Actualizar la perilla del joystick
+    joystick.deltaX = deltaX;
+    joystick.deltaY = deltaY;
+
+    knob.style.transform = `translate(${joystick.deltaX * 0.01}px, ${joystick.deltaY * 0.01}px)`;
 }
 
 // Función para manejar el fin del movimiento del joystick
@@ -89,17 +94,6 @@ function animate() {
 
     // Actualizar físicas
     updatePhysics();
-
-    // Si el joystick está activo, aplicar fuerza al cubo físico
-    if (joystick.active) {
-        const fuerza = config.joystick.sensibilidad * 50; // Reducir la magnitud de la fuerza
-        const velocidadX = (joystick.deltaX / joystickRect.width) * fuerza; // Fuerza en X
-        const velocidadZ = -(joystick.deltaY / joystickRect.height) * fuerza; // Fuerza en Z
-
-        // Controlar el movimiento del cubo usando una velocidad controlada
-        cuboFisico.velocity.x = velocidadX; // Aplicar la velocidad en X
-        cuboFisico.velocity.z = velocidadZ; // Aplicar la velocidad en Z
-    }
 
     // Renderizar la escena
     renderer.render(scene, camera);
