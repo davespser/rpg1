@@ -1,7 +1,7 @@
 // Importar Three.js, Cannon-es y otras dependencias
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
-import Nipple from 'nipplejs';  // Ya lo has importado desde el CDN
+// Ya lo has importado desde el CDN
 import { crearEscena } from './escena.js';
 import { iniciarJoystick } from './joystick.js';
 
