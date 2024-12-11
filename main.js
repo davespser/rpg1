@@ -1,35 +1,27 @@
 // Importar Three.js, Cannon-es y otras dependencias
-import * as THREE from 'three';
-import * as CANNON from 'cannon-es';
-// Ya lo has importado desde el CDN
 import { crearEscena } from './escena.js';
 import { iniciarJoystick } from './joystick.js';
 
 // Crear la escena de Three.js y la física de Cannon
-const { scene, camera, renderer, world, cubo } = crearEscena();
+const { scene, camera, renderer, world, updatePhysics } = crearEscena();
 
-// Verificar si world está correctamente definido
-if (!world) {
-    console.error("El objeto 'world' no está definido correctamente.");
+// Asegurar que 'world' y las demás dependencias existan
+if (!world || !updatePhysics) {
+    console.error("El objeto 'world' o la función 'updatePhysics' no están definidos correctamente.");
+    throw new Error("No se pudo iniciar la aplicación debido a un problema con la escena o el mundo físico.");
 }
 
-// Iniciar el joystick para mover el cubo
-iniciarJoystick(cubo, scene, camera, renderer, world);
+// Iniciar el joystick para interactuar con la escena
+iniciarJoystick(scene, camera, renderer, world);
 
 // Función de animación
 function animate() {
     requestAnimationFrame(animate);
 
-    // Asegurarse de que world esté definido antes de llamar a 'step'
-    if (world) {
-        // Actualizar la física
-        world.step(1 / 60);
-    } else {
-        console.error("world no está definido en la función animate.");
-    }
-
-    // Renderizar la escena
+    // Actualizar físicas y renderizar la escena
+    updatePhysics();
     renderer.render(scene, camera);
 }
 
-animate();  // Iniciar la animación
+// Iniciar el bucle de animación
+animate();
