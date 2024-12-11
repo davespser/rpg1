@@ -68,5 +68,5 @@ export function crearEscena() {
     }
 
     // Retornar los elementos necesarios para animar y renderizar la escena
-    return { scene, camera, renderer, world, updatePhysics };
+    return { scene, camera, renderer, world, updatePhysics,cuboFisico };
 }
