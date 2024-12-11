@@ -82,22 +82,23 @@ joystickContainer.addEventListener('touchstart', handleJoystickStart);
 joystickContainer.addEventListener('touchmove', handleJoystickMove);
 joystickContainer.addEventListener('touchend', handleJoystickEnd);
 // Función de animación
+// Animación y actualización
 function animate() {
     requestAnimationFrame(animate);
 
     // Actualizar físicas
     updatePhysics();
 
-    // Movimiento basado en el joystick
+    // Si el joystick está activo, aplicar fuerza al cubo físico
     if (joystick.active) {
-        const fuerza = config.joystick.sensibilidad * 100; // Magnitud de la fuerza
+        const fuerza = config.joystick.sensibilidad * 100; // Ajustar según la sensibilidad deseada
         cuboFisico.applyForce(
             new CANNON.Vec3(
-                (joystick.deltaX / joystickRect.width) * fuerza,
-                0,
-                -(joystick.deltaY / joystickRect.height) * fuerza
+                (joystick.deltaX / joystickRect.width) * fuerza, // Fuerza en X
+                0,                                              // No afecta Y
+                -(joystick.deltaY / joystickRect.height) * fuerza // Fuerza en Z
             ),
-            cuboFisico.position
+            cuboFisico.position // Aplicar fuerza en el centro del cubo
         );
     }
 
