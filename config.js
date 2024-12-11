@@ -1,46 +1,40 @@
-// Configuración general
 export const config = {
     render: {
-        width: window.innerWidth, // Ancho del render
-        height: window.innerHeight, // Alto del render
-        clearColor: 0x000000, // Color de fondo del render
-        antialias: true, // Habilitar antialiasing
+        width: window.innerWidth,
+        height: window.innerHeight,
+        clearColor: 0x000000,
+        antialias: true,
     },
     camera: {
-        fov: 75, // Campo de visión
-        near: 0.1, // Distancia mínima de la cámara
-        far: 1000, // Distancia máxima de la cámara
-        position: { x: 0, y: 5, z: 10 }, // Posición inicial de la cámara
-        seguimientoOffset: { x: 0, y: 2, z: 5 }, // Offset al seguir un objeto
-        velocidadSeguimiento: 0.1, // Velocidad de interpolación de la cámara
+        fov: 75,
+        near: 0.1,
+        far: 1000,
+        position: { x: 0, y: 5, z: 10 },
+        velocidadSeguimiento: 0.1, // Velocidad de seguimiento de la cámara
+    },
+    joystick: {
+        zona: 'body',            // Selector para el área donde aparece el joystick
+        modo: 'static',          // Modo del joystick
+        posicion: { left: '50%', top: '50%' },
+        color: 'blue',
+        tamaño: 150,
+        sensibilidad: 0.1,       // Sensibilidad del joystick para mover el cubo
     },
     mundoFisico: {
-        gravedad: -9.8, // Gravedad en el mundo físico
-        tiempoPaso: 1 / 60, // Tiempo por paso de simulación
+        gravedad: -9.8,
     },
     controles: {
-        velocidadRotacion: 0.1, // Velocidad de rotación de la cámara
+        velocidadRotacion: 0.1,
     },
     luces: {
-        intensidad: 1.5, // Intensidad de la luz
-        color: 0xffffff, // Color de la luz
+        intensidad: 1.5,
     },
     objetos: {
         cubo: {
-            tamaño: 1, // Tamaño del cubo
-            color: 0xff0000, // Color del cubo
+            tamaño: 1,
         },
         esfera: {
-            radio: 1, // Radio de la esfera
-            color: 0x0000ff, // Color de la esfera
+            radio: 1,
         },
-    },
-    joystick: {
-        zona: "body", // Zona para el joystick
-        modo: "static", // Modo del joystick
-        posicion: { left: "50%", top: "50%" }, // Posición inicial del joystick
-        color: "blue", // Color del joystick
-        tamaño: 150, // Tamaño del joystick
-        sensibilidad: 0.1, // Factor de sensibilidad para el movimiento
     },
 };
