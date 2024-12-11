@@ -2,10 +2,12 @@ import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 import { crearTerreno } from './terreno.js';
 import { crearCamara } from './camara.js';
+import { crearLuces } from './luces.js';
 
 export function crearEscena() {
-    // Crear escena
     const scene = new THREE.Scene();
+    const { luzAmbiental, luzDireccional } = crearLuces(scene);
+    // ...
 
     // Crear mundo de físicas
     const world = new CANNON.World();
