@@ -8,17 +8,14 @@ export function crearCamara(objetoSeguido) {
 
     // Actualizar la posición de la cámara para seguir al objeto
     function actualizarCamara() {
-        if (objetoSeguido) {
-            // Asegurarse de que la cámara siga al objeto con un offset detrás y arriba
-            const offset = new THREE.Vector3(0, 5, -10);
-            const posicionDeseada = objetoSeguido.position.clone().add(offset);
-
-            // Suavizado en el movimiento de la cámara (opcional)
-            camera.position.lerp(posicionDeseada, 0.1);
-
-            // Orientar la cámara hacia el objeto
-            camera.lookAt(objetoSeguido.position);
-        }
+    // Suponiendo que objetoSeguido es un cubo o una esfera
+    // Asegúrate de que objetoSeguido es un objeto Three.js válido
+    if (objetoSeguido && objetoSeguido.position instanceof THREE.Vector3) {
+        camera.position.lerp(objetoSeguido.position.clone().add(new THREE.Vector3(0, 2, 10)), 0.1);
+        camera.lookAt(objetoSeguido.position);
+    } else {
+        console.error('El objeto seguido no tiene una propiedad position válida');
+    }
     }
 
     return { camera, actualizarCamara };
