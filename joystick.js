@@ -1,3 +1,4 @@
+import { config } from './config.js';
 // joystick.js
 
 let joystick = null;
