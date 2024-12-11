@@ -1,5 +1,3 @@
-// Archivo: escena.js
-
 import * as THREE from 'three';
 import { config } from './config.js';
 import { crearMundoFisico } from './fisicas.js';
@@ -10,34 +8,31 @@ import { crearControles } from './controles.js';
 import { crearLuces } from './luces.js';
 import { crearCubo, crearEsfera } from './objetos.js';
 import { crearUI, actualizarVelocidad } from './ui.js';
-import { iniciarJoystick } from './joystick.js'; // Importar el joystick
+import { iniciarJoystick } from './joystick.js';  // Importar el joystick
 
 export function crearEscena() {
-    // Crear escena de Three.js
     const scene = new THREE.Scene();
-
-    // Crear mundo físico
     const world = crearMundoFisico();
 
     // Añadir luces a la escena
-    crearLuces(scene, config.luces.intensidad);
+    const luces = crearLuces(scene, config.luces.intensidad);
 
     // Crear terreno
     const { terrenoMesh, terrenoBody } = crearTerreno(scene, world);
 
     // Crear cubo
     const cubo = crearCubo(config.objetos.cubo.tamaño);
-    cubo.position.set(0, 5, 0); // Posicionar el cubo
+    cubo.position.set(0, 5, 0);  // Posicionar el cubo
     scene.add(cubo);
 
-    // Añadir cubo físico al mundo
+    // Crear cubo físico y añadirlo al mundo
     const cuboFisico = crearCuboFisico();
     world.addBody(cuboFisico);
 
-    // Crear cámara (se pasa el cubo como objeto seguido)
-    const { camera, actualizarCamara } = crearCamara(cubo);
+    // Crear cámara y configurarla
+    const { camera, actualizarCamara } = crearCamara(config.camera);
 
-    // Configuración del render
+    // Configuración de renderizado
     const renderer = new THREE.WebGLRenderer({ antialias: config.render.antialias });
     renderer.shadowMap.enabled = true;
     renderer.setSize(config.render.width, config.render.height);
@@ -47,28 +42,27 @@ export function crearEscena() {
     // Crear controles de cámara
     const controles = crearControles(camera, renderer);
 
-    // Crear interfaz de usuario
-    crearUI();
+    // Crear UI
+    const ui = crearUI();
 
-    // Iniciar el joystick
-    iniciarJoystick(cubo, scene, camera, renderer);
+    // Iniciar joystick
+    iniciarJoystick(cubo, scene, camera, renderer);  // El cubo debe estar bien inicializado
 
     // Actualización de físicas y renderizado
     function updatePhysics() {
-        world.step(1 / 60); // Avanza el mundo físico
+        world.step(1 / 60);
 
-        // Actualizar las posiciones de los objetos 3D con las posiciones de los cuerpos físicos
+        // Actualizar posiciones de objetos 3D
         cubo.position.copy(cuboFisico.position);
         cubo.quaternion.copy(cuboFisico.quaternion);
 
-        // Actualizar la cámara y controles
-        actualizarCamara(); // La cámara sigue al cubo
+        // Actualizar cámara y controles
+        actualizarCamara();
         controles.update();
 
-        // Mostrar la velocidad del cubo en la UI
+        // Actualizar velocidad
         actualizarVelocidad(cuboFisico.velocity.length());
     }
 
-    // Retornar todos los objetos necesarios
-    return { scene, camera, renderer, world, updatePhysics, cubo };
+    return { scene, camera, renderer, world, updatePhysics };
 }
