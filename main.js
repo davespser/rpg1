@@ -1,5 +1,5 @@
-import * as CANNON from 'cannon-es';
 // Importar Three.js, Cannon-es y otras dependencias
+import * as CANNON from 'cannon-es';
 import { crearEscena } from './escena.js';
 import { config } from './config.js';
 
@@ -22,13 +22,6 @@ if (!escena.cuboFisico) {
 
 // Extraer los elementos de la escena
 const { scene, camera, renderer, world, updatePhysics, cuboFisico } = escena;
-
-
-// Asegurar que 'world' y las demás dependencias existan
-if (!world || !updatePhysics || !cuboFisico) {
-    console.error("El objeto 'world', 'updatePhysics' o 'cuboFisico' no están definidos correctamente.");
-    throw new Error("No se pudo iniciar la aplicación debido a un problema con la escena o el mundo físico.");
-}
 
 // Variables para el joystick
 let joystick = {
