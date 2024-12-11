@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Proyecto con Three.js y Cannon-es</title>
     <script type="importmap">
-        {
-            "imports": {
-                "three": "https://unpkg.com/three@0.153.0/build/three.module.min.js",
-                "orbit-controls": "https://unpkg.com/three@0.153.0/examples/jsm/controls/OrbitControls.js",
-                "cannon-es": "https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/+esm",
-                "cannon-es-debugger": "https://cdn.jsdelivr.net/npm/cannon-es-debugger@1.0.0/+esm"
-            }
-        }
+  {
+    "imports": {
+      "three": "./libs/three.module.min.js",
+      "orbit-controls": "./libs/OrbitControls.js",
+      "cannon-es": "./libs/cannon-es.js",
+      "cannon-es-debugger": "./libs/cannon-es-debugger.js"
+    }
+  }
     </script>
     <script type="module" src="main.js"></script>
 </head>
