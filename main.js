@@ -1,6 +1,5 @@
-import * as THREE from 'three';  // Asegúrate de que THREE esté importado
-// Importar Three.js, Cannon-es y otras dependencias
-// Importar Three.js, Cannon-es y otras dependencias
+
+import * as THREE from 'three';  // Asegúrate de que THREE esté importad
 // Importar Three.js, Cannon-es y otras dependencias
 import * as CANNON from 'cannon-es';
 import { crearEscena } from './escena.js';
@@ -62,14 +61,11 @@ function handleJoystickMove(event) {
     const deltaY = event.touches[0].clientY - touchStartY;
 
     // Mover el cubo en los ejes X y Z
-    // ...
-if (cubo && cubo.position) {
-    const maxX = 10; // Ajusta estos valores según tus necesidades
-    const maxZ = 10;
-    cubo.position.x = Math.max(-maxX, Math.min(maxX, cubo.position.x + deltaX * 0.01));
-    cubo.position.z = Math.max(-maxZ, Math.min(maxZ, cubo.position.z - deltaY * 0.01));
-}
-// ...
+    if (cubo && cubo.position) {
+        cubo.position.x += deltaX * 0.01; // Control en X
+        cubo.position.z -= deltaY * 0.01; // Control en Z (inverso para el eje Z)
+    }
+
     // Actualizar las posiciones iniciales para el siguiente movimiento
     touchStartX = event.touches[0].clientX;
     touchStartY = event.touches[0].clientY;
