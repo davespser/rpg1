@@ -1,20 +1,23 @@
+// Archivo: escena.js
+
 import * as THREE from 'three';
-import { config } from './config.js';  // Importar configuraciones
+import { config } from './config.js';
 import { crearMundoFisico } from './fisicas.js';
 import { crearCuboFisico, crearEsferaFisica } from './cuerpos.js';
 import { crearTerreno } from './terreno.js';
 import { crearCamara } from './camara.js';
 import { crearControles } from './controles.js';
 import { crearLuces } from './luces.js';
-import { crearCubo, crearEsfera } from './objetos.js'; // Importar objetos
-import { crearUI, actualizarVelocidad } from './ui.js'; // Importar UI
+import { crearCubo, crearEsfera } from './objetos.js';
+import { crearUI, actualizarVelocidad } from './ui.js';
+import { iniciarJoystick } from './joystick.js';  // Importar el joystick
 
 export function crearEscena() {
     // Crear escena de Three.js
     const scene = new THREE.Scene();
 
     // Crear mundo físico
-    const world = crearMundoFisico();  // Crear el mundo físico
+    const world = crearMundoFisico();
 
     // Añadir luces a la escena
     const luces = crearLuces(scene, config.luces.intensidad);
@@ -22,34 +25,33 @@ export function crearEscena() {
     // Crear terreno
     const { terrenoMesh, terrenoBody } = crearTerreno(scene, world);
 
-    // Crear objetos 3D y sus cuerpos físicos
+    // Crear cubo
     const cubo = crearCubo(config.objetos.cubo.tamaño);
     cubo.position.set(0, 5, 0); // Posicionar el cubo
     scene.add(cubo);
 
+    // Añadir cubo físico al mundo
     const cuboFisico = crearCuboFisico();
-    world.addBody(cuboFisico); // Añadir el cuerpo físico al mundo
+    world.addBody(cuboFisico);
 
-    const esfera = crearEsfera(config.objetos.esfera.radio);
-    esfera.position.set(2, 5, 0); // Posicionar la esfera
-    scene.add(esfera);
-
-    const esferaFisica = crearEsferaFisica();
-    world.addBody(esferaFisica); // Añadir el cuerpo físico al mundo
-
-    // Crear cámara con los parámetros de configuración
+    // Crear cámara
     const { camera, actualizarCamara } = crearCamara(config.camera);
 
+    // Configuración del render
     const renderer = new THREE.WebGLRenderer({ antialias: config.render.antialias });
     renderer.shadowMap.enabled = true;
     renderer.setSize(config.render.width, config.render.height);
     renderer.setClearColor(config.render.clearColor);
     document.body.appendChild(renderer.domElement);
 
+    // Crear controles de cámara
     const controles = crearControles(camera, renderer);
 
-    // Crear la interfaz de usuario
+    // Crear interfaz de usuario
     const ui = crearUI();
+
+    // Iniciar el joystick
+    iniciarJoystick(cubo, scene, camera, renderer);
 
     // Actualización de físicas y renderizado
     function updatePhysics() {
@@ -58,9 +60,6 @@ export function crearEscena() {
         // Actualizar las posiciones de los objetos 3D con las posiciones de los cuerpos físicos
         cubo.position.copy(cuboFisico.position);
         cubo.quaternion.copy(cuboFisico.quaternion);
-
-        esfera.position.copy(esferaFisica.position);
-        esfera.quaternion.copy(esferaFisica.quaternion);
 
         // Actualizar la cámara y controles
         actualizarCamara();
