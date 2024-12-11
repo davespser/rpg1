@@ -11,7 +11,7 @@ export function crearCamara(objetoSeguido) {
     );
 
     // Posición inicial de la cámara (detrás y ligeramente arriba del objeto)
-    camera.position.set(0, 5, -10);
+    camera.position.set(0, 10, -10);
 
     // Función para actualizar la posición de la cámara para seguir al objeto
     function actualizarCamara() {
