@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import * as CANNON from 'cannon';
+import * as CANNON from 'cannon-es';  // Asegúrate de usar cannon-es, no cannon
+
 import { crearTerreno } from './terreno.js';
 
 // Función para crear la escena y el motor de físicas
@@ -31,10 +32,10 @@ export function crearEscena() {
         position: new CANNON.Vec3(0, 5, 0)  // posición inicial
     });
     cubeBody.addShape(new CANNON.Box(new CANNON.Vec3(1, 1, 1)));  // tamaño del cubo
-    world.addBody(cubeBody);
+    world.addBody(cubeBody);  // Agregar el cuerpo al mundo de físicas
 
     // Crear el terreno
-    const terrenoBody = crearTerreno({ scene, world });
+    const terrenoBody = crearTerreno(world);
 
     // Posicionar la cámara
     camera.position.z = 10;
