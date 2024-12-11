@@ -6,7 +6,7 @@ import { crearCamara } from './camara.js';
 import { crearControles } from './controles.js';
 import { crearLuces } from './luces.js';
 import { crearCubo, crearEsfera } from './objetos.js'; // Importar objetos
-import { manejarRedimension, manejarPantallaCompleta } from './ventana.js'; // Importar eventos
+import { crearUI, actualizarVelocidad } from './ui.js'; // Importar UI
 
 export function crearEscena() {
     // Crear escena de Three.js
@@ -45,9 +45,8 @@ export function crearEscena() {
 
     const controles = crearControles(camera, renderer);
 
-    // Llamamos a la función para manejar eventos de la ventana
-    manejarRedimension(); // Redimensionar la ventana
-    manejarPantallaCompleta(); // Pantalla completa con F11
+    // Crear la interfaz de usuario
+    const ui = crearUI();
 
     // Actualización de físicas y renderizado
     function updatePhysics() {
@@ -63,6 +62,9 @@ export function crearEscena() {
         // Actualizar la cámara y controles
         actualizarCamara();
         controles.update();
+
+        // Mostrar la velocidad del cubo en la UI
+        actualizarVelocidad(cuboFisico.velocity.length());
     }
 
     return { scene, camera, renderer, updatePhysics };
