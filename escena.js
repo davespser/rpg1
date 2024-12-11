@@ -1,26 +1,48 @@
-
 import * as THREE from 'three';
+import * as CANNON from 'cannon';
 
+// Función para crear la escena y el motor de físicas
 export function crearEscena() {
-    // Crear la escena
+    // Crear la escena de Three.js
     const scene = new THREE.Scene();
 
-    // Crear una cámara (perspectiva)
+    // Crear la cámara
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-    // Crear un renderer (motor de renderizado)
+    // Crear el renderer de Three.js
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    // Crear un cubo
+    // Crear el mundo de físicas (Cannon.js)
+    const world = new CANNON.World();
+    world.gravity.set(0, -9.82, 0);  // gravedad en el eje Y
+
+    // Crear el cubo (Three.js)
     const geometry = new THREE.BoxGeometry();
     const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
     const cube = new THREE.Mesh(geometry, material);
     scene.add(cube);
 
-    // Posicionar la cámara
-    camera.position.z = 5;
+    // Crear el cubo en Cannon.js (cuerpo físico)
+    const cubeBody = new CANNON.Body({
+        mass: 1,  // masa del cubo
+        position: new CANNON.Vec3(0, 5, 0)  // posición inicial
+    });
+    cubeBody.addShape(new CANNON.Box(new CANNON.Vec3(1, 1, 1)));  // tamaño del cubo
+    world.addBody(cubeBody);
 
-    return { scene, camera, renderer, cube };
+    // Posicionar la cámara
+    camera.position.z = 10;
+
+    // Función para actualizar la física
+    function updatePhysics() {
+        world.step(1 / 60);  // paso de simulación física (60 FPS)
+        
+        // Actualizar la posición del cubo en Three.js según la física de Cannon.js
+        cube.position.copy(cubeBody.position);
+        cube.rotation.copy(cubeBody.rotation);
+    }
+
+    return { scene, camera, renderer, cube, world, cubeBody, updatePhysics };
 }
