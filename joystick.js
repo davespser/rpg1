@@ -3,44 +3,34 @@
 import { config } from './config.js';
 import * as THREE from 'three';
 
+// joystick.js
+
+import { Joystick } from 'virtual-joystick.js';
+
 let joystick = null;
 
 export function iniciarJoystick(cubo, scene, camera, renderer) {
-    // Crear el joystick en pantalla utilizando nipplejs
-    joystick = nipplejs.create({
-        zone: document.querySelector(config.joystick.zona), // Área del joystick
-        mode: config.joystick.modo,                        // Modo del joystick
-        position: config.joystick.posicion,                // Posición inicial
-        color: config.joystick.color,                      // Color
-        size: config.joystick.tamaño,                      // Tamaño
+    // Crear el joystick en pantalla utilizando virtual-joystick.js
+    joystick = new Joystick({
+        container: document.body,  // El área donde aparece el joystick
+        size: 150,                 // Tamaño del joystick
+        mouseSupport: true,        // Soporte para usar el mouse (opcional)
     });
 
-    joystick.on('move', function (evt, data) {
-    console.log('Joystick data:', data); // Ver los datos recibidos
+    joystick.onMove((x, y) => {
+        // Mover el cubo en función de las coordenadas del joystick
+        cubo.position.x += x * 0.1; // Mover en X
+        cubo.position.z += y * 0.1; // Mover en Z
 
-    // Verificar si los datos están definidos y contienen 'vector'
-    if (!data || !data.vector || typeof data.vector.x === 'undefined' || typeof data.vector.y === 'undefined') {
-        console.warn('Movimiento del joystick inválido: datos no definidos o incompletos.');
-        return; // Salir si los datos no están completos
-    }
+        // Actualizar la posición de la cámara para que siga al cubo
+        camera.position.lerp(
+            cubo.position.clone().add(new THREE.Vector3(0, 2, 10)),
+            0.1 // Velocidad de seguimiento
+        );
+        camera.lookAt(cubo.position); // Hacer que la cámara mire al cubo
+    });
 
-    // Obtener las coordenadas del joystick
-    const x = data.vector.x || 0; // Si 'x' no está definido, usar 0
-    const y = data.vector.y || 0; // Si 'y' no está definido, usar 0
-
-    // Mover el cubo en función de las coordenadas del joystick
-    cubo.position.x += x * config.joystick.sensibilidad;
-    cubo.position.z += y * config.joystick.sensibilidad;
-
-    // Actualizar la posición de la cámara para que siga al cubo
-    camera.position.lerp(
-        cubo.position.clone().add(new THREE.Vector3(0, 2, 10)),
-        config.camera.velocidadSeguimiento
-    );
-    camera.lookAt(cubo.position); // Hacer que la cámara mire al cubo
-});
-
-    joystick.on('end', function () {
+    joystick.onEnd(() => {
         console.log('Joystick detenido.');
     });
 }
