@@ -1,5 +1,8 @@
+Importar Three.js, Cannon-es y otras dependencias
+import * as THREE from 'three';  // Asegúrate de que THREE esté importado
 // Importar Three.js, Cannon-es y otras dependencias
-import * as THREE from 'three';
+// Importar Three.js, Cannon-es y otras dependencias
+// Importar Three.js, Cannon-es y otras dependencias
 import * as CANNON from 'cannon-es';
 import { crearEscena } from './escena.js';
 import { config } from './config.js';
@@ -31,7 +34,6 @@ let joystick = {
     active: false,
     deltaX: 0,
     deltaY: 0,
-    speed: 0.1 // Velocidad del movimiento del cubo
 };
 
 // Elementos del DOM
@@ -60,11 +62,24 @@ function handleJoystickMove(event) {
     const deltaX = event.touches[0].clientX - touchStartX;
     const deltaY = event.touches[0].clientY - touchStartY;
 
+    // Mover el cubo en los ejes X y Z
+    // ...
+if (cubo && cubo.position) {
+    const maxX = 10; // Ajusta estos valores según tus necesidades
+    const maxZ = 10;
+    cubo.position.x = Math.max(-maxX, Math.min(maxX, cubo.position.x + deltaX * 0.01));
+    cubo.position.z = Math.max(-maxZ, Math.min(maxZ, cubo.position.z - deltaY * 0.01));
+}
+// ...
+    // Actualizar las posiciones iniciales para el siguiente movimiento
+    touchStartX = event.touches[0].clientX;
+    touchStartY = event.touches[0].clientY;
+
     // Actualizar la perilla del joystick
     joystick.deltaX = deltaX;
     joystick.deltaY = deltaY;
 
-    knob.style.transform = `translate(${joystick.deltaX * 0.1}px, ${joystick.deltaY * 0.1}px)`;
+    knob.style.transform = `translate(${joystick.deltaX * 0.01}px, ${joystick.deltaY * 0.01}px)`;
 }
 
 // Función para manejar el fin del movimiento del joystick
@@ -86,12 +101,6 @@ function animate() {
 
     // Actualizar físicas
     updatePhysics();
-
-    // Mover el cubo en los ejes X y Z según el joystick
-    if (joystick.active && cuboFisico) {
-        cuboFisico.velocity.x = joystick.deltaX * joystick.speed;
-        cuboFisico.velocity.z = -joystick.deltaY * joystick.speed;
-    }
 
     // Renderizar la escena
     renderer.render(scene, camera);
