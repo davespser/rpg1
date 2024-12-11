@@ -1,4 +1,3 @@
-// Importamos nipple.js
 import Nipple from 'nipple';  // Asegúrate de que la ruta sea correcta
 
 let joystick = null;
@@ -33,5 +32,8 @@ export function iniciarJoystick(cubo, scene, camera, renderer) {
         // Cuando se deja de mover el joystick, restablecer el cubo a su posición inicial
         cubo.position.x = 0;
         cubo.position.y = 5;
+        // Opcional: Restablecer la cámara a su posición inicial si es necesario
+        camera.position.set(0, 5, 10);
+        camera.lookAt(cubo.position);
     });
 }
