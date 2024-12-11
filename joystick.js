@@ -16,27 +16,29 @@ export function iniciarJoystick(cubo, scene, camera, renderer) {
     });
 
     joystick.on('move', function (evt, data) {
-        // Verificar si los datos están definidos y contienen 'vector'
-        if (!data || !data.vector || typeof data.vector.x === 'undefined' || typeof data.vector.y === 'undefined') {
-            console.warn('Movimiento del joystick inválido: datos no definidos o incompletos.');
-            return; // Salir si los datos no están completos
-        }
+    console.log('Joystick data:', data); // Ver los datos recibidos
 
-        // Obtener las coordenadas del joystick
-        const x = data.vector.x || 0; // Si 'x' no está definido, usar 0
-        const y = data.vector.y || 0; // Si 'y' no está definido, usar 0
+    // Verificar si los datos están definidos y contienen 'vector'
+    if (!data || !data.vector || typeof data.vector.x === 'undefined' || typeof data.vector.y === 'undefined') {
+        console.warn('Movimiento del joystick inválido: datos no definidos o incompletos.');
+        return; // Salir si los datos no están completos
+    }
 
-        // Mover el cubo en función de las coordenadas del joystick
-        cubo.position.x += x * config.joystick.sensibilidad;
-        cubo.position.z += y * config.joystick.sensibilidad;
+    // Obtener las coordenadas del joystick
+    const x = data.vector.x || 0; // Si 'x' no está definido, usar 0
+    const y = data.vector.y || 0; // Si 'y' no está definido, usar 0
 
-        // Actualizar la posición de la cámara para que siga al cubo
-        camera.position.lerp(
-            cubo.position.clone().add(new THREE.Vector3(0, 2, 10)),
-            config.camera.velocidadSeguimiento
-        );
-        camera.lookAt(cubo.position); // Hacer que la cámara mire al cubo
-    });
+    // Mover el cubo en función de las coordenadas del joystick
+    cubo.position.x += x * config.joystick.sensibilidad;
+    cubo.position.z += y * config.joystick.sensibilidad;
+
+    // Actualizar la posición de la cámara para que siga al cubo
+    camera.position.lerp(
+        cubo.position.clone().add(new THREE.Vector3(0, 2, 10)),
+        config.camera.velocidadSeguimiento
+    );
+    camera.lookAt(cubo.position); // Hacer que la cámara mire al cubo
+});
 
     joystick.on('end', function () {
         console.log('Joystick detenido.');
