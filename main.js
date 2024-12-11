@@ -1,4 +1,3 @@
-Importar Three.js, Cannon-es y otras dependencias
 import * as THREE from 'three';  // Asegúrate de que THREE esté importado
 // Importar Three.js, Cannon-es y otras dependencias
 // Importar Three.js, Cannon-es y otras dependencias
