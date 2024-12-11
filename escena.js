@@ -1,24 +1,24 @@
 import * as THREE from 'three';
 import { config } from './config.js';
 import { crearMundoFisico } from './fisicas.js';
-import { crearCuboFisico, crearEsferaFisica } from './cuerpos.js';
+import { crearCuboFisico } from './cuerpos.js';
 import { crearTerreno } from './terreno.js';
 import { crearCamara } from './camara.js';
 import { crearControles } from './controles.js';
 import { crearLuces } from './luces.js';
-import { crearCubo, crearEsfera } from './objetos.js';
+import { crearCubo } from './objetos.js';
 import { crearUI, actualizarVelocidad } from './ui.js';
 import { iniciarJoystick } from './joystick.js';  // Importar el joystick
 
 export function crearEscena() {
+    // Crear escena de Three.js
     const scene = new THREE.Scene();
+
+    // Crear mundo físico
     const world = crearMundoFisico();
 
     // Añadir luces a la escena
     const luces = crearLuces(scene, config.luces.intensidad);
-
-    // Crear terreno
-    const { terrenoMesh, terrenoBody } = crearTerreno(scene, world);
 
     // Crear cubo
     const cubo = crearCubo(config.objetos.cubo.tamaño);
@@ -30,7 +30,7 @@ export function crearEscena() {
     world.addBody(cuboFisico);
 
     // Crear cámara y configurarla
-    const { camera, actualizarCamara } = crearCamara(config.camera);
+    const { camera, actualizarCamara } = crearCamara(cubo);  // Aquí pasamos el cubo como objeto seguido
 
     // Configuración de renderizado
     const renderer = new THREE.WebGLRenderer({ antialias: config.render.antialias });
