@@ -7,3 +7,4 @@ export function crearLuces(scene) {
 
     // Luz direccional
     const luzDireccional = new THREE.DirectionalLight(0xffffff, 1);
+}
