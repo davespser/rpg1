@@ -82,29 +82,40 @@ joystickContainer.addEventListener('touchstart', handleJoystickStart);
 joystickContainer.addEventListener('touchmove', handleJoystickMove);
 joystickContainer.addEventListener('touchend', handleJoystickEnd);
 // Función de animación
-// Animación y actualización
+//// Función de animación
 function animate() {
     requestAnimationFrame(animate);
 
     // Actualizar físicas
     updatePhysics();
 
-    // Si el joystick está activo, aplicar fuerza al cubo físico
+    // Movimiento basado en el joystick
     if (joystick.active) {
-        const fuerza = config.joystick.sensibilidad * 100; // Ajustar según la sensibilidad deseada
-        cuboFisico.applyForce(
-            new CANNON.Vec3(
-                (joystick.deltaX / joystickRect.width) * fuerza, // Fuerza en X
-                0,                                              // No afecta Y
-                -(joystick.deltaY / joystickRect.height) * fuerza // Fuerza en Z
-            ),
-            cuboFisico.position // Aplicar fuerza en el centro del cubo
+        const fuerza = config.joystick.sensibilidad * 100; // Magnitud de la fuerza
+
+        // Dirección de movimiento (en base a la dirección del joystick)
+        const direction = new THREE.Vector3(
+            joystick.deltaX / joystickRect.width,
+            0,  // No afectamos la altura, ya que el cubo se mueve en el plano
+            -(joystick.deltaY / joystickRect.height)
         );
+
+        // Asegurarse de que el cubo siempre se mueva en la dirección de la entrada
+        direction.normalize(); // Normalizamos para que la velocidad sea constante
+
+        // Mover el cubo según la dirección calculada (sin afectación de rotación no deseada)
+        cubo.position.x += direction.x * fuerza * 0.1;
+        cubo.position.z += direction.z * fuerza * 0.1;
+
+        // Hacer que la cámara siga al cubo
+        camera.position.lerp(cubo.position.clone().add(new THREE.Vector3(0, 2, 10)), 0.1);
+        camera.lookAt(cubo.position);
+
+        // Asegurarse de que el cubo esté mirando hacia la dirección de movimiento
+        const angle = Math.atan2(direction.x, direction.z);
+        cubo.rotation.y = angle;  // Rotar solo en el eje Y para orientación
     }
 
     // Renderizar la escena
     renderer.render(scene, camera);
-}
-
-// Iniciar el bucle de animación
-animate();
+} Animación y actualización
