@@ -2,6 +2,7 @@
 import * as THREE from 'three';  // Asegúrate de que THREE esté importado
 // Importar Three.js, Cannon-es y otras dependencias
 // Importar Three.js, Cannon-es y otras dependencias
+// Importar Three.js, Cannon-es y otras dependencias
 import * as CANNON from 'cannon-es';
 import { crearEscena } from './escena.js';
 import { config } from './config.js';
@@ -18,9 +19,9 @@ if (!escena.updatePhysics) {
     console.error("La función 'updatePhysics' no está definida correctamente.");
     throw new Error("Error al inicializar la lógica de físicas.");
 }
-if (!escena.cuboFisico) {
-    console.error("El objeto 'cuboFisico' no está definido correctamente.");
-    throw new Error("Error al inicializar el cubo físico.");
+if (!escena.cuboFisico || !escena.cubo) {
+    console.error("El objeto 'cuboFisico' o 'cubo' no están definidos correctamente.");
+    throw new Error("Error al inicializar el cubo físico o su representación.");
 }
 
 // Extraer los elementos de la escena
@@ -57,12 +58,15 @@ function handleJoystickStart(event) {
 function handleJoystickMove(event) {
     if (!joystick.active) return;
 
+    // Calcular el desplazamiento
     const deltaX = event.touches[0].clientX - touchStartX;
     const deltaY = event.touches[0].clientY - touchStartY;
 
     // Mover el cubo en los ejes X y Z
-    cubo.position.x += deltaX * 0.01; // Control en X
-    cubo.position.z -= deltaY * 0.01; // Control en Z (inverso para el eje Z)
+    if (cubo && cubo.position) {
+        cubo.position.x += deltaX * 0.01; // Control en X
+        cubo.position.z -= deltaY * 0.01; // Control en Z (inverso para el eje Z)
+    }
 
     // Actualizar las posiciones iniciales para el siguiente movimiento
     touchStartX = event.touches[0].clientX;
