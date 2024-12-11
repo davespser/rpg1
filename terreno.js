@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import * as CANNON from 'cannon';
+import * as CANNON from 'cannon-es';
 
 // Función para crear el terreno
 export function crearTerreno(world) {
