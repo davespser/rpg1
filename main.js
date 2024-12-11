@@ -1,3 +1,4 @@
+import * as CANNON from 'cannon-es';
 // Importar Three.js, Cannon-es y otras dependencias
 import { crearEscena } from './escena.js';
 import { config } from './config.js';
