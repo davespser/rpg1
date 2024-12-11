@@ -1,7 +1,7 @@
 ///////////////////////
 ///   SUPER CLASS   ///
 ///////////////////////
-import * as u from './utils';
+import * as u from '.modulod/utils';
 
 // Constants
 var isTouch = !!('ontouchstart' in window);
