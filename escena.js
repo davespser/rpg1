@@ -1,14 +1,11 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 import { crearTerreno } from './terreno.js';
+import { crearCamara } from './camara.js';
 
 export function crearEscena() {
     // Crear escena
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
 
     // Crear mundo de físicas
     const world = new CANNON.World();
@@ -30,12 +27,24 @@ export function crearEscena() {
     });
     world.addBody(cubeBody);
 
-    camera.position.z = 10;
+    // Crear cámara en tercera persona
+    const { camera, actualizarCamara } = crearCamara(cube);
 
+    // Crear renderer
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // Actualización de físicas
     function updatePhysics() {
         world.step(1 / 60);
+
+        // Actualizar posiciones y rotaciones en la escena
         cube.position.copy(cubeBody.position);
         cube.quaternion.copy(cubeBody.quaternion);
+
+        // Actualizar cámara
+        actualizarCamara();
     }
 
     return { scene, camera, renderer, updatePhysics };
