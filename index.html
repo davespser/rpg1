@@ -16,12 +16,21 @@
     }
     </script>
     
-    <!-- Importar el script del joystick -->
-    <script src="https://cdn.jsdelivr.net/npm/joystick-controller@1.1.1/dist/lib/joystick-controller.min.js"></script>
-
     <!-- Incluir el archivo JavaScript principal como módulo -->
     <script type="module" src="./main.js"></script>
 </head>
 <body>
+    <!-- Contenedor del joystick -->
+    <div id="joystick-container">
+        <div id="joystick">
+            <div id="stick"></div>
+        </div>
+    </div>
+
+    <!-- UI adicional (por ejemplo, botones) -->
+    <div id="interfaz">
+        <h2>Controles</h2>
+        <button id="reiniciar">Reiniciar Juego</button>
+    </div>
 </body>
 </html>
