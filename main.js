@@ -3,7 +3,25 @@ import { crearEscena } from './escena.js';
 import { config } from './config.js';
 
 // Crear la escena de Three.js y la física de Cannon
-const { scene, camera, renderer, world, updatePhysics, cuboFisico } = crearEscena();
+const escena = crearEscena();
+
+// Verificar que los objetos requeridos estén definidos
+if (!escena.world) {
+    console.error("El objeto 'world' no está definido correctamente.");
+    throw new Error("Error al inicializar el mundo físico.");
+}
+if (!escena.updatePhysics) {
+    console.error("La función 'updatePhysics' no está definida correctamente.");
+    throw new Error("Error al inicializar la lógica de físicas.");
+}
+if (!escena.cuboFisico) {
+    console.error("El objeto 'cuboFisico' no está definido correctamente.");
+    throw new Error("Error al inicializar el cubo físico.");
+}
+
+// Extraer los elementos de la escena
+const { scene, camera, renderer, world, updatePhysics, cuboFisico } = escena;
+
 
 // Asegurar que 'world' y las demás dependencias existan
 if (!world || !updatePhysics || !cuboFisico) {
