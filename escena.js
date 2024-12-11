@@ -10,7 +10,7 @@ import { crearControles } from './controles.js';
 import { crearLuces } from './luces.js';
 import { crearCubo, crearEsfera } from './objetos.js';
 import { crearUI, actualizarVelocidad } from './ui.js';
-import { iniciarJoystick } from './joystick.js';  // Importar el joystick
+import { iniciarJoystick } from './joystick.js'; // Importar el joystick
 
 export function crearEscena() {
     // Crear escena de Three.js
@@ -20,7 +20,7 @@ export function crearEscena() {
     const world = crearMundoFisico();
 
     // Añadir luces a la escena
-    const luces = crearLuces(scene, config.luces.intensidad);
+    crearLuces(scene, config.luces.intensidad);
 
     // Crear terreno
     const { terrenoMesh, terrenoBody } = crearTerreno(scene, world);
@@ -34,8 +34,8 @@ export function crearEscena() {
     const cuboFisico = crearCuboFisico();
     world.addBody(cuboFisico);
 
-    // Crear cámara
-    const { camera, actualizarCamara } = crearCamara(config.camera);
+    // Crear cámara (se pasa el cubo como objeto seguido)
+    const { camera, actualizarCamara } = crearCamara(cubo);
 
     // Configuración del render
     const renderer = new THREE.WebGLRenderer({ antialias: config.render.antialias });
@@ -48,7 +48,7 @@ export function crearEscena() {
     const controles = crearControles(camera, renderer);
 
     // Crear interfaz de usuario
-    const ui = crearUI();
+    crearUI();
 
     // Iniciar el joystick
     iniciarJoystick(cubo, scene, camera, renderer);
@@ -62,7 +62,7 @@ export function crearEscena() {
         cubo.quaternion.copy(cuboFisico.quaternion);
 
         // Actualizar la cámara y controles
-        actualizarCamara();
+        actualizarCamara(); // La cámara sigue al cubo
         controles.update();
 
         // Mostrar la velocidad del cubo en la UI
@@ -70,5 +70,5 @@ export function crearEscena() {
     }
 
     // Retornar todos los objetos necesarios
-    return { scene, camera, renderer, world, updatePhysics };
+    return { scene, camera, renderer, world, updatePhysics, cubo };
 }
