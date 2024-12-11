@@ -6,6 +6,7 @@ import { crearCamara } from './camara.js';
 import { crearControles } from './controles.js';
 import { crearLuces } from './luces.js';
 import { crearCubo, crearEsfera } from './objetos.js'; // Importar objetos
+import { manejarRedimension, manejarPantallaCompleta } from './ventana.js'; // Importar eventos
 
 export function crearEscena() {
     // Crear escena de Three.js
@@ -43,6 +44,10 @@ export function crearEscena() {
     document.body.appendChild(renderer.domElement);
 
     const controles = crearControles(camera, renderer);
+
+    // Llamamos a la función para manejar eventos de la ventana
+    manejarRedimension(); // Redimensionar la ventana
+    manejarPantallaCompleta(); // Pantalla completa con F11
 
     // Actualización de físicas y renderizado
     function updatePhysics() {
