@@ -1,15 +1,14 @@
 import { crearEscena } from './escena.js';
 
-// Crear la escena y la cámara
-const { scene, camera, renderer, cube } = crearEscena();
+// Crear la escena, la cámara, el renderizador, el cubo y el motor de físicas
+const { scene, camera, renderer, cube, world, cubeBody, updatePhysics } = crearEscena();
 
 // Función de animación
 function animate() {
     requestAnimationFrame(animate);
 
-    // Rotar el cubo
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
+    // Actualizar físicas
+    updatePhysics();
 
     // Renderizar la escena
     renderer.render(scene, camera);
