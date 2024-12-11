@@ -1,5 +1,5 @@
 // Importamos nipple.js
-import Nipple from './modulos/nipple.js';  // Asegúrate de que la ruta sea correcta
+import Nipple from 'nipple';  // Asegúrate de que la ruta sea correcta
 
 let joystick = null;
 
