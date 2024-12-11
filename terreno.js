@@ -1,25 +1,22 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 
-// Función para crear el terreno
-export function crearTerreno(world) {
-    // Crear un plano en Three.js (para el terreno visual)
-    const terrenoGeometry = new THREE.PlaneGeometry(1000, 1000);  // Tamaño grande
-    const terrenoMaterial = new THREE.MeshBasicMaterial({ color: 0x888888, side: THREE.DoubleSide });
-    const terreno = new THREE.Mesh(terrenoGeometry, terrenoMaterial);
-    terreno.rotation.x = - Math.PI / 2;  // Rotar para que quede horizontal
-    terreno.position.y = -1;  // Colocamos el terreno un poco más abajo en el eje Y
-    terreno.receiveShadow = true;  // El terreno puede recibir sombras
-    world.scene.add(terreno);
+export function crearTerreno(scene, world) {
+    // Crear geometría y material para el terreno en Three.js
+    const terrenoGeometry = new THREE.PlaneGeometry(50, 50);
+    const terrenoMaterial = new THREE.MeshPhongMaterial({ color: 0x8B4513, side: THREE.DoubleSide });
+    const terrenoMesh = new THREE.Mesh(terrenoGeometry, terrenoMaterial);
+    terrenoMesh.rotation.x = -Math.PI / 2; // Girar para que quede horizontal
+    scene.add(terrenoMesh);
 
-    // Crear el cuerpo físico del terreno en Cannon.js (plano estático)
-    const terrenoShape = new CANNON.Plane();  // Un plano en Cannon.js
+    // Crear el cuerpo físico para el terreno en Cannon-es
+    const terrenoShape = new CANNON.Plane();
     const terrenoBody = new CANNON.Body({
-        mass: 0,  // El terreno no se mueve, por lo que tiene masa 0
-        position: new CANNON.Vec3(0, -1, 0)  // Colocamos el terreno en la misma posición
+        mass: 0, // El terreno es estático
+        shape: terrenoShape
     });
-    terrenoBody.addShape(terrenoShape);
+    terrenoBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0); // Alinear con la rotación
     world.addBody(terrenoBody);
 
-    return terrenoBody;  // Retornamos el cuerpo físico del terreno
+    return { terrenoMesh, terrenoBody };
 }
