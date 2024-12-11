@@ -31,3 +31,10 @@
 #interfaz button:hover {
     background-color: #e64a19;
 }
+
+/* Estilo para el joystick */
+#nipplejs {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+}
