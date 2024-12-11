@@ -23,7 +23,7 @@ export function crearCamara(objetoSeguido) {
             // Interpolar hacia la posición deseada detrás del objeto
             const nuevaPosicion = objetoSeguido.position
                 .clone()
-                .add(new THREE.Vector3(0, 2, 10)); // Ajustar la distancia y altura
+                .add(new THREE.Vector3(0, 20, 10)); // Ajustar la distancia y altura
             camera.position.lerp(nuevaPosicion, 0.1);
 
             // Hacer que la cámara mire hacia el objeto
