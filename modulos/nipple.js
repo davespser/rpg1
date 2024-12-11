@@ -1,5 +1,5 @@
-import Super from './super';
-import * as u from './utils';
+import Super from './modulos/super';
+import * as u from './modulos/utils';
 
 ///////////////////////
 ///   THE NIPPLE    ///
