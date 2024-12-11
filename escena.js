@@ -40,8 +40,14 @@ export function crearEscena() {
         world.step(1 / 60);  // paso de simulación física (60 FPS)
         
         // Actualizar la posición del cubo en Three.js según la física de Cannon.js
-        cube.position.copy(cubeBody.position);
-        cube.rotation.copy(cubeBody.rotation);
+        if (cubeBody.position) {
+            cube.position.copy(cubeBody.position);
+        }
+
+        // Verificar si cubeBody.rotation está definido antes de copiar la rotación
+        if (cubeBody.rotation) {
+            cube.rotation.copy(cubeBody.rotation);
+        }
     }
 
     return { scene, camera, renderer, cube, world, cubeBody, updatePhysics };
