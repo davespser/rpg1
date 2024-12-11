@@ -1,68 +1,23 @@
-import * as THREE from 'three';
-import { config } from './config.js';
-import { crearMundoFisico } from './fisicas.js';
-import { crearCuboFisico } from './cuerpos.js';
-import { crearTerreno } from './terreno.js';
-import { crearCamara } from './camara.js';
-import { crearControles } from './controles.js';
-import { crearLuces } from './luces.js';
-import { crearCubo } from './objetos.js';
-import { crearUI, actualizarVelocidad } from './ui.js';
-import { iniciarJoystick } from './joystick.js';  // Importar el joystick
+// Función en terreno.js
+export function crearTerreno(scene, world) {
+    const terrenoMesh = new THREE.Mesh(
+        new THREE.PlaneGeometry(100, 100), // Tamaño del terreno
+        new THREE.ShadowMaterial({ opacity: 0.5 })  // Material que proyecta sombra
+    );
+    terrenoMesh.rotation.x = -Math.PI / 2;  // Girar el terreno para que esté plano
+    terrenoMesh.position.set(0, 0, 0);  // Posición del terreno
+    terrenoMesh.receiveShadow = true;  // Permite que el terreno reciba sombras
+    scene.add(terrenoMesh);  // Añadir el terreno a la escena
 
-export function crearEscena() {
-    // Crear escena de Three.js
-    const scene = new THREE.Scene();
+    // Crear el cuerpo físico del terreno
+    const terrenoShape = new CANNON.Plane();  // Usamos un plano físico
+    const terrenoBody = new CANNON.Body({
+        mass: 0,  // Masa 0 porque el terreno no se mueve
+        position: new CANNON.Vec3(0, 0, 0),  // Posición en el mundo físico
+        shape: terrenoShape
+    });
+    terrenoBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);  // Alineamos el plano físico con el terreno
+    world.addBody(terrenoBody);  // Añadir el cuerpo físico al mundo
 
-    // Crear mundo físico
-    const world = crearMundoFisico();
-
-    // Añadir luces a la escena
-    const luces = crearLuces(scene, config.luces.intensidad);
-
-    // Crear cubo
-    const cubo = crearCubo(config.objetos.cubo.tamaño);
-    cubo.position.set(0, 5, 0);  // Posicionar el cubo
-    scene.add(cubo);
-
-    // Crear cubo físico y añadirlo al mundo
-    const cuboFisico = crearCuboFisico();
-    world.addBody(cuboFisico);
-
-    // Crear cámara y configurarla
-    const { camera, actualizarCamara } = crearCamara(cubo);  // Aquí pasamos el cubo como objeto seguido
-
-    // Configuración de renderizado
-    const renderer = new THREE.WebGLRenderer({ antialias: config.render.antialias });
-    renderer.shadowMap.enabled = true;
-    renderer.setSize(config.render.width, config.render.height);
-    renderer.setClearColor(config.render.clearColor);
-    document.body.appendChild(renderer.domElement);
-
-    // Crear controles de cámara
-    const controles = crearControles(camera, renderer);
-
-    // Crear UI
-    const ui = crearUI();
-
-    // Iniciar joystick
-    iniciarJoystick(cubo, scene, camera, renderer);  // El cubo debe estar bien inicializado
-
-    // Actualización de físicas y renderizado
-    function updatePhysics() {
-        world.step(1 / 60);
-
-        // Actualizar posiciones de objetos 3D
-        cubo.position.copy(cuboFisico.position);
-        cubo.quaternion.copy(cuboFisico.quaternion);
-
-        // Actualizar cámara y controles
-        actualizarCamara();
-        controles.update();
-
-        // Actualizar velocidad
-        actualizarVelocidad(cuboFisico.velocity.length());
-    }
-
-    return { scene, camera, renderer, world, updatePhysics };
+    return { terrenoMesh, terrenoBody };  // Devolver tanto el mesh como el cuerpo físico
 }
