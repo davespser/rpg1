@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { config } from './config.js';  // Importar configuraciones
 import { crearMundoFisico } from './fisicas.js';
 import { crearCuboFisico, crearEsferaFisica } from './cuerpos.js';
 import { crearTerreno } from './terreno.js';
@@ -16,31 +17,33 @@ export function crearEscena() {
     const world = crearMundoFisico();  // Crear el mundo físico
 
     // Añadir luces a la escena
-    const luces = crearLuces(scene);
+    const luces = crearLuces(scene, config.luces.intensidad);
 
     // Crear terreno
     const { terrenoMesh, terrenoBody } = crearTerreno(scene, world);
 
     // Crear objetos 3D y sus cuerpos físicos
-    const cubo = crearCubo();
+    const cubo = crearCubo(config.objetos.cubo.tamaño);
     cubo.position.set(0, 5, 0); // Posicionar el cubo
     scene.add(cubo);
 
     const cuboFisico = crearCuboFisico();
     world.addBody(cuboFisico); // Añadir el cuerpo físico al mundo
 
-    const esfera = crearEsfera();
+    const esfera = crearEsfera(config.objetos.esfera.radio);
     esfera.position.set(2, 5, 0); // Posicionar la esfera
     scene.add(esfera);
 
     const esferaFisica = crearEsferaFisica();
     world.addBody(esferaFisica); // Añadir el cuerpo físico al mundo
 
-    // Crear cámara y controles
-    const { camera, actualizarCamara } = crearCamara(cubo); // Seguimos al cubo
-    const renderer = new THREE.WebGLRenderer();
+    // Crear cámara con los parámetros de configuración
+    const { camera, actualizarCamara } = crearCamara(config.camera);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: config.render.antialias });
     renderer.shadowMap.enabled = true;
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(config.render.width, config.render.height);
+    renderer.setClearColor(config.render.clearColor);
     document.body.appendChild(renderer.domElement);
 
     const controles = crearControles(camera, renderer);
