@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import * as RAPIER from './modulos/rapier_wasm3d.js'; // Asegúrate de que la ruta es correcta
 import { crearEscena } from './escena.js';
 import { config } from './config.js';
-
+await RAPIER.init()
 async function init() {
     // Inicializar Rapier
     await RAPIER.init();
