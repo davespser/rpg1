@@ -43,8 +43,7 @@ export function crearEscena() {
         position: new CANNON.Vec3(0, 5.5, 0),  // Posición inicial (ajustada para evitar atrapamiento)
         shape: new CANNON.Box(new CANNON.Vec3(2, 2, 2))  // Asegúrate de que el tamaño sea correcto
     });
-    cuboFisico.linearDamping = 0.1;  // Añadir damping para evitar movimientos bruscos
-    cuboFisico.angularDamping = 0.9;  // Damping para rotación
+      // Damping para rotación
     world.addBody(cuboFisico);
 
     // Crear cubo de referencia
