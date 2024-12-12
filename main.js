@@ -24,7 +24,6 @@ let joystickRect;
 
 // Eventos del joystick
 function handleJoystickStart(event) {
-    console.log("Joystick iniciado.");
     joystick.active = true;
     joystickRect = joystickContainer.getBoundingClientRect();
     knob.style.transform = 'translate(0, 0)';
@@ -45,12 +44,9 @@ function handleJoystickMove(event) {
     joystick.deltaY = Math.sin(angle) * distance;
 
     knob.style.transform = `translate(${joystick.deltaX}px, ${joystick.deltaY}px)`;
-
-    console.log(`Joystick movido: deltaX=${joystick.deltaX}, deltaY=${joystick.deltaY}`);
 }
 
 function handleJoystickEnd() {
-    console.log("Joystick terminado.");
     joystick.active = false;
     joystick.deltaX = 0;
     joystick.deltaY = 0;
@@ -62,50 +58,32 @@ joystickContainer.addEventListener('touchstart', handleJoystickStart);
 joystickContainer.addEventListener('touchmove', handleJoystickMove);
 joystickContainer.addEventListener('touchend', handleJoystickEnd);
 
-// Función para mover el cubo físico y sincronizarlo con el visual
+// Función para mover al cubo usando velocidad
 function moverCubo() {
     if (joystick.active) {
-        const fuerza = (config.joystick.sensibilidad || 20) * 20; // Ajusta la fuerza para que no sea tan grande
-        const fuerzaX = (joystick.deltaX / joystickRect.width) * fuerza;
-        const fuerzaZ = -(joystick.deltaY / joystickRect.height) * fuerza;
+        const velocidadMaxima = config.joystick.sensibilidad || 0.1; // Sensibilidad o velocidad máxima
+        const velocidadX = (joystick.deltaX / joystickRect.width) * velocidadMaxima;
+        const velocidadZ = -(joystick.deltaY / joystickRect.height) * velocidadMaxima;
 
-        // Depuración de las fuerzas
-        console.log(`Joystick activo: deltaX=${joystick.deltaX}, deltaY=${joystick.deltaY}`);
-        console.log(`Fuerzas calculadas: fuerzaX=${fuerzaX}, fuerzaZ=${fuerzaZ}`);
+        // Ajustamos la velocidad directamente
+        cuboFisico.velocity.x = velocidadX;
+        cuboFisico.velocity.z = velocidadZ;
 
-        if (Math.abs(fuerzaX) > 0.1 || Math.abs(fuerzaZ) > 0.1) {
-            // Aplicar fuerzas significativas
-            cuboFisico.applyForce(
-                new CANNON.Vec3(fuerzaX, 0, fuerzaZ),
-                cuboFisico.position
-            );
-        }
-
-        // Limitar la rotación del cubo
-        if (fuerzaX !== 0 || fuerzaZ !== 0) {
-            const angulo = Math.atan2(fuerzaZ, fuerzaX);
-            cubo.rotation.y = -angulo;  // Rotación solo en el eje Y
+        // Mantener la rotación del cubo según la dirección del movimiento
+        if (joystick.deltaX !== 0 || joystick.deltaY !== 0) {
+            const angulo = Math.atan2(velocidadZ, velocidadX);
+            cubo.rotation.y = -angulo;
         }
     }
 }
 
+// Animación
 function animate() {
     requestAnimationFrame(animate);
-
-    // Mover el cubo basado en el joystick
     moverCubo();
-
-    // Actualizar la simulación física
     updatePhysics();
-
-    // Sincronizar el cubo visual con el cubo físico
-    cubo.position.copy(cuboFisico.position);
-    cubo.quaternion.copy(cuboFisico.quaternion);
-
-    // Mostrar la posición del cubo en consola
-    console.log(`Posición del cubo: x=${cubo.position.x.toFixed(4)}, y=${cubo.position.y.toFixed(4)}, z=${cubo.position.z.toFixed(4)}`);
-
-    // Renderizar la escena
     renderer.render(scene, camera);
 }
+
+// Inicia la animación
 animate();
