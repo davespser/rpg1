@@ -78,6 +78,14 @@ function moverCubo() {
         }
     }
 }
+function updatePhysics() {
+    // Actualiza la física del mundo
+    world.step(1 / 60);
+
+    // Sincroniza la posición y rotación del cubo visual con el cuerpo físico
+    cubo.position.copy(cuboFisico.position);
+    cubo.quaternion.copy(cuboFisico.quaternion);
+}
 
 // Animación
 function animate() {
