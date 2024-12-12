@@ -73,7 +73,7 @@ export function crearEscena() {
     
     function moverCubo() {
         if (joystick.active) {
-            const velocidadMaxima = 10;
+            const velocidadMaxima = 100;
             const velocidadX = (joystick.deltaX / joystickRect.width) * velocidadMaxima;
             const velocidadZ = -(joystick.deltaY / joystickRect.height) * velocidadMaxima;
             cuboFisico.velocity.x = velocidadX;
