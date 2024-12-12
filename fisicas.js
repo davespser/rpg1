@@ -1,16 +1,25 @@
-import * as RAPIER from './modulos/rapier_wasm3d.js';
+import RAPIER from '@dimforge/rapier3d-compat';
+let RAPIER = null; // Variable para almacenar el módulo RAPIER después de la inicialización
 
-export function crearMundoFisico() {
+async function RapierPhysics() {
+    if (!RAPIER) {
+        // Importar dinámicamente si no está inicializado
+        RAPIER = RAPIER_MODULE;
+        await RAPIER.init();
+    }
+}
+
+export async function crearMundoFisico() {
+    // Asegurarnos de que Rapier esté inicializado
+    await RapierPhysics();
+
     // Crear el mundo físico
-    const gravity = { x: 0, y: -9.82, z: 0 }; // Gravedad estándar en la Tierra (hacia abajo)
+    const gravity = { x: 0, y: -9.82, z: 0 };
     const world = new RAPIER.World(gravity);
 
-    // Configuración adicional del mundo físico (si es necesario)
-    // Rapier no usa broadphase ni solver de la misma manera que Cannon-es, pero podemos configurar otros parámetros si es necesario
-
-    // Permitir que los objetos "duerman" si no están en movimiento
+    // Configuración del mundo físico
     world.integrationParameters.erp = 0.2; // Parámetro de relajación de error
-    world.integrationParameters.maxVelocityIterations = 8; // Número máximo de iteraciones de velocidad
+    world.integrationParameters.maxVelocityIterations = 8; // Iteraciones máximas de velocidad
 
     return world;
 }
