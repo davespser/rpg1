@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import * as CANNON from 'cannon-es';
+import * as RAPIER from '@dimforge/rapier3d-compat';
 import { crearEscena } from './escena.js';
 import { config } from './config.js';
 
@@ -61,13 +61,12 @@ joystickContainer.addEventListener('touchend', handleJoystickEnd);
 // Función para mover al cubo usando velocidad
 function moverCubo() {
     if (joystick.active) {
-        const velocidadMaxima = 5;  // Aumentamos la velocidad a 1 para que el movimiento sea más visible
+        const velocidadMaxima = 5;
         const velocidadX = (joystick.deltaX / joystickRect.width) * velocidadMaxima;
         const velocidadZ = -(joystick.deltaY / joystickRect.height) * velocidadMaxima;
 
         // Ajustar la velocidad de acuerdo al joystick
-        cuboFisico.velocity.x = velocidadX;
-        cuboFisico.velocity.z = velocidadZ;
+        cuboFisico.setLinvel({ x: velocidadX, y: 0, z: velocidadZ }, true);
 
         // Mantener la rotación del cubo de acuerdo al movimiento
         if (joystick.deltaX !== 0 || joystick.deltaY !== 0) {
@@ -89,7 +88,6 @@ function animate(time) {
     updatePhysics();
     renderer.render(scene, camera);
 }
-
 
 // Inicia la animación
 animate();
