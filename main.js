@@ -24,6 +24,7 @@ let joystickRect;
 
 // Eventos del joystick
 function handleJoystickStart(event) {
+    console.log("Joystick iniciado.");
     joystick.active = true;
     joystickRect = joystickContainer.getBoundingClientRect();
     knob.style.transform = 'translate(0, 0)';
@@ -44,9 +45,12 @@ function handleJoystickMove(event) {
     joystick.deltaY = Math.sin(angle) * distance;
 
     knob.style.transform = `translate(${joystick.deltaX}px, ${joystick.deltaY}px)`;
+
+    console.log(`Joystick movido: deltaX=${joystick.deltaX}, deltaY=${joystick.deltaY}`);
 }
 
 function handleJoystickEnd() {
+    console.log("Joystick terminado.");
     joystick.active = false;
     joystick.deltaX = 0;
     joystick.deltaY = 0;
@@ -65,6 +69,8 @@ function moverCubo() {
         const fuerzaX = (joystick.deltaX / joystickRect.width) * fuerza;
         const fuerzaZ = -(joystick.deltaY / joystickRect.height) * fuerza;
 
+        console.log(`Aplicando fuerza: fuerzaX=${fuerzaX}, fuerzaZ=${fuerzaZ}`);
+
         // Aplicar fuerza al cubo físico
         cuboFisico.applyForce(
             new CANNON.Vec3(fuerzaX, 0, fuerzaZ),
@@ -75,6 +81,7 @@ function moverCubo() {
         if (joystick.deltaX !== 0 || joystick.deltaY !== 0) {
             const angulo = Math.atan2(fuerzaZ, fuerzaX);
             cubo.rotation.y = -angulo;
+            console.log(`Rotación del cubo: y=${cubo.rotation.y}`);
         }
     }
 }
@@ -92,6 +99,8 @@ function animate() {
     // Sincronizar posición y rotación del cubo visual con el físico
     cubo.position.copy(cuboFisico.position);
     cubo.quaternion.copy(cuboFisico.quaternion);
+
+    console.log(`Posición del cubo: x=${cubo.position.x}, y=${cubo.position.y}, z=${cubo.position.z}`);
 
     // Renderizar la escena
     renderer.render(scene, camera);
