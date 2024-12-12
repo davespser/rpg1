@@ -22,9 +22,10 @@ export function crearEscena() {
 
     // Crear el terreno y su cuerpo físico
     const { terrenoMesh, terrenoBody } = crearTerreno(scene, world);
-
+     const geometry = new THREE.BoxGeometry (1,1,1);
+    cont material = new THREE.MeshStandardMaterial{(color: 0x00ff00)}
     // Crear el cubo y su cuerpo físico
-    const cubo = crearCubo(config.objetos.cubo.tamaño);
+    const cubo = new THREE.Mesh(geometry,material);
     cubo.position.set(0, 5, 0); // Inicializar posición del cubo en la escena
     scene.add(cubo);
 
