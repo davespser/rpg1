@@ -6,30 +6,26 @@
     <title>Proyecto con Three.js y Rapier</title>
     <link rel="stylesheet" href="./styles.css">
     
-    <!-- Import Map para usar Three.js desde archivos locales -->
+    <!-- Import Map para usar Three.js y Rapier desde archivos locales -->
     <script type="importmap">
     {
         "imports": {
-            "three": "./modulos/three.module.js"
+            "three": "./modulos/three.module.js",
+            "rapier3d": "./modulos/rapier_wasm3d.js"
         }
     }
     </script>
-
-    <!-- Incluir el archivo Rapier y su WASM -->
-    <script src="./modulos/rapier_wasm3d.js"></script>
     
     <!-- Incluir el archivo JavaScript principal como módulo -->
     <script type="module" src="./main.js"></script>
 </head>
 <body>
-    <!-- Contenedor del joystick -->
     <div id="joystick-container">
         <div id="joystick">
             <div class="knob"></div>
         </div>
     </div>
 
-    <!-- UI adicional (por ejemplo, botones) -->
     <div id="interfaz">
         <h2>Controles</h2>
         <button id="reiniciar">Reiniciar Juego</button>
