@@ -65,7 +65,7 @@ joystickContainer.addEventListener('touchend', handleJoystickEnd);
 // Función para mover el cubo físico y sincronizarlo con el visual
 function moverCubo() {
     if (joystick.active) {
-        const fuerza = (config.joystick.sensibilidad || 20) * 50; // Aumentar mucho la fuerza aplicada
+        const fuerza = (config.joystick.sensibilidad || 20) * 20; // Ajusta la fuerza para que no sea tan grande
         const fuerzaX = (joystick.deltaX / joystickRect.width) * fuerza;
         const fuerzaZ = -(joystick.deltaY / joystickRect.height) * fuerza;
 
@@ -81,12 +81,10 @@ function moverCubo() {
             );
         }
 
-        // Orientar el cubo hacia la dirección del movimiento
+        // Limitar la rotación del cubo
         if (fuerzaX !== 0 || fuerzaZ !== 0) {
             const angulo = Math.atan2(fuerzaZ, fuerzaX);
-            cubo.rotation.y = -angulo;
-
-            console.log(`Cubo orientado: rotación.y=${cubo.rotation.y}`);
+            cubo.rotation.y = -angulo;  // Rotación solo en el eje Y
         }
     }
 }
