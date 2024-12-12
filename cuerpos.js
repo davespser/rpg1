@@ -1,4 +1,4 @@
-import * as RAPIER from './modulos/rapier_wasm3d.js';
+import RAPIER from '@dimforge/rapier3d-compat';
 export function crearCuboFisico() {
     // Crear un cuerpo físico cubo
     const cuboFisico = new RAPIER.RigidBodyDesc(RAPIER.RigidBodyType.Dynamic)
