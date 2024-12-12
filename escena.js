@@ -41,7 +41,7 @@ export function crearEscena() {
     const cuboFisico = new CANNON.Body({
         mass: 1,  // Masa del cubo
         position: new CANNON.Vec3(0, 5.5, 0),  // Posición inicial (ajustada para evitar atrapamiento)
-        shape: new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5))  // Asegúrate de que el tamaño sea correcto
+        shape: new CANNON.Box(new CANNON.Vec3(0.7, 0.7, 0.7))  // Asegúrate de que el tamaño sea correcto
     });
     cuboFisico.linearDamping = 0.1;  // Añadir damping para evitar movimientos bruscos
     cuboFisico.angularDamping = 0.9;  // Damping para rotación
