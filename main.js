@@ -61,15 +61,17 @@ joystickContainer.addEventListener('touchend', handleJoystickEnd);
 // Función para mover al cubo como personaje
 function moverCubo() {
     if (joystick.active) {
-        const fuerza = config.joystick.sensibilidad || 5;
+        const fuerza = config.joystick.sensibilidad || 5; // Ajusta la sensibilidad
         const fuerzaX = (joystick.deltaX / joystickRect.width) * fuerza;
         const fuerzaZ = -(joystick.deltaY / joystickRect.height) * fuerza;
 
+        // Aplica la fuerza al cuerpo físico
         cuboFisico.applyForce(
             new CANNON.Vec3(fuerzaX, 0, fuerzaZ),
             cuboFisico.position
         );
 
+        // Orienta el cubo hacia la dirección del movimiento
         if (joystick.deltaX !== 0 || joystick.deltaY !== 0) {
             const angulo = Math.atan2(fuerzaZ, fuerzaX);
             cubo.rotation.y = -angulo;
