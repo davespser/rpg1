@@ -1,16 +1,16 @@
-import * as CANNON from 'cannon-es';
+import * as RAPIER from '@dimforge/rapier3d-compat';
 
 export function crearMundoFisico() {
     // Crear el mundo físico
-    const world = new CANNON.World();
+    const gravity = { x: 0, y: -9.82, z: 0 }; // Gravedad estándar en la Tierra (hacia abajo)
+    const world = new RAPIER.World(gravity);
 
-    // Configurar gravedad (puedes cambiar los valores para simular diferentes planetas)
-    world.gravity.set(0, -9.82, 0); // Gravedad estándar en la Tierra (hacia abajo)
+    // Configuración adicional del mundo físico (si es necesario)
+    // Rapier no usa broadphase ni solver de la misma manera que Cannon-es, pero podemos configurar otros parámetros si es necesario
 
-    // Configuración de la colisión (para la resolución de los contactos)
-    world.broadphase = new CANNON.NaiveBroadphase(); // Método simple de detección de colisiones
-    world.solver = new CANNON.GSSolver(); // Método de resolución de colisiones
-    world.allowSleep = true; // Permitir que los objetos "duerman" si no están en movimiento
+    // Permitir que los objetos "duerman" si no están en movimiento
+    world.integrationParameters.erp = 0.2; // Parámetro de relajación de error
+    world.integrationParameters.maxVelocityIterations = 8; // Número máximo de iteraciones de velocidad
 
     return world;
 }
