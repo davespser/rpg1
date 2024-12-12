@@ -1,4 +1,4 @@
-import * as RAPIER from '@dimforge/rapier3d-compat';
+import * as RAPIER from './modulos/rapier_wasm3d.js';
 
 export function crearMundoFisico() {
     // Crear el mundo físico
