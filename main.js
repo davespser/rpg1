@@ -1,66 +1,51 @@
-
-import * as THREE from 'three';  
+import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
-// Importar Three.js y otras dependencias necesarias
 import { crearEscena } from './escena.js';
 import { config } from './config.js';
 
 // Crear la escena de Three.js
 const escena = crearEscena();
 
-// Verificar que los objetos requeridos estén definidos
-if (!escena.cubo) {
-    console.error("El objeto 'cubo' no está definido correctamente.");
+if (!escena.cubo || !escena.cuboFisico) {
+    console.error("El objeto 'cubo' o 'cuboFisico' no está definido correctamente.");
     throw new Error("Error al inicializar el personaje.");
 }
 
-// Extraer los elementos de la escena
-const { scene, camera, renderer, updatePhysics, cubo } = escena;
+const { scene, camera, renderer, updatePhysics, cubo, cuboFisico } = escena;
 
-// Variables para el joystick
-let joystick = {
-    active: false,
-    deltaX: 0,
-    deltaY: 0,
-};
+// Variables del joystick
+let joystick = { active: false, deltaX: 0, deltaY: 0 };
 
-// Elementos del DOM
+// Elementos del DOM para el joystick
 const joystickContainer = document.getElementById('joystick-container');
 const joystickElement = document.getElementById('joystick');
 const knob = document.querySelector('#joystick .knob');
 let joystickRect;
 
-// Función para manejar el inicio del movimiento del joystick
+// Eventos del joystick
 function handleJoystickStart(event) {
-    event.preventDefault();
     joystick.active = true;
     joystickRect = joystickContainer.getBoundingClientRect();
-
-    // Inicializar posición de la perilla
     knob.style.transform = 'translate(0, 0)';
 }
 
-// Función para manejar el movimiento del joystick
 function handleJoystickMove(event) {
     if (!joystick.active) return;
 
-    // Calcular el desplazamiento relativo al centro del joystick
     const touch = event.touches[0];
     const x = touch.clientX - joystickRect.left - joystickRect.width / 2;
     const y = touch.clientY - joystickRect.top - joystickRect.height / 2;
 
     const maxDistance = joystickRect.width / 2;
-    const distance = Math.min(Math.sqrt(x * x + y * y), maxDistance); // Limitar al radio máximo
+    const distance = Math.min(Math.sqrt(x * x + y * y), maxDistance);
     const angle = Math.atan2(y, x);
 
-    // Actualizar posición del joystick
     joystick.deltaX = Math.cos(angle) * distance;
     joystick.deltaY = Math.sin(angle) * distance;
 
     knob.style.transform = `translate(${joystick.deltaX}px, ${joystick.deltaY}px)`;
 }
 
-// Función para manejar el fin del movimiento del joystick
 function handleJoystickEnd() {
     joystick.active = false;
     joystick.deltaX = 0;
@@ -73,44 +58,32 @@ joystickContainer.addEventListener('touchstart', handleJoystickStart);
 joystickContainer.addEventListener('touchmove', handleJoystickMove);
 joystickContainer.addEventListener('touchend', handleJoystickEnd);
 
-// Función para mover al cubo como un personaje
+// Función para mover al cubo como personaje
 function moverCubo() {
     if (joystick.active) {
-        const velocidad = config.joystick.sensibilidad || 0.1; // Sensibilidad del movimiento
-        const movimientoX = (joystick.deltaX / joystickRect.width) * velocidad;
-        const movimientoZ = -(joystick.deltaY / joystickRect.height) * velocidad;
+        const fuerza = config.joystick.sensibilidad || 5;
+        const fuerzaX = (joystick.deltaX / joystickRect.width) * fuerza;
+        const fuerzaZ = -(joystick.deltaY / joystickRect.height) * fuerza;
 
-        // Actualizar posición del cubo
-        cubo.position.x += movimientoX;
-        cubo.position.z += movimientoZ;
+        cuboFisico.applyForce(
+            new CANNON.Vec3(fuerzaX, 0, fuerzaZ),
+            cuboFisico.position
+        );
 
-        // Orientar el cubo hacia la dirección del movimiento
         if (joystick.deltaX !== 0 || joystick.deltaY !== 0) {
-            const angulo = Math.atan2(movimientoZ, movimientoX);
+            const angulo = Math.atan2(fuerzaZ, fuerzaX);
             cubo.rotation.y = -angulo;
         }
     }
 }
 
-// Función de animación
+// Animación
 function animate() {
     requestAnimationFrame(animate);
-
-    // Actualizar la física
+    moverCubo();
     updatePhysics();
-
-    // Si el joystick está activo, aplicar fuerza al cubo físico
-    if (joystick.active) {
-        const fuerza = config.joystick.sensibilidad * 5; // Ajusta este valor según sea necesario
-        const fuerzaX = (joystick.deltaX / joystickRect.width) * fuerza;
-        const fuerzaZ = -(joystick.deltaY / joystickRect.height) * fuerza;
-
-        cuboFisico.applyForce(
-            new CANNON.Vec3(fuerzaX, 0, fuerzaZ), // Fuerza en X y Z
-            cuboFisico.position // Aplica la fuerza en el centro del cuerpo
-        );
-    }
-
-    // Renderizar la escena
     renderer.render(scene, camera);
 }
+
+// Inicia la animación
+animate();
