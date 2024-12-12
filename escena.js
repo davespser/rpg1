@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import * as RAPIER from '@dimforge/rapier3d-compat';
+import * as RAPIER from './modulos/rapier_wasm3d.js';
 import { config } from './config.js';
 import { crearMundoFisico } from './fisicas.js';
 import { crearCuboFisico } from './cuerpos.js';
