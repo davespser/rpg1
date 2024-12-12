@@ -88,7 +88,7 @@ export function crearEscena() {
     // Función para mover el cubo usando el joystick
     function moverCubo() {
         if (joystick && joystick.active) {
-            const velocidadMaxima = 1;  // Reducir la velocidad máxima
+            const velocidadMaxima = 5;  // Reducir la velocidad máxima
             const velocidadX = (joystick.deltaX / joystickRect.width) * velocidadMaxima;
             const velocidadZ = -(joystick.deltaY / joystickRect.height) * velocidadMaxima;
 
