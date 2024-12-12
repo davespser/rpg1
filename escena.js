@@ -30,9 +30,18 @@ export function crearEscena() {
     const cubo = new THREE.Mesh(geometry, material);
     cubo.position.set(0, 5, 0);
     scene.add(cubo);
+// Configuración de material físico del cubo
+const materialCubo = new CANNON.Material();
+const contactoMaterial = new CANNON.ContactMaterial(materialCubo, materialCubo, {
+    friction: 0.1,  // Baja fricción para que se desplace más fácilmente
+    restitution: 0.3 // Rebote para un movimiento más dinámico
+});
+world.addContactMaterial(contactoMaterial);
 
-    const cuboFisico = crearCuboFisico();
-    world.addBody(cuboFisico);
+// Crear el cubo físico con bajo coeficiente de fricción
+const cuboFisico = crearCuboFisico(materialCubo);
+world.addBody(cuboFisico);
+    
 
     // Crear un segundo cubo visual y físico como referencia
     const geometry2 = new THREE.BoxGeometry(1, 1, 1);
