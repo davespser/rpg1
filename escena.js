@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import * as CANNON from 'cannon-es';
+import * as RAPIER from '@dimforge/rapier3d-compat';
 import { config } from './config.js';
 import { crearMundoFisico } from './fisicas.js';
 import { crearCuboFisico } from './cuerpos.js';
@@ -12,7 +12,7 @@ import { iniciarJoystick } from './joystick.js';
 
 export function crearEscena() {
     const scene = new THREE.Scene();
-    const world = crearMundoFisico();
+    const world = crearMundoFisico(RAPIER);
 
     // Crear luces
     crearLuces(scene, config.luces.intensidad);
@@ -20,7 +20,7 @@ export function crearEscena() {
     scene.add(ambientLight);
 
     // Crear el terreno
-    const { terrenoMesh, terrenoBody } = crearTerreno(scene, world);
+    const { terrenoMesh, terrenoBody } = crearTerreno(scene, world, RAPIER);
 
     // Crear cubo visual y físico
     const geometry = new THREE.BoxGeometry(1, 1, 1);
@@ -29,22 +29,16 @@ export function crearEscena() {
     cubo.position.set(0, 5, 0);
     scene.add(cubo);
 
-    // Configuración del material físico para el cubo
-    const materialCubo = new CANNON.Material();
-    const contactoMaterial = new CANNON.ContactMaterial(materialCubo, materialCubo, {
-        friction: 0.05,  // Baja la fricción para facilitar el movimiento
-        restitution: 0.2  // Baja la restitución para evitar rebotes grandes
-    });
-    world.addContactMaterial(contactoMaterial);
-
     // Crear el cuerpo físico para el cubo
-    const cuboFisico = new CANNON.Body({
-        mass: 1,  // Masa del cubo
-        position: new CANNON.Vec3(0, 5.5, 0),  // Posición inicial (ajustada para evitar atrapamiento)
-        shape: new CANNON.Box(new CANNON.Vec3(2, 2, 2))  // Asegúrate de que el tamaño sea correcto
-    });
-      // Damping para rotación
-    world.addBody(cuboFisico);
+    const cuboFisico = new RAPIER.RigidBodyDesc(RAPIER.RigidBodyType.Dynamic)
+        .setTranslation(0, 5.5, 0)
+        .setRotation(0, 0, 0)
+        .build();
+    const cuboCollider = RAPIER.ColliderDesc.cuboid(0.5, 0.5, 0.5).build();
+    world.createCollider(cuboCollider, cuboFisico);
+
+    // Añadir el cuerpo físico al mundo
+    world.createRigidBody(cuboFisico);
 
     // Crear cubo de referencia
     const geometry2 = new THREE.BoxGeometry(1, 1, 1);
@@ -53,9 +47,9 @@ export function crearEscena() {
     cuboReferencia.position.set(5, 5, 0);
     scene.add(cuboReferencia);
 
-    const cuboReferenciaFisico = crearCuboFisico();
-    cuboReferenciaFisico.position.set(5, 5, 0);
-    world.addBody(cuboReferenciaFisico);
+    const cuboReferenciaFisico = crearCuboFisico(RAPIER);
+    cuboReferenciaFisico.setTranslation(5, 5, 0, true);
+    world.createRigidBody(cuboReferenciaFisico);
 
     // Crear cámara y controles
     const { camera, actualizarCamara } = crearCamara(cubo);
@@ -76,18 +70,18 @@ export function crearEscena() {
         world.step(1 / 60);
 
         // Sincronizar posiciones físicas con visuales
-        cubo.position.copy(cuboFisico.position);
-        cubo.quaternion.copy(cuboFisico.quaternion);
+        cubo.position.copy(cuboFisico.translation());
+        cubo.quaternion.copy(cuboFisico.rotation());
 
-        cuboReferencia.position.copy(cuboReferenciaFisico.position);
-        cuboReferencia.quaternion.copy(cuboReferenciaFisico.quaternion);
+        cuboReferencia.position.copy(cuboReferenciaFisico.translation());
+        cuboReferencia.quaternion.copy(cuboReferenciaFisico.rotation());
 
         // Actualizar la cámara y los controles
         actualizarCamara();
         controles.update();
 
         // Actualizar la velocidad en la UI
-        actualizarVelocidad(cuboFisico.velocity.length());
+        actualizarVelocidad(cuboFisico.linvel().length());
     }
 
     // Función para mover el cubo usando el joystick
@@ -101,8 +95,7 @@ export function crearEscena() {
             console.log("Joystick moved: deltaX =", joystick.deltaX, "deltaY =", joystick.deltaY);
 
             // Establecer la velocidad directamente en el cubo físico
-            cuboFisico.velocity.x = velocidadX;
-            cuboFisico.velocity.z = velocidadZ;
+            cuboFisico.setLinvel({x: velocidadX, y: 0, z: velocidadZ}, true);
 
             if (joystick.deltaX !== 0 || joystick.deltaY !== 0) {
                 // Calcular el ángulo de rotación en función de la dirección del joystick
