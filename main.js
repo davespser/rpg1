@@ -61,28 +61,20 @@ joystickContainer.addEventListener('touchend', handleJoystickEnd);
 // Función para mover al cubo usando velocidad
 function moverCubo() {
     if (joystick.active) {
-        const velocidadMaxima = config.joystick.sensibilidad || 0.1; // Sensibilidad o velocidad máxima
+        const velocidadMaxima = 1;  // Aumentamos la velocidad a 1 para que el movimiento sea más visible
         const velocidadX = (joystick.deltaX / joystickRect.width) * velocidadMaxima;
         const velocidadZ = -(joystick.deltaY / joystickRect.height) * velocidadMaxima;
 
-        // Ajustamos la velocidad directamente
+        // Ajustar la velocidad de acuerdo al joystick
         cuboFisico.velocity.x = velocidadX;
         cuboFisico.velocity.z = velocidadZ;
 
-        // Mantener la rotación del cubo según la dirección del movimiento
+        // Mantener la rotación del cubo de acuerdo al movimiento
         if (joystick.deltaX !== 0 || joystick.deltaY !== 0) {
             const angulo = Math.atan2(velocidadZ, velocidadX);
             cubo.rotation.y = -angulo;
         }
     }
-}
-
-// Animación
-function animate() {
-    requestAnimationFrame(animate);
-    moverCubo();
-    updatePhysics();
-    renderer.render(scene, camera);
 }
 
 // Inicia la animación
