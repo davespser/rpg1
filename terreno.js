@@ -16,6 +16,15 @@ export function crearTerreno(scene, world) {
         shape: terrenoShape
     });
     terrenoBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0); // Alinear con la rotación
+
+    // Agregar fricción al terreno
+    const materialTerreno = new CANNON.Material();
+    const contactoMaterial = new CANNON.ContactMaterial(materialTerreno, materialTerreno, {
+        friction: 0.5,  // Fricción para un movimiento más controlado
+        restitution: 0.3 // Rebote para un movimiento más dinámico
+    });
+    world.addContactMaterial(contactoMaterial);
+
     world.addBody(terrenoBody);
 
     return { terrenoMesh, terrenoBody };
