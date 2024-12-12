@@ -1,15 +1,19 @@
 import * as CANNON from 'cannon-es';
 
-export function crearCuboFisico() {
-    // Crear un cuerpo físico para el cubo
-    const cuboBody = new CANNON.Body({
-        mass: 5,  // Masa del cubo
-        position: new CANNON.Vec3(0, 5, 0),  // Posición inicial
-        shape: new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5)) // Forma del cubo
+import * as CANNON from 'cannon-es';
+
+export function crearCuboFisico(materialCubo) {
+    // Crear un cuerpo físico esférico
+    const radio = 1; // Ajustar el tamaño del radio según el tamaño visual del cubo
+    const cuboShape = new CANNON.Sphere(radio);
+    const cuboFisico = new CANNON.Body({
+        mass: 1, // Ajusta la masa según sea necesario
+        shape: cuboShape,
+        material: materialCubo,
     });
 
-    // Eliminar o reducir el damping para permitir un movimiento más fluido
-     // Reducir damping
+    // Posición inicial del cuerpo físico
+    cuboFisico.position.set(0, 5, 0);
 
-    return cuboBody;
+    return cuboFisico;
 }
