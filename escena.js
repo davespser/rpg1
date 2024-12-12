@@ -29,6 +29,8 @@ export function crearEscena() {
     const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
     const cubo = new THREE.Mesh(geometry, material);
     cubo.position.set(0, 5, 0);
+    fixedRotation: true, // Bloquea la rotación
+      linearDamping: 0.9,
     scene.add(cubo);
 
     const cuboFisico = crearCuboFisico();
