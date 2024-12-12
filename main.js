@@ -77,5 +77,12 @@ function moverCubo() {
     }
 }
 
+function animate() {
+    requestAnimationFrame(animate);
+    moverCubo();
+    updatePhysics();
+    renderer.render(scene, camera);
+}
+
 // Inicia la animación
 animate();
