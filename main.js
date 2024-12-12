@@ -82,7 +82,19 @@ function animate() {
     moverCubo();
     updatePhysics();
     renderer.render(scene, camera);
+let lastTime = 0;
+
+function animate(time) {
+    requestAnimationFrame(animate);
+    
+    const deltaTime = (time - lastTime) / 1000;  // Tiempo en segundos
+    lastTime = time;
+
+    moverCubo(deltaTime);  // Pasa deltaTime para que el movimiento sea independiente de la tasa de FPS
+    updatePhysics();
+    renderer.render(scene, camera);
 }
+
 
 // Inicia la animación
 animate();
