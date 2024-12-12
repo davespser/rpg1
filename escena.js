@@ -1,4 +1,4 @@
-import * as THREE from '.modulos.three.module.js';
+import * as THREE from './modulos/three.module.js';
 import * as RAPIER from '@dimforge/rapier3d-compat';
 import { config } from './config.js';
 import { crearMundoFisico } from './fisicas.js';
