@@ -65,46 +65,48 @@ joystickContainer.addEventListener('touchend', handleJoystickEnd);
 // Función para mover el cubo físico y sincronizarlo con el visual
 function moverCubo() {
     if (joystick.active) {
-        const fuerza = (config.joystick.sensibilidad || 10) * 10;
+        const fuerza = (config.joystick.sensibilidad || 10) * 10; // Aumentar la fuerza aplicada
         const fuerzaX = (joystick.deltaX / joystickRect.width) * fuerza;
         const fuerzaZ = -(joystick.deltaY / joystickRect.height) * fuerza;
 
-        console.log(`Aplicando fuerza: fuerzaX=${fuerzaX}, fuerzaZ=${fuerzaZ}`);
+        // Mostrar valores de depuración del joystick
+        console.log(`Joystick activo: deltaX=${joystick.deltaX}, deltaY=${joystick.deltaY}`);
+        console.log(`Fuerzas calculadas: fuerzaX=${fuerzaX}, fuerzaZ=${fuerzaZ}`);
 
-        // Aplicar fuerza al cubo físico
-        cuboFisico.applyForce(
-            new CANNON.Vec3(fuerzaX, 0, fuerzaZ),
-            cuboFisico.position
-        );
+        if (Math.abs(fuerzaX) > 0.01 || Math.abs(fuerzaZ) > 0.01) {
+            // Aplicar fuerzas solo si son significativas
+            cuboFisico.applyForce(
+                new CANNON.Vec3(fuerzaX, 0, fuerzaZ),
+                cuboFisico.position
+            );
+        }
 
         // Orientar el cubo visual hacia la dirección del movimiento
-        if (joystick.deltaX !== 0 || joystick.deltaY !== 0) {
+        if (fuerzaX !== 0 || fuerzaZ !== 0) {
             const angulo = Math.atan2(fuerzaZ, fuerzaX);
             cubo.rotation.y = -angulo;
-            console.log(`Rotación del cubo: y=${cubo.rotation.y}`);
+
+            console.log(`Cubo orientado: rotación.y=${cubo.rotation.y}`);
         }
     }
 }
 
-// Animación principal
 function animate() {
     requestAnimationFrame(animate);
 
-    // Mover el cubo según el joystick
+    // Llamar a la función de movimiento del cubo
     moverCubo();
 
     // Actualizar la física del mundo
     updatePhysics();
 
-    // Sincronizar posición y rotación del cubo visual con el físico
+    // Sincronizar el cubo visual con el físico
     cubo.position.copy(cuboFisico.position);
     cubo.quaternion.copy(cuboFisico.quaternion);
 
-    console.log(`Posición del cubo: x=${cubo.position.x}, y=${cubo.position.y}, z=${cubo.position.z}`);
+    // Mostrar posición del cubo
+    console.log(`Posición del cubo: x=${cubo.position.x.toFixed(4)}, y=${cubo.position.y.toFixed(4)}, z=${cubo.position.z.toFixed(4)}`);
 
     // Renderizar la escena
     renderer.render(scene, camera);
 }
-
-// Inicia la animación
-animate();
