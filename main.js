@@ -110,3 +110,4 @@ function animate() {
     // Renderizar la escena
     renderer.render(scene, camera);
 }
+animate();
