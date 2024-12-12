@@ -1,23 +1,28 @@
-import * as THREE from './modulos/three.module.js';
-import RAPIER from 'https://cdn.skypack.dev/@dimforge/rapier3d-compat@0.12.0';
+import * as RAPIER from '@dimforge/rapier3d-compat';
+import { config } from './config.js';
 
-export async function crearTerreno(scene, world) {
-    // Inicializar RAPIER
-    await RAPIER.init();
-
-    // Crear geometría y material para el terreno en Three.js
-    const terrenoGeometry = new THREE.PlaneGeometry(50, 50);
-    const terrenoMaterial = new THREE.MeshPhongMaterial({ color: 0x8B4513, side: THREE.DoubleSide });
+export function crearTerreno(scene, world) {
+    // Crear el mesh del terreno (puedes ajustarlo a tus necesidades)
+    const terrenoGeometry = new THREE.PlaneGeometry(100, 100);
+    const terrenoMaterial = new THREE.MeshStandardMaterial({ color: 0x888888 });
     const terrenoMesh = new THREE.Mesh(terrenoGeometry, terrenoMaterial);
-    terrenoMesh.rotation.x = -Math.PI / 2; // Girar para que quede horizontal
+    terrenoMesh.rotation.x = - Math.PI / 2; // Colocar el terreno en la orientación correcta
     scene.add(terrenoMesh);
 
-    // Crear el cuerpo físico para el terreno en RAPIER
-    const terrenoColliderDesc = RAPIER.ColliderDesc.cuboid(25, 0.1, 25); // Crear un plano colisionable
-    const terrenoBody = world.createCollider(terrenoColliderDesc);
+    // Crear el cuerpo físico del terreno (usando RAPIER)
+    const terrenoRigidBody = world.createRigidBody(
+        RAPIER.RigidBodyDesc.fixed() // Terreno fijo, no se moverá
+            .setTranslation(0, -0.5, 0) // Posición
+    );
 
-    // El plano es estático, no necesita un cuerpo dinámico
-    // Nota: No es necesario ajustar rotaciones porque el plano ya está orientado por defecto en Rapier
+    // Crear el colisionador para el terreno
+    const collider = RAPIER.ColliderDesc.trimesh(
+        terrenoGeometry.attributes.position.array, // Los vértices del terreno
+        terrenoGeometry.index.array // Los índices para formar las caras
+    );
+    
+    // Asociar el colisionador con el cuerpo físico
+    world.createCollider(collider, terrenoRigidBody);
 
-    return { terrenoMesh, terrenoBody };
+    return { terrenoMesh };
 }
