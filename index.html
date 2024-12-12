@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Proyecto con Three.js y Cannon-es</title>
+    <title>Proyecto con Three.js y Rapier</title>
     <link rel="stylesheet" href="./styles.css">
     
-    <!-- Import Map para usar Three.js y Cannon.js desde archivos locales -->
+    <!-- Import Map para usar Three.js y Rapier desde una CDN -->
     <script type="importmap">
     {
         "imports": {
-            "three": "./modulos/three.module.js",
-            "cannon-es": "./modulos/cannon-es.js"
+            "three": "https://unpkg.com/three@0.137.5/build/three.module.js",
+            "rapier": "https://cdn.jsdelivr.net/npm/@dimforge/rapier3d-compat@0.9.0/dist/rapier3d.js"
         }
     }
     </script>
@@ -22,9 +22,9 @@
 <body>
     <!-- Contenedor del joystick -->
     <div id="joystick-container">
-    <div id="joystick">
-        <div class="knob"></div>
-    </div>
+        <div id="joystick">
+            <div class="knob"></div>
+        </div>
     </div>
 
     <!-- UI adicional (por ejemplo, botones) -->
