@@ -1,3 +1,4 @@
+import THREE from './modulos/three.modules.js
 import * as RAPIER from '@dimforge/rapier3d-compat';
 import { config } from './config.js';
 
