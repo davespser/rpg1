@@ -8,22 +8,9 @@ export function crearCuboFisico() {
         shape: new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5)) // Forma del cubo
     });
 
-    cuboBody.linearDamping = 0.1; // Damping de velocidad lineal
-    cuboBody.angularDamping = 0.1; // Damping de rotación
+    // Eliminar o reducir el damping para permitir un movimiento más fluido
+    cuboBody.linearDamping = 0.05; // Reducir damping
+    cuboBody.angularDamping = 0.05; // Reducir damping
 
     return cuboBody;
-}
-
-export function crearEsferaFisica() {
-    // Crear un cuerpo físico para la esfera
-    const esferaBody = new CANNON.Body({
-        mass: 1,  // Masa de la esfera
-        position: new CANNON.Vec3(2, 5, 0),  // Posición inicial
-        shape: new CANNON.Sphere(0.5) // Forma de la esfera
-    });
-
-    esferaBody.linearDamping = 0.1; // Damping de velocidad lineal
-    esferaBody.angularDamping = 0.1; // Damping de rotación
-
-    return esferaBody;
 }
