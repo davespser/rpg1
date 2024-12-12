@@ -1,4 +1,4 @@
-import * as THREE from '/modulos/three.module.js';
+import * as THREE from './modulos/three.module.js';
 import * as RAPIER from '@dimforge/rapier3d-compat'; // Asegúrate de que la ruta es correcta
 import { crearEscena } from './escena.js';
 import { config } from './config.js';
