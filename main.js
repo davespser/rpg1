@@ -65,23 +65,23 @@ joystickContainer.addEventListener('touchend', handleJoystickEnd);
 // Función para mover el cubo físico y sincronizarlo con el visual
 function moverCubo() {
     if (joystick.active) {
-        const fuerza = (config.joystick.sensibilidad || 10) * 10; // Aumentar la fuerza aplicada
+        const fuerza = (config.joystick.sensibilidad || 20) * 50; // Aumentar mucho la fuerza aplicada
         const fuerzaX = (joystick.deltaX / joystickRect.width) * fuerza;
         const fuerzaZ = -(joystick.deltaY / joystickRect.height) * fuerza;
 
-        // Mostrar valores de depuración del joystick
+        // Depuración de las fuerzas
         console.log(`Joystick activo: deltaX=${joystick.deltaX}, deltaY=${joystick.deltaY}`);
         console.log(`Fuerzas calculadas: fuerzaX=${fuerzaX}, fuerzaZ=${fuerzaZ}`);
 
-        if (Math.abs(fuerzaX) > 0.01 || Math.abs(fuerzaZ) > 0.01) {
-            // Aplicar fuerzas solo si son significativas
+        if (Math.abs(fuerzaX) > 0.1 || Math.abs(fuerzaZ) > 0.1) {
+            // Aplicar fuerzas significativas
             cuboFisico.applyForce(
                 new CANNON.Vec3(fuerzaX, 0, fuerzaZ),
                 cuboFisico.position
             );
         }
 
-        // Orientar el cubo visual hacia la dirección del movimiento
+        // Orientar el cubo hacia la dirección del movimiento
         if (fuerzaX !== 0 || fuerzaZ !== 0) {
             const angulo = Math.atan2(fuerzaZ, fuerzaX);
             cubo.rotation.y = -angulo;
@@ -94,17 +94,17 @@ function moverCubo() {
 function animate() {
     requestAnimationFrame(animate);
 
-    // Llamar a la función de movimiento del cubo
+    // Mover el cubo basado en el joystick
     moverCubo();
 
-    // Actualizar la física del mundo
+    // Actualizar la simulación física
     updatePhysics();
 
-    // Sincronizar el cubo visual con el físico
+    // Sincronizar el cubo visual con el cubo físico
     cubo.position.copy(cuboFisico.position);
     cubo.quaternion.copy(cuboFisico.quaternion);
 
-    // Mostrar posición del cubo
+    // Mostrar la posición del cubo en consola
     console.log(`Posición del cubo: x=${cubo.position.x.toFixed(4)}, y=${cubo.position.y.toFixed(4)}, z=${cubo.position.z.toFixed(4)}`);
 
     // Renderizar la escena
