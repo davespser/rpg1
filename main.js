@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import * as RAPIER from './modulos/rapier_wasm3d.js'; // Asegúrate de que la ruta es correcta
+import * as RAPIER from '@dimforge/rapier3d-compat'; // Asegúrate de que la ruta es correcta
 import { crearEscena } from './escena.js';
 import { config } from './config.js';
     // Inicializar Rapier
