@@ -65,7 +65,7 @@ joystickContainer.addEventListener('touchend', handleJoystickEnd);
 // Función para mover el cubo físico y sincronizarlo con el visual
 function moverCubo() {
     if (joystick.active) {
-        const fuerza = config.joystick.sensibilidad || 5;
+        const fuerza = (config.joystick.sensibilidad || 10) * 10;
         const fuerzaX = (joystick.deltaX / joystickRect.width) * fuerza;
         const fuerzaZ = -(joystick.deltaY / joystickRect.height) * fuerza;
 
