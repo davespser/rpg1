@@ -7,14 +7,15 @@ import { crearCamara } from './camara.js';
 import { crearControles } from './controles.js';
 import { crearUI, actualizarVelocidad } from './ui.js';
 import { iniciarJoystick } from './joystick.js';
+import { crearLuces } from './luces.js';
 
 export async function crearEscena() {
     // Inicializar RAPIER
     await RAPIER.init();
 
-    // Crear escena Three.js
+    // Crear la escena de Three.js
     const scene = new THREE.Scene();
-    const world = crearMundoFisico();
+    const world = crearMundoFisico(RAPIER);
 
     // Crear luces
     crearLuces(scene, config.luces.intensidad);
@@ -22,7 +23,7 @@ export async function crearEscena() {
     // Crear terreno
     const { terrenoMesh } = crearTerreno(scene, world);
 
-    // Crear cubo
+    // Crear cubo visual
     const cuboGeometry = new THREE.BoxGeometry(1, 1, 1);
     const cuboMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
     const cubo = new THREE.Mesh(cuboGeometry, cuboMaterial);
@@ -42,8 +43,45 @@ export async function crearEscena() {
     document.body.appendChild(renderer.domElement);
 
     const controles = crearControles(camera, renderer);
+
+    // Crear UI y joystick
     crearUI();
     const joystick = iniciarJoystick(cubo, scene, camera, renderer);
+
+    // Función para mover el cubo usando el joystick
+    function moverCubo() {
+        if (joystick && joystick.active) {
+            const velocidadMaxima = 5; // Velocidad máxima
+            const velocidadX = (joystick.deltaX / joystickRect.width) * velocidadMaxima;
+            const velocidadZ = -(joystick.deltaY / joystickRect.height) * velocidadMaxima;
+
+            // Establecer velocidad en el cuerpo físico
+            cuboRigidBody.setLinvel({ x: velocidadX, y: 0, z: velocidadZ }, true);
+
+            if (joystick.deltaX !== 0 || joystick.deltaY !== 0) {
+                // Calcular ángulo de rotación
+                const angulo = Math.atan2(velocidadZ, velocidadX);
+                cubo.rotation.y = -angulo; // Ajustar orientación del cubo visual
+            }
+        }
+    }
+
+    // Función para actualizar la física
+    function updatePhysics() {
+        world.step();
+
+        // Sincronizar posiciones del cubo visual con su cuerpo físico
+        const cuboPosition = cuboRigidBody.translation();
+        const cuboRotation = cuboRigidBody.rotation();
+
+        cubo.position.set(cuboPosition.x, cuboPosition.y, cuboPosition.z);
+        cubo.quaternion.set(cuboRotation.x, cuboRotation.y, cuboRotation.z, cuboRotation.w);
+
+        // Actualizar la cámara, controles y UI
+        actualizarCamara();
+        controles.update();
+        actualizarVelocidad(cuboRigidBody.linvel().length());
+    }
 
     // Animación
     function animate() {
@@ -53,37 +91,16 @@ export async function crearEscena() {
         renderer.render(scene, camera);
     }
 
-    function moverCubo() {
-    if (joystick && joystick.active) {
-        const velocidadMaxima = 5;  // Velocidad máxima
-        const velocidadX = (joystick.deltaX / joystickRect.width) * velocidadMaxima;
-        const velocidadZ = -(joystick.deltaY / joystickRect.height) * velocidadMaxima;
-
-        // Establecer velocidad en el cuerpo físico
-        cuboRigidBody.setLinvel({ x: velocidadX, y: 0, z: velocidadZ }, true);
-
-        if (joystick.deltaX !== 0 || joystick.deltaY !== 0) {
-            // Calcular ángulo de rotación
-            const angulo = Math.atan2(velocidadZ, velocidadX);
-            cubo.rotation.y = -angulo;  // Ajustar orientación del cubo visual
-        }
-    }
-    }
-    function updatePhysics() {
-    world.step();
-
-    // Sincronizar posiciones del cubo visual con su cuerpo físico
-    const cuboPosition = cuboRigidBody.translation();
-    const cuboRotation = cuboRigidBody.rotation();
-
-    cubo.position.set(cuboPosition.x, cuboPosition.y, cuboPosition.z);
-    cubo.quaternion.set(cuboRotation.x, cuboRotation.y, cuboRotation.z, cuboRotation.w);
-
-    // Actualizar la cámara, controles y UI
-    actualizarCamara();
-    controles.update();
-    actualizarVelocidad(cuboRigidBody.linvel().length());
-    }
-
     animate();
-}
+
+    // Retornar los objetos clave de la escena
+    return {
+        scene,
+        camera,
+        renderer,
+        world,
+        cubo,
+        cuboRigidBody,
+        terrenoMesh,
+    };
+        }
