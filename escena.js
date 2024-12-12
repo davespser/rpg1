@@ -34,6 +34,17 @@ export function crearEscena() {
     const cuboFisico = crearCuboFisico();
     world.addBody(cuboFisico);
 
+    // Crear un segundo cubo visual y físico como referencia
+    const geometry2 = new THREE.BoxGeometry(1, 1, 1);
+    const material2 = new THREE.MeshStandardMaterial({ color: 0xff0000 }); // Diferente color para distinguir
+    const cuboReferencia = new THREE.Mesh(geometry2, material2);
+    cuboReferencia.position.set(5, 5, 0);  // Colocar el cubo de referencia en otra posición
+    scene.add(cuboReferencia);
+
+    const cuboReferenciaFisico = crearCuboFisico();  // Puedes usar el mismo tipo de cuerpo físico o uno diferente
+    cuboReferenciaFisico.position.set(5, 5, 0);    // Asegúrate de colocar el cuerpo físico en la misma posición
+    world.addBody(cuboReferenciaFisico);
+
     // Crear cámara que sigue al cubo
     const { camera, actualizarCamara } = crearCamara(cubo);
 
@@ -58,9 +69,12 @@ export function crearEscena() {
         // Avanzar la simulación de física (60 fps)
         world.step(1 / 60);
 
-        // Sincronizar el cubo físico con el visual
+        // Sincronizar los cubos físicos con sus versiones visuales
         cubo.position.copy(cuboFisico.position);
         cubo.quaternion.copy(cuboFisico.quaternion);
+        
+        cuboReferencia.position.copy(cuboReferenciaFisico.position);
+        cuboReferencia.quaternion.copy(cuboReferenciaFisico.quaternion);
 
         // Actualizar cámara y controles
         actualizarCamara();
@@ -71,5 +85,5 @@ export function crearEscena() {
     }
 
     // Retornar los elementos esenciales de la escena
-    return { scene, camera, renderer, world, updatePhysics, cuboFisico, cubo };
+    return { scene, camera, renderer, world, updatePhysics, cuboFisico, cubo, cuboReferenciaFisico, cuboReferencia };
 }
