@@ -1,19 +1,15 @@
+import * as RAPIER from '@dimforge/rapier3d-compat';
 
+export function crearCuboFisico() {
+    // Crear un cuerpo físico cubo
+    const cuboFisico = new RAPIER.RigidBodyDesc(RAPIER.RigidBodyType.Dynamic)
+        .setTranslation(0, 5, 0)
+        .build();
+    const cuboShape = RAPIER.ColliderDesc.cuboid(0.5, 0.5, 0.5).build();
 
-import * as CANNON from 'cannon-es';
-
-export function crearCuboFisico(materialCubo) {
-    // Crear un cuerpo físico esférico
-    const radio = 1; // Ajustar el tamaño del radio según el tamaño visual del cubo
-    const cuboShape = new CANNON.Sphere(radio);
-    const cuboFisico = new CANNON.Body({
-        mass: 1, // Ajusta la masa según sea necesario
-        shape: cuboShape,
-        material: materialCubo,
-    });
-
-    // Posición inicial del cuerpo físico
-    cuboFisico.position.set(0, 5, 0);
-
+    // Crear el collider para el cubo y añadirlo al cuerpo físico
+    const world = new RAPIER.World();
+    world.createCollider(cuboShape, cuboFisico);
+    
     return cuboFisico;
 }
