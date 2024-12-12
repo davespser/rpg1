@@ -40,7 +40,7 @@ export function crearEscena() {
     const cuboFisico = crearCuboFisico(materialCubo);
     world.addBody(cuboFisico);
 
-    // Crear el cubo de referencia
+    // Crear cubo de referencia
     const geometry2 = new THREE.BoxGeometry(1, 1, 1);
     const material2 = new THREE.MeshStandardMaterial({ color: 0xff0000 });
     const cuboReferencia = new THREE.Mesh(geometry2, material2);
@@ -78,6 +78,7 @@ export function crearEscena() {
         actualizarCamara();
         controles.update();
 
+        // Actualizar la velocidad en la UI
         actualizarVelocidad(cuboFisico.velocity.length());
     }
 
@@ -88,6 +89,9 @@ export function crearEscena() {
             const velocidadX = (joystick.deltaX / joystickRect.width) * velocidadMaxima;
             const velocidadZ = -(joystick.deltaY / joystickRect.height) * velocidadMaxima;
 
+            // Verificar si los valores del joystick están cambiando correctamente
+            console.log("Joystick moved: deltaX =", joystick.deltaX, "deltaY =", joystick.deltaY);
+
             // Establecer la velocidad directamente en el cubo físico
             cuboFisico.velocity.x = velocidadX;
             cuboFisico.velocity.z = velocidadZ;
@@ -96,6 +100,7 @@ export function crearEscena() {
                 // Calcular el ángulo de rotación en función de la dirección del joystick
                 const angulo = Math.atan2(velocidadZ, velocidadX);
                 cubo.rotation.y = -angulo;  // Ajustar la orientación
+                console.log("Rotating cubo: rotation.y =", cubo.rotation.y);
             }
         }
     }
@@ -111,4 +116,4 @@ export function crearEscena() {
     animate();
 
     return { scene, camera, renderer, world, updatePhysics, cuboFisico, cubo, cuboReferenciaFisico, cuboReferencia };
-        }
+}
