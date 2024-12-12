@@ -1,5 +1,5 @@
 import RAPIER from '@dimforge/rapier3d-compat';
-let RAPIER = null; // Variable para almacenar el módulo RAPIER después de la inicialización
+ // Variable para almacenar el módulo RAPIER después de la inicialización
 
 async function RapierPhysics() {
     if (!RAPIER) {
