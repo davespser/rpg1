@@ -28,7 +28,7 @@ export function crearEscena() {
     
     const materialCubo = new CANNON.Material();
     const contactoMaterial = new CANNON.ContactMaterial(materialCubo, materialCubo, {
-        friction: 0.05,  // Baja la fricción para facilitar el movimiento
+        friction: 0.01,  // Baja la fricción para facilitar el movimiento
         restitution: 0.3
     });
     world.addContactMaterial(contactoMaterial);
@@ -73,7 +73,7 @@ export function crearEscena() {
     
     function moverCubo() {
         if (joystick.active) {
-            const velocidadMaxima = 1;
+            const velocidadMaxima = 10;
             const velocidadX = (joystick.deltaX / joystickRect.width) * velocidadMaxima;
             const velocidadZ = -(joystick.deltaY / joystickRect.height) * velocidadMaxima;
             cuboFisico.velocity.x = velocidadX;
