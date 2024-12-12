@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import * as CANNON from 'cannon-es';
+import * as RAPIER from './modulos/rapier_wasm3d.js';
 
 export function crearTerreno(scene, world) {
     // Crear geometría y material para el terreno en Three.js
