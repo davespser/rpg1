@@ -32,13 +32,19 @@ export function crearEscena() {
     // Configuración del material físico para el cubo
     const materialCubo = new CANNON.Material();
     const contactoMaterial = new CANNON.ContactMaterial(materialCubo, materialCubo, {
-        friction: 0.01,  // Baja la fricción para facilitar el movimiento
-        restitution: 0.3
+        friction: 0.05,  // Baja la fricción para facilitar el movimiento
+        restitution: 0.2  // Baja la restitución para evitar rebotes grandes
     });
     world.addContactMaterial(contactoMaterial);
 
     // Crear el cuerpo físico para el cubo
-    const cuboFisico = crearCuboFisico(materialCubo);
+    const cuboFisico = new CANNON.Body({
+        mass: 1,  // Masa del cubo
+        position: new CANNON.Vec3(0, 5.5, 0),  // Posición inicial (ajustada para evitar atrapamiento)
+        shape: new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5))  // Asegúrate de que el tamaño sea correcto
+    });
+    cuboFisico.linearDamping = 0.1;  // Añadir damping para evitar movimientos bruscos
+    cuboFisico.angularDamping = 0.1;  // Damping para rotación
     world.addBody(cuboFisico);
 
     // Crear cubo de referencia
@@ -119,4 +125,4 @@ export function crearEscena() {
     animate();
 
     return { scene, camera, renderer, world, updatePhysics, cuboFisico, cubo, cuboReferenciaFisico, cuboReferencia };
-                }
+}
