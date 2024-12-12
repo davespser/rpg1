@@ -102,7 +102,7 @@ import { config } from './config.js';
     }
 
     animate();
-}
+
 
 // Iniciar la aplicación
 init();
