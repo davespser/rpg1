@@ -1,5 +1,5 @@
-import THREE from './modulos/three.modules.js
-import * as RAPIER from '@dimforge/rapier3d-compat';
+import * as THREE from './modulos/three.module.js';
+import RAPIER from 'https://cdn.skypack.dev/@dimforge/rapier3d-compat@0.12.0';
 import { config } from './config.js';
 
 export function crearTerreno(scene, world) {
