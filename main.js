@@ -96,13 +96,21 @@ function moverCubo() {
 function animate() {
     requestAnimationFrame(animate);
 
-    // Actualizar físicas y mover el cubo
+    // Actualizar la física
     updatePhysics();
-    moverCubo();
+
+    // Si el joystick está activo, aplicar fuerza al cubo físico
+    if (joystick.active) {
+        const fuerza = config.joystick.sensibilidad * 5; // Ajusta este valor según sea necesario
+        const fuerzaX = (joystick.deltaX / joystickRect.width) * fuerza;
+        const fuerzaZ = -(joystick.deltaY / joystickRect.height) * fuerza;
+
+        cuboFisico.applyForce(
+            new CANNON.Vec3(fuerzaX, 0, fuerzaZ), // Fuerza en X y Z
+            cuboFisico.position // Aplica la fuerza en el centro del cuerpo
+        );
+    }
 
     // Renderizar la escena
     renderer.render(scene, camera);
 }
-
-// Iniciar el bucle de animación
-animate();
