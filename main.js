@@ -17,6 +17,9 @@ async function init() {
 
     const { scene, camera, renderer, updatePhysics, cubo, cuboFisico } = escena;
 
+    // Crear el mundo físico de Rapier
+    const world = new RAPIER.World({ gravity: { x: 0, y: -9.81, z: 0 } });
+
     // Variables del joystick
     let joystick = { active: false, deltaX: 0, deltaY: 0 };
 
@@ -89,7 +92,14 @@ async function init() {
         lastTime = time;
 
         moverCubo(deltaTime);  // Pasa deltaTime para que el movimiento sea independiente de la tasa de FPS
-        updatePhysics();  // Actualizar la simulación física
+        
+        // Actualizar la simulación física
+        world.step();  // Actualiza la simulación física de Rapier
+
+        // Sincronizar la posición y rotación del cubo con el cuerpo físico
+        cubo.position.set(cuboFisico.translation().x, cuboFisico.translation().y, cuboFisico.translation().z);
+        cubo.rotation.set(cuboFisico.rotation().x, cuboFisico.rotation().y, cuboFisico.rotation().z);
+
         renderer.render(scene, camera);
     }
 
