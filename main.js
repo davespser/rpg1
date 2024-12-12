@@ -77,11 +77,6 @@ function moverCubo() {
     }
 }
 
-function animate() {
-    requestAnimationFrame(animate);
-    moverCubo();
-    updatePhysics();
-    renderer.render(scene, camera);
 let lastTime = 0;
 
 function animate(time) {
