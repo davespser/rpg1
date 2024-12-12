@@ -61,7 +61,7 @@ joystickContainer.addEventListener('touchend', handleJoystickEnd);
 // Función para mover al cubo usando velocidad
 function moverCubo() {
     if (joystick.active) {
-        const velocidadMaxima = 1;  // Aumentamos la velocidad a 1 para que el movimiento sea más visible
+        const velocidadMaxima = 10;  // Aumentamos la velocidad a 1 para que el movimiento sea más visible
         const velocidadX = (joystick.deltaX / joystickRect.width) * velocidadMaxima;
         const velocidadZ = -(joystick.deltaY / joystickRect.height) * velocidadMaxima;
 
