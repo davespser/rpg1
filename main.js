@@ -58,40 +58,42 @@ joystickContainer.addEventListener('touchstart', handleJoystickStart);
 joystickContainer.addEventListener('touchmove', handleJoystickMove);
 joystickContainer.addEventListener('touchend', handleJoystickEnd);
 
-// Función para mover al cubo como personaje
+// Función para mover el cubo físico y sincronizarlo con el visual
 function moverCubo() {
     if (joystick.active) {
-        const fuerza = config.joystick.sensibilidad || 5; // Ajusta la sensibilidad
+        const fuerza = config.joystick.sensibilidad || 5;
         const fuerzaX = (joystick.deltaX / joystickRect.width) * fuerza;
         const fuerzaZ = -(joystick.deltaY / joystickRect.height) * fuerza;
 
-        // Aplica la fuerza al cuerpo físico
+        // Aplicar fuerza al cubo físico
         cuboFisico.applyForce(
             new CANNON.Vec3(fuerzaX, 0, fuerzaZ),
             cuboFisico.position
         );
 
-        // Orienta el cubo hacia la dirección del movimiento
+        // Orientar el cubo visual hacia la dirección del movimiento
         if (joystick.deltaX !== 0 || joystick.deltaY !== 0) {
             const angulo = Math.atan2(fuerzaZ, fuerzaX);
             cubo.rotation.y = -angulo;
         }
     }
 }
-function updatePhysics() {
-    // Actualiza la física del mundo
-    world.step(1 / 60);
 
-    // Sincroniza la posición y rotación del cubo visual con el cuerpo físico
-    cubo.position.copy(cuboFisico.position);
-    cubo.quaternion.copy(cuboFisico.quaternion);
-}
-
-// Animación
+// Animación principal
 function animate() {
     requestAnimationFrame(animate);
+
+    // Mover el cubo según el joystick
     moverCubo();
+
+    // Actualizar la física del mundo
     updatePhysics();
+
+    // Sincronizar posición y rotación del cubo visual con el físico
+    cubo.position.copy(cuboFisico.position);
+    cubo.quaternion.copy(cuboFisico.quaternion);
+
+    // Renderizar la escena
     renderer.render(scene, camera);
 }
 
