@@ -37,6 +37,7 @@ export function crearEscena() {
     });
     world.addContactMaterial(contactoMaterial);
 
+    // Crear el cuerpo físico para el cubo
     const cuboFisico = crearCuboFisico(materialCubo);
     world.addBody(cuboFisico);
 
@@ -69,12 +70,14 @@ export function crearEscena() {
     function updatePhysics() {
         world.step(1 / 60);
 
+        // Sincronizar posiciones físicas con visuales
         cubo.position.copy(cuboFisico.position);
         cubo.quaternion.copy(cuboFisico.quaternion);
 
         cuboReferencia.position.copy(cuboReferenciaFisico.position);
         cuboReferencia.quaternion.copy(cuboReferenciaFisico.quaternion);
 
+        // Actualizar la cámara y los controles
         actualizarCamara();
         controles.update();
 
@@ -116,4 +119,4 @@ export function crearEscena() {
     animate();
 
     return { scene, camera, renderer, world, updatePhysics, cuboFisico, cubo, cuboReferenciaFisico, cuboReferencia };
-}
+                }
