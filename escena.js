@@ -1,5 +1,5 @@
 import * as THREE from './modulos/three.modules.js';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { OrbitControls } from './modulos/OrbitControls.js';
 import RAPIER from '@dimforge/rapier3d-compat';
 
 export function setupScene(container) {
