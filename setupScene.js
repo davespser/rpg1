@@ -1,4 +1,4 @@
-import * as THREE from './modulos/three.module.js';
+ import * as THREE from './modulos/three.module.js';
 import { OrbitControls } from './modulos/OrbitControls.js';
 import RAPIER from '@dimforge/rapier3d-compat';
 import Joystick from './joystick.js';
@@ -7,8 +7,8 @@ import { createWorld, addGround, createDynamicBody, updatePhysics } from './phys
 export function setupScene(container) {
     // Configuración de Three.js
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(0, 5, 5);
+    const camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000); // Campo de visión más amplio
+    camera.position.set(0, 10, 10); // Ajusta la posición para una vista más amplia
     camera.lookAt(0, 0, 0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -43,9 +43,7 @@ export function setupScene(container) {
 
     // Crear el suelo visual y añadirle material
     const groundGeometry = new THREE.BoxGeometry(20, 0.2, 20); // Ajusta las dimensiones según necesites
-    const groundMaterial = new THREE.MeshStandardMaterial({
-        color: 0x8B4513, // Marrón oscuro, similar a la tierra o la madera
-    });
+    const groundMaterial = new THREE.MeshStandardMaterial({ color: 0x8B4513 });
     const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
     groundMesh.position.set(0, -0.1, 0); // Posiciona el suelo justo debajo del cubo
     scene.add(groundMesh);
@@ -85,7 +83,7 @@ export function setupScene(container) {
         scene, 
         camera, 
         renderer, 
-        controls, 
+        controls
         updatePhysics: () => updatePhysics(), // Corregido para que coincida con la firma en physics.js
         applyMovement 
     };
