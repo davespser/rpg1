@@ -2,6 +2,7 @@ import * as THREE from './modulos/three.module.js';
 import { OrbitControls } from './modulos/OrbitControls.js';
 import RAPIER from '@dimforge/rapier3d-compat';
 import Joystick from './joystick.js'; // Asegúrate de que la ruta es correcta
+import { createWorld, addGround, createDynamicBody, updatePhysics } from './physics.js';
 
 export function setupScene(container) {
     // Configuración de Three.js
@@ -25,27 +26,24 @@ export function setupScene(container) {
     scene.add(pointLight);
 
     // Configuración de Rapier3D
-    const world = new RAPIER.World({ x: 0, y: -9.81, z: 0 });
+    const world = createWorld();
+    addGround(world);
 
     // Crear un suelo
     const groundColliderDesc = RAPIER.ColliderDesc.cuboid(10, 0.1, 10);
     world.createCollider(groundColliderDesc);
 
     // Crear una caja
-    const rigidBodyDesc = RAPIER.RigidBodyDesc.dynamic().setTranslation(0, 2, 0);
-    const rigidBody = world.createRigidBody(rigidBodyDesc);
-    const colliderDesc = RAPIER.ColliderDesc.cuboid(0.5, 0.5, 0.5);
-    world.createCollider(colliderDesc, rigidBody);
+    const cubeSize = { x: 1, y: 1, z: 1 };
+    const cubePosition = { x: 0, y: 2, z: 0 };
+    const rigidBody = createDynamicBody(world, cubePosition, cubeSize);
 
     // Visualización con Three.js
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const geometry = new THREE.BoxGeometry(cubeSize.x, cubeSize.y, cubeSize.z);
     const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
     const cube = new THREE.Mesh(geometry, material);
+    cube.position.set(cubePosition.x, cubePosition.y, cubePosition.z);
     scene.add(cube);
-
-    // Lógica de movimiento con Joystick
-    const moveSpeed = 5;
-    let joystickX = 0, joystickY = 0;
 
     // Crear y configurar el joystick
     const joystick = new Joystick({
