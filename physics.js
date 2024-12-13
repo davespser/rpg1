@@ -1,5 +1,10 @@
 import RAPIER from '@dimforge/rapier3d-compat';
 
+// Initialize Rapier (this step might be crucial)
+async function initRapier() {
+    await RAPIER.init();
+}
+
 function createWorld() {
     const world = new RAPIER.World({ x: 0, y: -9.81, z: 0 });
     createTerrain(world);
@@ -23,6 +28,7 @@ function createTerrain(world) {
     console.log('Subdivisions:', subdivisions);
     console.log('Heights array:', heights);
     console.log('Terrain scale:', scale);
+    console.log('Rapier version:', RAPIER.version()); // Log Rapier version for debugging
 
     // Create collider for heightfield
     const heightfield = RAPIER.ColliderDesc.heightfield(subdivisions + 1, subdivisions + 1, heights, scale);
@@ -46,4 +52,10 @@ function updatePhysics(world, deltaTime) {
     world.step(deltaTime);
 }
 
-export { createWorld, createDynamicBody, updatePhysics, createTerrain };
+// Export functions after initialization
+export async function initializeAndCreateWorld() {
+    await initRapier();
+    return createWorld();
+}
+
+export { createDynamicBody, updatePhysics, createTerrain };
