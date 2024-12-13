@@ -1,5 +1,6 @@
  import * as THREE from './modulos/three.module.js';
 import { OrbitControls } from './modulos/OrbitControls.js';
+inport setupCamera from './camera.js';
 import RAPIER from '@dimforge/rapier3d-compat';
 import Joystick from './joystick.js';
 import { createWorld, addGround, createDynamicBody, updatePhysics } from './physics.js';
@@ -7,9 +8,7 @@ import { createWorld, addGround, createDynamicBody, updatePhysics } from './phys
 export function setupScene(container) {
     // Configuración de Three.js
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000); // Campo de visión más amplio
-    camera.position.set(0, 10, 10); // Ajusta la posición para una vista más amplia
-    camera.lookAt(0, 0, 0);
+    const { camera, actualizarCamara } = crearCamara();
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
