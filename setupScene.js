@@ -1,7 +1,7 @@
 import * as THREE from './modulos/three.module.js';
 import { OrbitControls } from './modulos/OrbitControls.js';
 import RAPIER from '@dimforge/rapier3d-compat';
-import Joystick from './joystick.js'; // Asegúrate de que la ruta es correcta
+import Joystick from './joystick.js';
 import { createWorld, addGround, createDynamicBody, updatePhysics } from './physics.js';
 
 export function setupScene(container) {
@@ -29,29 +29,36 @@ export function setupScene(container) {
     const world = createWorld();
     addGround(world);
 
-    // Crear un suelo
-    const groundColliderDesc = RAPIER.ColliderDesc.cuboid(10, 0.1, 10);
-    world.createCollider(groundColliderDesc);
-
     // Crear una caja
     const cubeSize = { x: 1, y: 1, z: 1 };
     const cubePosition = { x: 0, y: 2, z: 0 };
     const rigidBody = createDynamicBody(world, cubePosition, cubeSize);
 
     // Visualización con Three.js
-    const geometry = new THREE.BoxGeometry(cubeSize.x, cubeSize.y, cubeSize.z);
-    const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
-    const cube = new THREE.Mesh(geometry, material);
+    const cubeGeometry = new THREE.BoxGeometry(cubeSize.x, cubeSize.y, cubeSize.z);
+    const cubeMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+    const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
     cube.position.set(cubePosition.x, cubePosition.y, cubePosition.z);
     scene.add(cube);
 
+    // Crear el suelo visual y añadirle material
+    const groundGeometry = new THREE.BoxGeometry(20, 0.2, 20); // Ajusta las dimensiones según necesites
+    const groundMaterial = new THREE.MeshStandardMaterial({
+        color: 0x8B4513, // Marrón oscuro, similar a la tierra o la madera
+    });
+    const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
+    groundMesh.position.set(0, -0.1, 0); // Posiciona el suelo justo debajo del cubo
+    scene.add(groundMesh);
+
     // Crear y configurar el joystick
     const joystick = new Joystick({
-        container: document.body, // Asegúrate de que el contenedor es correcto
-        radius: 100, // Ajusta según tus necesidades
+        container: document.body, 
+        radius: 100, 
         innerRadius: 50,
-        position: { x: 20, y: 20 } // Posición en la pantalla
+        position: { x: 20, y: 20 } 
     });
+
+    const moveSpeed = 2; // Define moveSpeed aquí si no está definida anteriormente
 
     // Funciones de actualización y control
     function updatePhysics() {
