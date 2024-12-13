@@ -1,6 +1,7 @@
 import RAPIER from '@dimforge/rapier3d-compat';
-import { createNoise2D } from './modulos/simplex-noise.js';
-
+import SimplexNoise from './modulos/simplex-noise.js';
+const noise = new SimplexNoise();
+// Luego usa noise.noise2D(x, y) en lugar de createNoise2D()
 function createWorld() {
     const world = new RAPIER.World({ x: 0, y: -9.81, z: 0 }); // Gravedad hacia abajo en el eje Y
     createTerrain(world, 100, 50); // Crear terreno con tamaño 100x100 y 50x50 subdivisiones
