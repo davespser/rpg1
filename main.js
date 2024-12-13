@@ -3,7 +3,12 @@ import Joystick from './joystick.js';
 import { setupScene } from './setupScene.js';
 
 RAPIER.init().then(() => {
-    const { scene, camera, renderer, controls, updatePhysics, applyMovement } = setupScene(document.body);
+    const { scene, 
+        camera, 
+        renderer, 
+        controls, 
+        updatePhysics: () => updatePhysics(world), 
+        applyMovement } = setupScene(document.body);
 
     function animate() {
         requestAnimationFrame(animate);
