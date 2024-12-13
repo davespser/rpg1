@@ -58,7 +58,7 @@ export function setupScene(container) {
         position: { x: 20, y: 20 } 
     });
 
-    const moveSpeed = 2; // Velocidad de movimiento ajustada
+    const moveSpeed = 0.5; // Velocidad de movimiento ajustada
 
     // Funciones de actualización y control
     function updatePhysics() {
