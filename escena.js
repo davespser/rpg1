@@ -1,106 +1,96 @@
-import * as THREE from './modulos/three.module.js';
-import RAPIER from 'https://cdn.skypack.dev/@dimforge/rapier3d-compat@0.12.0';
-import { config } from './config.js';
-import { crearMundoFisico } from './fisicas.js';
-import { crearTerreno } from './terreno.js';
-import { crearCamara } from './camara.js';
-import { crearControles } from './controles.js';
-import { crearUI, actualizarVelocidad } from './ui.js';
-import { iniciarJoystick } from './joystick.js';
-import { crearLuces } from './luces.js';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import RAPIER from '@dimforge/rapier3d-compat';
 
-export async function crearEscena() {
-    // Inicializar RAPIER
-    await RAPIER.init();
-
-    // Crear la escena de Three.js
+export function setupScene(container) {
     const scene = new THREE.Scene();
-    const world = crearMundoFisico(RAPIER);
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.z = 5;
 
-    // Crear luces
-    crearLuces(scene, config.luces.intensidad);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    container.appendChild(renderer.domElement);
 
-    // Crear terreno
-    const { terrenoMesh } = crearTerreno(scene, world);
+    const controls = new OrbitControls(camera, renderer.domElement);
 
-    // Crear cubo visual
-    const cuboGeometry = new THREE.BoxGeometry(1, 1, 1);
-    const cuboMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
-    const cubo = new THREE.Mesh(cuboGeometry, cuboMaterial);
-    cubo.position.set(0, 5, 0);
-    scene.add(cubo);
+    // Luz ambiente y punto de luz
+    const ambientLight = new THREE.AmbientLight(0x404040);
+    scene.add(ambientLight);
 
-    // Crear cuerpo físico del cubo
-    const cuboRigidBody = world.createRigidBody(
-        RAPIER.RigidBodyDesc.dynamic().setTranslation(0, 5.5, 0)
-    );
-    world.createCollider(RAPIER.ColliderDesc.cuboid(0.5, 0.5, 0.5), cuboRigidBody);
+    const pointLight = new THREE.PointLight(0xffffff, 1);
+    pointLight.position.set(5, 5, 5);
+    scene.add(pointLight);
 
-    // Crear cámara y controles
-    const { camera, actualizarCamara } = crearCamara(cubo);
-    const renderer = new THREE.WebGLRenderer({ antialias: config.render.antialias });
-    renderer.setSize(config.render.width, config.render.height);
-    document.body.appendChild(renderer.domElement);
+    // Configuración de Rapier3D
+    const world = new RAPIER.World({ x: 0, y: -9.81, z: 0 });
 
-    const controles = crearControles(camera, renderer);
+    // Crear un suelo
+    const groundColliderDesc = RAPIER.ColliderDesc.cuboid(10, 0.1, 10);
+    world.createCollider(groundColliderDesc);
 
-    // Crear UI y joystick
-    crearUI();
-    const joystick = iniciarJoystick(cubo, scene, camera, renderer);
+    // Crear una caja que se pueda controlar
+    const rigidBodyDesc = RAPIER.RigidBodyDesc.dynamic()
+        .setTranslation(0, 2, 0);
+    const rigidBody = world.createRigidBody(rigidBodyDesc);
+    const colliderDesc = RAPIER.ColliderDesc.cuboid(0.5, 0.5, 0.5);
+    world.createCollider(colliderDesc, rigidBody);
 
-    // Función para mover el cubo usando el joystick
-    function moverCubo() {
-        if (joystick && joystick.active) {
-            const velocidadMaxima = 5; // Velocidad máxima
-            const velocidadX = (joystick.deltaX / joystickRect.width) * velocidadMaxima;
-            const velocidadZ = -(joystick.deltaY / joystickRect.height) * velocidadMaxima;
+    // Visualización con Three.js
+    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+    const cube = new THREE.Mesh(geometry, material);
+    scene.add(cube);
 
-            // Establecer velocidad en el cuerpo físico
-            cuboRigidBody.setLinvel({ x: velocidadX, y: 0, z: velocidadZ }, true);
+    // Control de movimiento
+    const moveSpeed = 5;
+    let moveForward = false;
+    let moveBackward = false;
+    let moveLeft = false;
+    let moveRight = false;
 
-            if (joystick.deltaX !== 0 || joystick.deltaY !== 0) {
-                // Calcular ángulo de rotación
-                const angulo = Math.atan2(velocidadZ, velocidadX);
-                cubo.rotation.y = -angulo; // Ajustar orientación del cubo visual
-            }
+    document.addEventListener('keydown', (event) => {
+        switch (event.code) {
+            case 'ArrowUp':
+            case 'KeyW': moveForward = true; break;
+            case 'ArrowDown':
+            case 'KeyS': moveBackward = true; break;
+            case 'ArrowLeft':
+            case 'KeyA': moveLeft = true; break;
+            case 'ArrowRight':
+            case 'KeyD': moveRight = true; break;
+        }
+    });
+
+    document.addEventListener('keyup', (event) => {
+        switch (event.code) {
+            case 'ArrowUp':
+            case 'KeyW': moveForward = false; break;
+            case 'ArrowDown':
+            case 'KeyS': moveBackward = false; break;
+            case 'ArrowLeft':
+            case 'KeyA': moveLeft = false; break;
+            case 'ArrowRight':
+            case 'KeyD': moveRight = false; break;
+        }
+    });
+
+    function applyMovement() {
+        const force = new RAPIER.Vector3(0, 0, 0);
+        if (moveForward) force.z -= moveSpeed;
+        if (moveBackward) force.z += moveSpeed;
+        if (moveLeft) force.x -= moveSpeed;
+        if (moveRight) force.x += moveSpeed;
+
+        if (force.x !== 0 || force.y !== 0 || force.z !== 0) {
+            rigidBody.applyImpulse(force, true);
         }
     }
 
-    // Función para actualizar la física
     function updatePhysics() {
         world.step();
-
-        // Sincronizar posiciones del cubo visual con su cuerpo físico
-        const cuboPosition = cuboRigidBody.translation();
-        const cuboRotation = cuboRigidBody.rotation();
-
-        cubo.position.set(cuboPosition.x, cuboPosition.y, cuboPosition.z);
-        cubo.quaternion.set(cuboRotation.x, cuboRotation.y, cuboRotation.z, cuboRotation.w);
-
-        // Actualizar la cámara, controles y UI
-        actualizarCamara();
-        controles.update();
-        actualizarVelocidad(cuboRigidBody.linvel().length());
+        const position = rigidBody.translation();
+        cube.position.set(position.x, position.y, position.z);
     }
 
-    // Animación
-    function animate() {
-        requestAnimationFrame(animate);
-        moverCubo();
-        updatePhysics();
-        renderer.render(scene, camera);
-    }
-
-    animate();
-
-    // Retornar los objetos clave de la escena
-    return {
-        scene,
-        camera,
-        renderer,
-        world,
-        cubo,
-        cuboRigidBody,
-        terrenoMesh,
-    };
-        }
+    return { scene, camera, renderer, controls, updatePhysics, applyMovement };
+}
