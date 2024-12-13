@@ -1,3 +1,4 @@
+import RAPIER from '@dimforge/rapier3d-compat';
 import { setupScene } from './escena.js';
 
 RAPIER.init().then(() => {
