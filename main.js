@@ -1,5 +1,4 @@
 import RAPIER from '@dimforge/rapier3d-compat';
-import Joystick from './joystick.js';
 import { setupScene } from './setupScene.js';
 
 RAPIER.init().then(() => {
@@ -7,13 +6,13 @@ RAPIER.init().then(() => {
         camera, 
         renderer, 
         controls, 
-        updatePhysics: () => updatePhysics(world), 
+        updatePhysics, 
         applyMovement } = setupScene(document.body);
 
     function animate() {
         requestAnimationFrame(animate);
-        updatePhysics();
-        applyMovement(); // Asegúrate de que esta función se ejecuta para aplicar el movimiento del joystick
+        updatePhysics(); // Llama a updatePhysics sin argumentos, ya que en setupScene es una función sin parámetros
+        applyMovement();
         controls.update();
         renderer.render(scene, camera);
     }
