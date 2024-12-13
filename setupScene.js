@@ -56,7 +56,7 @@ export function setupScene(container) {
         position: { x: 20, y: 20 } 
     });
 
-    const moveSpeed = 0.5; // Velocidad de movimiento ajustada
+    const moveSpeed = 0.2; // Velocidad de movimiento ajustada
 
     // Funciones de actualización y control
     function updatePhysics() {
@@ -67,7 +67,7 @@ export function setupScene(container) {
 
     function applyMovement() {
         const { x, y } = joystick.getPosition();
-        const force = new RAPIER.Vector3(x * (moveSpeed/2), 0, -y * (moveSpeed/2));
+        const force = new RAPIER.Vector3(-x * (moveSpeed/2), 0, y * (moveSpeed/2));
         rigidBody.applyImpulse(force, true);
     }
 
