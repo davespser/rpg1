@@ -1,24 +1,25 @@
 import RAPIER from '@dimforge/rapier3d-compat';
-import { createNoise2D } from 'simplex-noise';
 
 function createWorld() {
-    const world = new RAPIER.World({ x: 0, y: -9.81, z: 0 }); // Gravity downwards on the Y-axis
-    createTerrain(world, 100, 50); // Create terrain with size 100x100 and 50x50 subdivisions
+    const world = new RAPIER.World({ x: 0, y: -9.81, z: 0 });
+    createTerrain(world);
     return world;
 }
 
-function createTerrain(world, size, subdivisions) {
-    const heights = new Float32Array((subdivisions + 1) * (subdivisions + 1));
-    const noise = createNoise2D();
+function createTerrain(world) {
+    // Using a smaller grid for simplicity
+    const subdivisions = 5;
+    const size = 10;
 
+    // Create a simple, flat heightfield
+    const heights = new Float32Array((subdivisions + 1) * (subdivisions + 1));
     for (let z = 0; z <= subdivisions; z++) {
         for (let x = 0; x <= subdivisions; x++) {
-            const noiseValue = noise(x / 10, z / 10) * 5; // Adjust these parameters for the terrain you want
-            heights[z * (subdivisions + 1) + x] = noiseValue;
+            heights[z * (subdivisions + 1) + x] = 0; // Flat terrain
         }
     }
 
-    const scale = new RAPIER.Vector3(size, 1, size); // Scale the terrain appropriately
+    const scale = new RAPIER.Vector3(size, 1, size);
     console.log('Subdivisions:', subdivisions);
     console.log('Heights array:', heights);
     console.log('Terrain scale:', scale);
