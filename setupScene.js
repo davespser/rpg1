@@ -6,9 +6,11 @@ import RAPIER from '@dimforge/rapier3d-compat';
 import Joystick from './joystick.js';
 import { createWorld, createTerrain, createDynamicBody, updatePhysics } from './physics.js';
 import { createNoise2D } from 'simplex-noise';
+
 export function setupScene(container) {
     let lastTime = performance.now();
-    // Configuración de Three.js
+    
+    // Three.js Setup
     const scene = new THREE.Scene();
     const { camera, onWindowResize } = setupCamera(container);
 
@@ -18,30 +20,30 @@ export function setupScene(container) {
 
     const controls = new OrbitControls(camera, renderer.domElement);
 
-    // Añadir iluminación
+    // Add lighting
     crearLuces(scene);
 
-    // Crear el mundo físico
+    // Create the physics world
     const world = createWorld();
 
-    // Crear el terreno en el mundo físico
-    const terrainSize = 100; // tamaño del terreno
-    const terrainSubdivisions = 50; // subdivisiones del terreno
+    // Create physical terrain
+    const terrainSize = 100; // size of the terrain
+    const terrainSubdivisions = 50; // terrain subdivisions
     createTerrain(world, terrainSize, terrainSubdivisions);
 
-    // Crear una caja
+    // Create a dynamic body (cube)
     const cubeSize = { x: 1, y: 1, z: 1 };
-    const cubePosition = { x: 0, y: 10, z: 0 }; // Asegúrate de que esté por encima del terreno
+    const cubePosition = { x: 0, y: 10, z: 0 }; // Ensure it's above the terrain
     const rigidBody = createDynamicBody(world, cubePosition, cubeSize);
 
-    // Visualización con Three.js
+    // Visual representation of the cube
     const cubeGeometry = new THREE.BoxGeometry(cubeSize.x, cubeSize.y, cubeSize.z);
     const cubeMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
     const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
     cube.position.set(cubePosition.x, cubePosition.y, cubePosition.z);
     scene.add(cube);
 
-    // Crear el terreno visual correspondiente al terreno físico
+    // Generate visual terrain matching the physical terrain
     function generateTerrainGeometry(width, height, subdivisions) {
         const geometry = new THREE.PlaneGeometry(width, height, subdivisions, subdivisions);
         const noise = createNoise2D();
@@ -50,20 +52,20 @@ export function setupScene(container) {
         for (let i = 0; i < vertices.length; i += 3) {
             const x = vertices[i];
             const z = vertices[i + 2];
-            vertices[i + 1] = noise(x / 10, z / 10) * 5; // Y coord, ajusta estos valores para modificar la altura
+            vertices[i + 1] = noise(x / 10, z / 10) * 5; // Y coord, adjust these values for height modification
         }
 
-        geometry.computeVertexNormals(); // Necesario para la iluminación
+        geometry.computeVertexNormals(); // Needed for lighting
         return geometry;
     }
 
     const terrainGeometry = generateTerrainGeometry(terrainSize, terrainSize, terrainSubdivisions);
     const terrainMaterial = new THREE.MeshStandardMaterial({ color: 0x8B4513, wireframe: false });
     const terrainMesh = new THREE.Mesh(terrainGeometry, terrainMaterial);
-    terrainMesh.rotation.x = -Math.PI / 2; // Girar para que esté horizontal
+    terrainMesh.rotation.x = -Math.PI / 2; // Rotate so it's horizontal
     scene.add(terrainMesh);
 
-    // Crear y configurar el joystick
+    // Create and configure joystick
     const joystick = new Joystick({
         container: document.body, 
         radius: 100, 
@@ -71,15 +73,16 @@ export function setupScene(container) {
         position: { x: 20, y: 20 } 
     });
 
-    const moveSpeed = 0.2; // Velocidad de movimiento ajustada
+    const moveSpeed = 0.2; // Adjusted movement speed
 
-    // Funciones de actualización y control
+    // Update and control functions
     function updatePhysics(deltaTime) {
-    const now = performance.now();
-    lastTime = now;
-    updatePhysics(world, deltaTime); // Llamar a la función de Rapier para actualizar la física
-    const position = rigidBody.translation();
-    cube.position.set(position.x, position.y, position.z);
+        const now = performance.now();
+        const delta = (now - lastTime) / 1000; // Convert to seconds
+        lastTime = now;
+        updatePhysics(world, delta); // Call Rapier's update function
+        const position = rigidBody.translation();
+        cube.position.set(position.x, position.y, position.z);
     }
 
     function applyMovement() {
@@ -88,14 +91,14 @@ export function setupScene(container) {
         rigidBody.applyImpulse(force, true);
     }
 
-    // Ajuste de la cámara al redimensionar la ventana
+    // Adjust camera on window resize
     window.addEventListener('resize', () => {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
     }, false);
 
-    // Retorno de todas las partes necesarias para interacción y renderizado
+    // Return all necessary parts for interaction and rendering
     return { 
         scene, 
         camera, 
@@ -104,4 +107,4 @@ export function setupScene(container) {
         updatePhysics,
         applyMovement
     };
-                                               }
+}
