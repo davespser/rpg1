@@ -41,6 +41,39 @@ export function setupScene(container) {
     const cube = new THREE.Mesh(geometry, material);
     scene.add(cube);
 
+    // Lógica de movimiento
+    const moveSpeed = 5;
+    let moveForward = false;
+    let moveBackward = false;
+    let moveLeft = false;
+    let moveRight = false;
+
+    document.addEventListener('keydown', (event) => {
+        switch (event.code) {
+            case 'ArrowUp':
+            case 'KeyW': moveForward = true; break;
+            case 'ArrowDown':
+            case 'KeyS': moveBackward = true; break;
+            case 'ArrowLeft':
+            case 'KeyA': moveLeft = true; break;
+            case 'ArrowRight':
+            case 'KeyD': moveRight = true; break;
+        }
+    });
+
+    document.addEventListener('keyup', (event) => {
+        switch (event.code) {
+            case 'ArrowUp':
+            case 'KeyW': moveForward = false; break;
+            case 'ArrowDown':
+            case 'KeyS': moveBackward = false; break;
+            case 'ArrowLeft':
+            case 'KeyA': moveLeft = false; break;
+            case 'ArrowRight':
+            case 'KeyD': moveRight = false; break;
+        }
+    });
+
     // Funciones de actualización y control
     function updatePhysics() {
         world.step();
@@ -49,11 +82,15 @@ export function setupScene(container) {
     }
 
     function applyMovement() {
-        // Aquí va la lógica para aplicar movimiento al cubo basado en inputs
-        // Ejemplo con teclado:
-        // let moveSpeed = 5;
-        // if (keyW) rigidBody.applyImpulse(new RAPIER.Vector3(0, 0, -moveSpeed), true);
-        // ...
+        let force = new RAPIER.Vector3(0, 0, 0);
+        if (moveForward) force.z -= moveSpeed;
+        if (moveBackward) force.z += moveSpeed;
+        if (moveLeft) force.x -= moveSpeed;
+        if (moveRight) force.x += moveSpeed;
+
+        if (force.x !== 0 || force.y !== 0 || force.z !== 0) {
+            rigidBody.applyImpulse(force, true);
+        }
     }
 
     // Retorno de todas las partes necesarias para interacción y renderizado
