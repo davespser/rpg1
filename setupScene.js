@@ -1,12 +1,14 @@
 import * as THREE from './modulos/three.module.js';
 import { OrbitControls } from './modulos/OrbitControls.js';
 import RAPIER from '@dimforge/rapier3d-compat';
+import Joystick from './joystick.js'; // Asegúrate de que la ruta es correcta
 
 export function setupScene(container) {
     // Configuración de Three.js
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 5;
+    camera.position.set(0, 5, 5);
+    camera.lookAt(0, 0, 0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -41,37 +43,16 @@ export function setupScene(container) {
     const cube = new THREE.Mesh(geometry, material);
     scene.add(cube);
 
-    // Lógica de movimiento
+    // Lógica de movimiento con Joystick
     const moveSpeed = 5;
-    let moveForward = false;
-    let moveBackward = false;
-    let moveLeft = false;
-    let moveRight = false;
+    let joystickX = 0, joystickY = 0;
 
-    document.addEventListener('keydown', (event) => {
-        switch (event.code) {
-            case 'ArrowUp':
-            case 'KeyW': moveForward = true; break;
-            case 'ArrowDown':
-            case 'KeyS': moveBackward = true; break;
-            case 'ArrowLeft':
-            case 'KeyA': moveLeft = true; break;
-            case 'ArrowRight':
-            case 'KeyD': moveRight = true; break;
-        }
-    });
-
-    document.addEventListener('keyup', (event) => {
-        switch (event.code) {
-            case 'ArrowUp':
-            case 'KeyW': moveForward = false; break;
-            case 'ArrowDown':
-            case 'KeyS': moveBackward = false; break;
-            case 'ArrowLeft':
-            case 'KeyA': moveLeft = false; break;
-            case 'ArrowRight':
-            case 'KeyD': moveRight = false; break;
-        }
+    // Crear y configurar el joystick
+    const joystick = new Joystick({
+        container: document.body, // Asegúrate de que el contenedor es correcto
+        radius: 100, // Ajusta según tus necesidades
+        innerRadius: 50,
+        position: { x: 20, y: 20 } // Posición en la pantalla
     });
 
     // Funciones de actualización y control
@@ -82,16 +63,17 @@ export function setupScene(container) {
     }
 
     function applyMovement() {
-        let force = new RAPIER.Vector3(0, 0, 0);
-        if (moveForward) force.z -= moveSpeed;
-        if (moveBackward) force.z += moveSpeed;
-        if (moveLeft) force.x -= moveSpeed;
-        if (moveRight) force.x += moveSpeed;
-
-        if (force.x !== 0 || force.y !== 0 || force.z !== 0) {
-            rigidBody.applyImpulse(force, true);
-        }
+        const { x, y } = joystick.getPosition();
+        const force = new RAPIER.Vector3(x * moveSpeed, 0, -y * moveSpeed);
+        rigidBody.applyImpulse(force, true);
     }
+
+    // Ajuste de la cámara al redimensionar la ventana
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    }, false);
 
     // Retorno de todas las partes necesarias para interacción y renderizado
     return { scene, camera, renderer, controls, updatePhysics, applyMovement };
