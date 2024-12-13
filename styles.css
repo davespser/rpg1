@@ -1,7 +1,22 @@
+body {
+    margin: 0;
+    overflow: hidden;
+}
 
-/* Asegurar que el lienzo de Three.js ocupe toda la pantalla */
-body { margin: 0; overflow: hidden; }
-canvas { width: 100%; height: 100%; display: block; }
-#joystick { position: absolute; bottom: 20px; left: 20px; } /* Ajusta según necesidad */
-/* Estilo del área del joystick */
+#gameCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
 
+#joystick {
+    position: absolute;
+    bottom: 10px; /* Ajusta según necesites */
+    left: 10px; /* Ajusta según necesites */
+    width: 100px; /* Ajusta según necesites */
+    height: 100px; /* Ajusta según necesites */
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo para el joystick si es necesario */
+}
