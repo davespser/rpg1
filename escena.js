@@ -1,4 +1,4 @@
-import * as THREE from './modulos/three.modules.js';
+import * as THREE from './modulos/three.module.js';
 import { OrbitControls } from './modulos/OrbitControls.js';
 import RAPIER from '@dimforge/rapier3d-compat';
 
