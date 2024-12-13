@@ -83,7 +83,7 @@ export function setupScene(container) {
         scene, 
         camera, 
         renderer, 
-        controls
+        controls,
         updatePhysics: () => updatePhysics(), // Corregido para que coincida con la firma en physics.js
         applyMovement 
     };
