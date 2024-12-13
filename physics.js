@@ -1,5 +1,5 @@
 import RAPIER from '@dimforge/rapier3d-compat';
-import { SimplexNoise } from './modulos/simplex-noise.js';
+import { createNoise2D } from './modulos/simplex-noise.js';
 const noise = new SimplexNoise();
 // Luego usa noise.noise2D(x, y) en lugar de createNoise2D()
 function createWorld() {
