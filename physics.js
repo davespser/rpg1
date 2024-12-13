@@ -31,8 +31,8 @@ function createDynamicBody(world, position, size) {
     return rigidBody;
 }
 
-function updatePhysics(world) {
-    world.step();
+function updatePhysics(world, deltaTime) {
+    world.step(deltaTime);
 }
 
 // Nota: La función `addGround` se ha eliminado ya que ahora usamos `createTerrain` para generar el suelo.
