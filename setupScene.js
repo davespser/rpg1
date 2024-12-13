@@ -74,5 +74,12 @@ export function setupScene(container) {
     }, false);
 
     // Retorno de todas las partes necesarias para interacción y renderizado
-    return { scene, camera, renderer, controls, updatePhysics, applyMovement };
+    return { 
+        scene, 
+        camera, 
+        renderer, 
+        controls, 
+        updatePhysics: () => updatePhysics(world), 
+        applyMovement 
+    };
 }
