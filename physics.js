@@ -12,17 +12,19 @@ function createTerrain(world, size, subdivisions) {
     const noise = createNoise2D();
 
     for (let z = 0; z <= subdivisions; z++) {
-        for (let x = 0; x <= subdivisions; x++) {
-            const noiseValue = noise(x / 10, z / 10) * 5; // Adjust noise frequency and amplitude as needed
-            heights[z * (subdivisions + 1) + x] = noiseValue;
-            console.log('Subdivisions:', subdivisions);
+    for (let x = 0; x <= subdivisions; x++) {
+        const noiseValue = noise(x / 10, z / 10) * 5; // Ajusta estos parámetros para el terreno que deseas
+        heights[z * (subdivisions + 1) + x] = noiseValue;
+    }
+    }
+    console.log('Subdivisions:', subdivisions);
 console.log('Heights array:', heights);
 console.log('Scale:', scale);
             // Correct indexing for 2D array in 1D Float32Array
             // You can uncomment the next line if you need to see each noise value
             // console.log(`Height at (${x}, ${z}):`, noiseValue);
         }
-    }
+    
 const heightfield = RAPIER.ColliderDesc.heightfield(subdivisions + 1, subdivisions + 1, heights, scale);
     const scale = new RAPIER.Vector3(size, 1, size); // Scale the terrain appropriately
     console.log('Terrain scale:', scale);
