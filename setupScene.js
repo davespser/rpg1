@@ -1,13 +1,15 @@
- import * as THREE from './modulos/three.module.js';
+import * as THREE from './modulos/three.module.js';
 import { OrbitControls } from './modulos/OrbitControls.js';
 import { setupCamera } from './camera.js';
 import { crearLuces } from './luces.js';
 import RAPIER from '@dimforge/rapier3d-compat';
 import Joystick from './joystick.js';
-import { createWorld, addTerrain, createDynamicBody, updatePhysics } from './physics.js';
+import { createWorld, createTerrain, createDynamicBody, updatePhysics } from './physics.js';
+import { createNoise2D } from 'simplex-noise';
+
 export function setupScene(container) {
     let lastTime = performance.now();
- // Configuración de Three.js
+    // Configuración de Three.js
     const scene = new THREE.Scene();
     const { camera, onWindowResize } = setupCamera(container);
 
@@ -19,14 +21,18 @@ export function setupScene(container) {
 
     // Añadir iluminación
     crearLuces(scene);
-    
+
+    // Crear el mundo físico
     const world = createWorld();
 
-addTerrain(world);
+    // Crear el terreno en el mundo físico
+    const terrainSize = 100; // tamaño del terreno
+    const terrainSubdivisions = 50; // subdivisiones del terreno
+    createTerrain(world, terrainSize, terrainSubdivisions);
 
     // Crear una caja
     const cubeSize = { x: 1, y: 1, z: 1 };
-    const cubePosition = { x: 0, y: 2, z: 0 };
+    const cubePosition = { x: 0, y: 10, z: 0 }; // Asegúrate de que esté por encima del terreno
     const rigidBody = createDynamicBody(world, cubePosition, cubeSize);
 
     // Visualización con Three.js
@@ -36,12 +42,27 @@ addTerrain(world);
     cube.position.set(cubePosition.x, cubePosition.y, cubePosition.z);
     scene.add(cube);
 
-    // Crear el suelo visual y añadirle material
-    const groundGeometry = new THREE.BoxGeometry(20, 0.2, 20); // Ajusta las dimensiones según necesites
-    const groundMaterial = new THREE.MeshStandardMaterial({ color: 0x8B4513 });
-    const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
-    groundMesh.position.set(0, -0.1, 0); // Posiciona el suelo justo debajo del cubo
-    scene.add(groundMesh);
+    // Crear el terreno visual correspondiente al terreno físico
+    function generateTerrainGeometry(width, height, subdivisions) {
+        const geometry = new THREE.PlaneGeometry(width, height, subdivisions, subdivisions);
+        const noise = createNoise2D();
+        const vertices = geometry.getAttribute('position').array;
+
+        for (let i = 0; i < vertices.length; i += 3) {
+            const x = vertices[i];
+            const z = vertices[i + 2];
+            vertices[i + 1] = noise(x / 10, z / 10) * 5; // Y coord, ajusta estos valores para modificar la altura
+        }
+
+        geometry.computeVertexNormals(); // Necesario para la iluminación
+        return geometry;
+    }
+
+    const terrainGeometry = generateTerrainGeometry(terrainSize, terrainSize, terrainSubdivisions);
+    const terrainMaterial = new THREE.MeshStandardMaterial({ color: 0x8B4513, wireframe: false });
+    const terrainMesh = new THREE.Mesh(terrainGeometry, terrainMaterial);
+    terrainMesh.rotation.x = -Math.PI / 2; // Girar para que esté horizontal
+    scene.add(terrainMesh);
 
     // Crear y configurar el joystick
     const joystick = new Joystick({
@@ -58,7 +79,7 @@ addTerrain(world);
         const now = performance.now();
         const deltaTime = (now - lastTime) / 1000; // Convertir a segundos
         lastTime = now;
-        world.step(deltaTime); // Usar deltaTime para una simulación más precisa
+        updatePhysics(world); // Llamar a la función de Rapier para actualizar la física
         const position = rigidBody.translation();
         cube.position.set(position.x, position.y, position.z);
     }
@@ -82,7 +103,7 @@ addTerrain(world);
         camera, 
         renderer, 
         controls,
-        updatePhysics, // Ahora usa deltaTime para una actualización más precisa
+        updatePhysics,
         applyMovement
     };
-}
+                                               }
