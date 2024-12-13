@@ -156,7 +156,7 @@ function createNoise2D(random = Math.random) {
         return 70.0 * (n0 + n1 + n2);
     };
 }
-exports.createNoise2D = createNoise2D;
+export { createNoise2D };
 /**
  * Creates a 3D noise function
  * @param random the random function that will be used to build the permutation table
