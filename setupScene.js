@@ -21,7 +21,14 @@ export function setupScene(container) {
     crearLuces(scene);
     
     const world = createWorld();
-    addGround(world);
+addTerrain(world); // Agregar terreno geométrico
+createDynamicBody(world, { x: 0, y: 5, z: 0 }, { x: 1, y: 1, z: 1 }); // Crear un objeto dinámico
+
+function animate() {
+    updatePhysics(world);
+    requestAnimationFrame(animate);
+}
+animate();
 
     // Crear una caja
     const cubeSize = { x: 1, y: 1, z: 1 };
