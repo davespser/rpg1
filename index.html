@@ -6,13 +6,14 @@
     <title>Proyecto con Three.js y Rapier</title>
     <link rel="stylesheet" href="./styles.css">
     
-    <!-- Import Map para usar Three.js y Rapier desde archivos locales -->
+    <!-- Import Map para usar Three.js, Rapier y Simplex Noise desde archivos locales o CDN -->
     <script type="importmap">
     {
         "imports": {
             "three": "./modulos/three.module.js",
             "three/examples/jsm/": "./modulos/",
-            "@dimforge/rapier3d-compat": "https://cdn.skypack.dev/@dimforge/rapier3d-compat@0.12.0"
+            "@dimforge/rapier3d-compat": "https://cdn.skypack.dev/@dimforge/rapier3d-compat@0.12.0",
+            "simplex-noise": "https://cdn.skypack.dev/simplex-noise@3.0.0"
         }
     }
     </script>
