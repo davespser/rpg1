@@ -1,5 +1,5 @@
 import RAPIER from '@dimforge/rapier3d-compat';
-import { createNoise2D } from './modules/simplex-noise.js';
+import { createNoise2D } from './modulos/simplex-noise.js';
 
 function createWorld() {
     const world = new RAPIER.World({ x: 0, y: -9.81, z: 0 }); // Gravedad hacia abajo en el eje Y
