@@ -4,10 +4,10 @@ import { setupCamera } from './camera.js';
 import { crearLuces } from './luces.js';
 import RAPIER from '@dimforge/rapier3d-compat';
 import Joystick from './joystick.js';
-import { createWorld, addTerrain, createDynamicBody, updatePhysics} from './physics.js';
-
+import { createWorld, addTerrain, createDynamicBody, updatePhysics } from './physics.js';
 export function setupScene(container) {
-    // Configuración de Three.js
+    let lastTime = performance.now();
+ // Configuración de Three.js
     const scene = new THREE.Scene();
     const { camera, onWindowResize } = setupCamera(container);
 
@@ -55,7 +55,10 @@ addTerrain(world); // Agregar terreno geométrico
 
     // Funciones de actualización y control
     function updatePhysics() {
-        world.step();
+        const now = performance.now();
+        const deltaTime = (now - lastTime) / 1000; // Convertir a segundos
+        lastTime = now;
+        world.step(deltaTime); // Usar deltaTime para una simulación más precisa
         const position = rigidBody.translation();
         cube.position.set(position.x, position.y, position.z);
     }
@@ -79,7 +82,7 @@ addTerrain(world); // Agregar terreno geométrico
         camera, 
         renderer, 
         controls,
-        updatePhysics: () => updatePhysics(), // Corregido para que coincida con la firma en physics.js
-        applyMovement 
+        updatePhysics, // Ahora usa deltaTime para una actualización más precisa
+        applyMovement
     };
 }
