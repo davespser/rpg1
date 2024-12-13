@@ -14,17 +14,21 @@ function createTerrain(world, size, subdivisions) {
     for (let z = 0; z <= subdivisions; z++) {
         for (let x = 0; x <= subdivisions; x++) {
             const noiseValue = noise(x / 10, z / 10) * 5; // Adjust noise frequency and amplitude as needed
-            heights[z * (subdivisions + 1) + x] = noiseValue; // Correct indexing for 2D array in 1D Float32Array
+            heights[z * (subdivisions + 1) + x] = noiseValue;
+            console.log('Subdivisions:', subdivisions);
+console.log('Heights array:', heights);
+console.log('Scale:', scale);
+            // Correct indexing for 2D array in 1D Float32Array
             // You can uncomment the next line if you need to see each noise value
             // console.log(`Height at (${x}, ${z}):`, noiseValue);
         }
     }
-
+const heightfield = RAPIER.ColliderDesc.heightfield(subdivisions + 1, subdivisions + 1, heights, scale);
     const scale = new RAPIER.Vector3(size, 1, size); // Scale the terrain appropriately
     console.log('Terrain scale:', scale);
     
     // Create collider for heightfield
-    const heightfield = RAPIER.ColliderDesc.heightfield(subdivisions + 1, subdivisions + 1, heights, scale);
+    
     world.createCollider(heightfield);
 }
 
@@ -34,6 +38,11 @@ function createDynamicBody(world, position, size) {
     const rigidBody = world.createRigidBody(rigidBodyDesc);
     const colliderDesc = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2);
     world.createCollider(colliderDesc, rigidBody);
+    try {
+    world.createCollider(heightfield);
+} catch (error) {
+    console.error('Error creating collider:', error);
+    }
     return rigidBody;
 }
 
