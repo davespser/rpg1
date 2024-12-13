@@ -21,8 +21,8 @@ export function setupScene(container) {
     crearLuces(scene);
     
     const world = createWorld();
-addTerrain(world); // Agregar terreno geométrico
 
+addTerrain(world);
 
     // Crear una caja
     const cubeSize = { x: 1, y: 1, z: 1 };
