@@ -1,7 +1,11 @@
 import RAPIER from '@dimforge/rapier3d-compat';
-import { setupScene } from './escena.js';
 import Joystick from './joystick.js';
+import { setupScene } from './setupScene.js';
 
+RAPIER.init().then(() => {
+    const { scene, camera, renderer, controls, updatePhysics, applyMovement } = setupScene(document.body);
+    // ... resto del código
+});
 let joystick = new Joystick({
     container: document.body, // O donde quieras que aparezca el joystick
     radius: 100, // Tamaño del área de control
