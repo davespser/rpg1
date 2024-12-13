@@ -1,39 +1,13 @@
-// Archivo: camara.js
-import * as THREE from 'three';
+// camera.js
 
-export function crearCamara(objetoSeguido) {
-    // Crear una cámara de perspectiva
-    const camera = new THREE.PerspectiveCamera(
-        75, // Campo de visión (FOV)
-        window.innerWidth / window.innerHeight, // Relación de aspecto
-        0.1, // Plano cercano
-        1000 // Plano lejano
-    );
+import * as THREE from './modulos/three.module.js';
 
-    // Posición inicial de la cámara (detrás y ligeramente arriba del objeto)
-    camera.position.set(0, 10, -10);
+export function setupCamera(container) {
+    // Configuración inicial de la cámara
+    const camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 10, 10);
+    camera.lookAt(0, 0, 0);
 
-    // Función para actualizar la posición de la cámara para seguir al objeto
-    function actualizarCamara() {
-        if (
-            objetoSeguido &&
-            objetoSeguido.position &&
-            objetoSeguido.position instanceof THREE.Vector3
-        ) {
-            // Interpolar hacia la posición deseada detrás del objeto
-            const nuevaPosicion = objetoSeguido.position
-                .clone()
-                .add(new THREE.Vector3(0, 20, 10)); // Ajustar la distancia y altura
-            camera.position.lerp(nuevaPosicion, 0.1);
-
-            // Hacer que la cámara mire hacia el objeto
-            camera.lookAt(objetoSeguido.position);
-        } else {
-            console.error(
-                'El objeto seguido no tiene una propiedad position válida o no es un objeto de THREE.Vector3'
-            );
-        }
-    }
-
-    return { camera, actualizarCamara };
-}
+    // Función para ajustar la cámara al redimensionar la ventana
+    const onWindowResize = () => {
+        camera.as
