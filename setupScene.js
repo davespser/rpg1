@@ -1,6 +1,7 @@
  import * as THREE from './modulos/three.module.js';
 import { OrbitControls } from './modulos/OrbitControls.js';
 import { setupCamera } from './camera.js';
+import { crearLuces } from './luces.js';
 import RAPIER from '@dimforge/rapier3d-compat';
 import Joystick from './joystick.js';
 import { createWorld, addGround, createDynamicBody, updatePhysics } from './physics.js';
@@ -17,14 +18,8 @@ export function setupScene(container) {
     const controls = new OrbitControls(camera, renderer.domElement);
 
     // Añadir iluminación
-    const ambientLight = new THREE.AmbientLight(0x404040);
-    scene.add(ambientLight);
-
-    const pointLight = new THREE.PointLight(0xffffff, 1);
-    pointLight.position.set(5, 5, 5);
-    scene.add(pointLight);
-
-    // Configuración de Rapier3D
+    crearLuces(scene);
+    
     const world = createWorld();
     addGround(world);
 
