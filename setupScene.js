@@ -69,7 +69,7 @@ export function setupScene(container) {
 
     function applyMovement() {
         const { x, y } = joystick.getPosition();
-        const force = new RAPIER.Vector3(x * moveSpeed, 0, -y * moveSpeed);
+        const force = new RAPIER.Vector3(x * (moveSpeed/2), 0, -y * (moveSpeed/2));
         rigidBody.applyImpulse(force, true);
     }
 
