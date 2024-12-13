@@ -1,13 +1,25 @@
 import RAPIER from '@dimforge/rapier3d-compat';
- // Variable para almacenar el módulo RAPIER después de la inicialización
+import { createNoise2D } from 'simplex-noise';
 
 function createWorld() {
-    return new RAPIER.World({ x: 0, y: -9.81, z: 0 }); // Gravedad hacia abajo en el eje Y
+    const world = new RAPIER.World({ x: 0, y: -9.81, z: 0 }); // Gravedad hacia abajo en el eje Y
+    createTerrain(world, 100, 50); // Crear terreno con tamaño 100x100 y 50x50 subdivisiones
+    return world;
 }
 
-function addGround(world) {
-    const groundColliderDesc = RAPIER.ColliderDesc.cuboid(10, 0.1, 10);
-    world.createCollider(groundColliderDesc);
+function createTerrain(world, size, subdivisions) {
+    const heights = []; // Arreglo para almacenar las alturas
+    const noise = createNoise2D();
+    
+    for (let z = 0; z <= subdivisions; z++) {
+        for (let x = 0; x <= subdivisions; x++) {
+            heights.push(noise(x / 10, z / 10) * 5); // Ajusta la escala aquí
+        }
+    }
+
+    const scale = new RAPIER.Vector3(size, 1, size); // Tamaño del terreno en XZ, altura en Y
+    const heightfield = RAPIER.ColliderDesc.heightfield(subdivisions + 1, subdivisions + 1, heights, scale);
+    world.createCollider(heightfield);
 }
 
 function createDynamicBody(world, position, size) {
@@ -23,4 +35,6 @@ function updatePhysics(world) {
     world.step();
 }
 
-export { createWorld, addGround, createDynamicBody, updatePhysics };
+// Nota: La función `addGround` se ha eliminado ya que ahora usamos `createTerrain` para generar el suelo.
+
+export { createWorld, createDynamicBody, updatePhysics, createTerrain };
