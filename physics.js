@@ -8,16 +8,21 @@ function createWorld() {
 }
 
 function createTerrain(world, size, subdivisions) {
-    const heights = []; // Arreglo para almacenar las alturas
+    const heights = [];
     const noise = createNoise2D();
-    
+
     for (let z = 0; z <= subdivisions; z++) {
         for (let x = 0; x <= subdivisions; x++) {
-            heights.push(noise(x / 10, z / 10) * 5); // Ajusta la escala aquí
+            const noiseValue = noise(x / 10, z / 10) * 5;
+            heights.push(noiseValue);
+            // Puedes descomentar la siguiente línea si necesitas ver cada valor de ruido
+            // console.log(`Height at (${x}, ${z}):`, noiseValue);
         }
     }
 
-    const scale = new RAPIER.Vector3(size, 1, size); // Tamaño del terreno en XZ, altura en Y
+    const scale = new RAPIER.Vector3(size, 1, size);
+    console.log('Terrain scale:', scale);
+    
     const heightfield = RAPIER.ColliderDesc.heightfield(subdivisions + 1, subdivisions + 1, heights, scale);
     world.createCollider(heightfield);
 }
