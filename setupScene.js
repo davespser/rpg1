@@ -4,7 +4,7 @@ import { setupCamera } from './camera.js';
 import { crearLuces } from './luces.js';
 import RAPIER from '@dimforge/rapier3d-compat';
 import Joystick from './joystick.js';
-import { createWorld, addGround, createDynamicBody, updatePhysics } from './physics.js';
+import { createWorld, addTerrain, createDynamicBody, updatePhysics} from './physics.js';
 
 export function setupScene(container) {
     // Configuración de Three.js
