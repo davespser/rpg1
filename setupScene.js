@@ -1,6 +1,6 @@
  import * as THREE from './modulos/three.module.js';
 import { OrbitControls } from './modulos/OrbitControls.js';
-import setupCamera from './camera.js';
+import { setupCamera } from './camera.js';
 import RAPIER from '@dimforge/rapier3d-compat';
 import Joystick from './joystick.js';
 import { createWorld, addGround, createDynamicBody, updatePhysics } from './physics.js';
@@ -8,7 +8,7 @@ import { createWorld, addGround, createDynamicBody, updatePhysics } from './phys
 export function setupScene(container) {
     // Configuración de Three.js
     const scene = new THREE.Scene();
-    const { camera, actualizarCamara } = crearCamara();
+    const { camera, onWindowResize } = setupCamera(container);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
