@@ -75,13 +75,12 @@ export function setupScene(container) {
     const moveSpeed = 0.2; // Velocidad de movimiento ajustada
 
     // Funciones de actualización y control
-    function updatePhysics() {
-        const now = performance.now();
-        const deltaTime = (now - lastTime) / 1000; // Convertir a segundos
-        lastTime = now;
-        updatePhysics(world); // Llamar a la función de Rapier para actualizar la física
-        const position = rigidBody.translation();
-        cube.position.set(position.x, position.y, position.z);
+    function updatePhysics(deltaTime) {
+    const now = performance.now();
+    lastTime = now;
+    updatePhysics(world, deltaTime); // Llamar a la función de Rapier para actualizar la física
+    const position = rigidBody.translation();
+    cube.position.set(position.x, position.y, position.z);
     }
 
     function applyMovement() {
