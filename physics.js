@@ -17,17 +17,18 @@ function addTerrain(world) {
     const width = 10;
     const depth = 10;
 
-    // Alturas del terreno (puedes generar dinámicamente o usar ruido)
-    // Aquí estamos usando un ejemplo simple, pero en producción podrías usar un generador de terreno.
-    const heights = Array.from({ length: width * depth }, (_, index) => {
-        const x = index % width;
-        const z = Math.floor(index / width);
-        return Math.sin(x / 3) * Math.cos(z / 3) * 2; // Ejemplo simple de altura sinusoidal
-    });
+    // Alturas del terreno 
+    // Usamos una función para generar alturas que aseguremos que cada valor es un número válido
+    const heights = new Array(width * depth).fill(0).map(() => Math.random() * 5); // Genera alturas aleatorias entre 0 y 5
+
+    // Validación de que 'heights' tiene la longitud correcta
+    if (heights.length !== width * depth) {
+        throw new Error(`Heights array should have ${width * depth} elements but has ${heights.length}`);
+    }
 
     const scale = { x: 1, y: 1, z: 1 }; // Escala del terreno
     const terrainColliderDesc = RAPIER.ColliderDesc.heightfield(
-        heights,
+        new Float32Array(heights), // Convertimos heights a un Float32Array ya que RAPIER espera un TypedArray
         width,
         depth,
         scale
@@ -61,7 +62,6 @@ function createDynamicBody(world, position, size) {
 // Actualización del mundo físico
 function updatePhysics(world, deltaTime = 1 / 60) {
     try {
-        // Usamos un deltaTime por defecto de 1/60 de segundo, que es común para simulaciones a 60 FPS
         world.step(deltaTime);
     } catch (error) {
         console.error('Error updating physics world:', error);
