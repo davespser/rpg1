@@ -1,5 +1,7 @@
 // camera.js
 
+// camera.js
+
 import * as THREE from './modulos/three.module.js';
 
 export function setupCamera(container) {
@@ -10,4 +12,12 @@ export function setupCamera(container) {
 
     // Función para ajustar la cámara al redimensionar la ventana
     const onWindowResize = () => {
-        camera.as
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+    };
+
+    // Añadir el evento de redimensionamiento al contenedor o ventana
+    window.addEventListener('resize', onWindowResize, false);
+
+    return { camera, onWindowResize };
+}
