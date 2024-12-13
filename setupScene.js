@@ -1,6 +1,6 @@
  import * as THREE from './modulos/three.module.js';
 import { OrbitControls } from './modulos/OrbitControls.js';
-inport setupCamera from './camera.js';
+import setupCamera from './camera.js';
 import RAPIER from '@dimforge/rapier3d-compat';
 import Joystick from './joystick.js';
 import { createWorld, addGround, createDynamicBody, updatePhysics } from './physics.js';
