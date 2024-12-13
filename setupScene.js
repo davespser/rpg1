@@ -18,8 +18,8 @@ export function setupScene(container) {
     const controls = new OrbitControls(camera, renderer.domElement);
 
     // Añadir iluminación
-    const light = new THREE.AmbientLight(0x404040);
-    scene.add(light);
+    const ambientLight = new THREE.AmbientLight(0x404040);
+    scene.add(ambientLight);
 
     const pointLight = new THREE.PointLight(0xffffff, 1);
     pointLight.position.set(5, 5, 5);
@@ -58,7 +58,7 @@ export function setupScene(container) {
         position: { x: 20, y: 20 } 
     });
 
-    const moveSpeed = 2; // Define moveSpeed aquí si no está definida anteriormente
+    const moveSpeed = 2; // Velocidad de movimiento ajustada
 
     // Funciones de actualización y control
     function updatePhysics() {
@@ -86,7 +86,7 @@ export function setupScene(container) {
         camera, 
         renderer, 
         controls, 
-        updatePhysics: () => updatePhysics(world), 
+        updatePhysics: () => updatePhysics(), // Corregido para que coincida con la firma en physics.js
         applyMovement 
     };
 }
