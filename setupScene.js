@@ -5,7 +5,7 @@ import { crearLuces } from './luces.js';
 import RAPIER from '@dimforge/rapier3d-compat';
 import Joystick from './joystick.js';
 import { createWorld, createTerrain, createDynamicBody, updatePhysics } from './physics.js';
-import { createNoise2D } from './modules/simplex-noise.js';
+import { createNoise2D } from './modulos/simplex-noise.js';
 
 export function setupScene(container) {
     let lastTime = performance.now();
