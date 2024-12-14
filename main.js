@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import RAPIER from '@dimforge/rapier3d';
+import RAPIER from 'https://unpkg.com/@dimforge/rapier3d@0.17.0/rapier.js';
+
 
 let world;
-
 // ------------------ Escena, Cámara, Renderer ---------------------
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -24,7 +24,7 @@ scene.add(directionalLight);
 // ------------------ Carga del Mapa de Altura ---------------------
 const loader = new THREE.TextureLoader();
 
-loader.load('casa.png', function(texture) { // Reemplaza 'heightmap.png' con tu imagen
+loader.load('heightmap.png', function(texture) { // Reemplaza 'heightmap.png' con tu imagen
   const image = texture.image;
   const canvas = document.createElement('canvas');
   canvas.width = image.width;
