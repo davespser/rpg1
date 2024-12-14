@@ -14,7 +14,7 @@ const world = new RAPIER.World(gravity);
 
 // Carga de la textura de la imagen y creación del terreno
 const loader = new THREE.TextureLoader();
-loader.load('ruta/de/tu/imagen.png', (texture) => {
+loader.load('.casa.png', (texture) => {
     const geometry = new THREE.PlaneGeometry(100, 100, 100, 100);
     geometry.rotateX(-Math.PI / 2);
 
