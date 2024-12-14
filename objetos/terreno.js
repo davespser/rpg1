@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { ColliderDesc } from '@dimforge/rapier3d-compat';
-import { TerrainGeometry } from './terrain-geometry';
+import { TerrainGeometry } from './terrenp-geometria.js';
 
 export class Terrain {
   constructor(scene, physics) {
