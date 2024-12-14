@@ -1,6 +1,6 @@
 import { Renderer } from './engine/renderer.js';
-import { Terrain } from './objectos/terreno.js';
-import { PhysicsBox } from './objectos/physicsBox.js';
+import { Terrain } from './objetos/terreno.js';
+import { PhysicsBox } from './objetos/physicsBox.js';
 import { PhysicsEngine } from './fisicas/physics-engine.js';
 
 export class Simulation {
