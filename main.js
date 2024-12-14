@@ -1,4 +1,4 @@
-import './style.css';
+import './styles.css';
 import { Simulation } from './src/simulacion.js';
 
 async function init() {
