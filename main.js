@@ -39,7 +39,8 @@ loader.load('.casa.png', (texture) => {
     const material = new THREE.MeshBasicMaterial({ map: texture });
     const plane = new THREE.Mesh(geometry, material);
     scene.add(plane);
-// Integración de la física con Rapier3D
+
+    // Integración de la física con Rapier3D
     const heights = [];
     for (let y = 0; y < img.height; y++) {
         for (let x = 0; x < img.width; x++) {
@@ -69,4 +70,4 @@ function animate() {
     world.step(); // Actualiza la física de Rapier3D
     renderer.render(scene, camera);
 }
-animate()
+animate();
