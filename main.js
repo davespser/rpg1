@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import * as THREE from '/modulos/three.module.js';
 import * as RAPIER from 'rapier3d'; // Asegúrate de que esto coincide con el importmap
 
 // Inicialización de la escena, cámara y renderizador de Three.js
