@@ -1,4 +1,4 @@
-import * as THREE from './modulos/three.module.js';
+import * as THREE from '/modulos/three.module.js';
 
 export class Renderer {
   constructor() {
