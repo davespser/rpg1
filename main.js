@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import * as RAPIER from 'rapier3d-compat'; // Asegúrate que esto coincide con el importmap
+import * as RAPIER from 'rapier3d'; // Asegúrate de que esto coincide con el importmap
 
 // Inicialización de la escena, cámara y renderizador de Three.js
 const scene = new THREE.Scene();
@@ -9,7 +9,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 // Inicialización de Rapier3D
-const gravity = new RAPIER.Vector3(0.0, -9.81, 0.0);
+const gravity = { x: 0.0, y: -9.81, z: 0.0 }; // Vector de gravedad
 const world = new RAPIER.World(gravity);
 
 // Carga de la textura de la imagen y creación del terreno
@@ -49,7 +49,7 @@ loader.load('.casa.png', (texture) => {
         }
     }
 
-    const heightfieldShape = RAPIER.ColliderDesc.heightfield(
+    const heightfieldShape = new RAPIER.ColliderDesc.heightfield(
         img.height,
         img.width,
         heights,
