@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import * as RAPIER from '@dimforge/rapier3d';
+import * as RAPIER from 'rapier3d-compat'; // Asegúrate que esto coincide con el importmap
 
 // Inicialización de la escena, cámara y renderizador de Three.js
 const scene = new THREE.Scene();
@@ -41,26 +41,5 @@ loader.load('.casa.png', (texture) => {
     scene.add(plane);
 
     // Integración de la física con Rapier3D
-    const heightfieldShape = new RAPIER.Heightfield({
-        heights: data,
-        width: img.width,
-        length: img.height,
-        scale: new RAPIER.Vector3(1, 10, 1) // Ajusta según tu escala
-    });
-
-    const bodyDesc = RAPIER.RigidBodyDesc.fixed();
-    const body = world.createRigidBody(bodyDesc);
-    world.createCollider(heightfieldShape, body);
-});
-
-// Ajustes de cámara y renderizado
-camera.position.z = 100;
-camera.position.y = 50;
-camera.lookAt(0, 0, 0);
-
-function animate() {
-    requestAnimationFrame(animate);
-    world.step(); // Actualiza la física de Rapier3D
-    renderer.render(scene, camera);
-}
-animate();
+    const heights = [];
+    for (let y = 0; y < img.height; y++) {
