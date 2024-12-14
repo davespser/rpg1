@@ -2,10 +2,8 @@ import * as THREE from './modulos/three.module.js';
 import { OrbitControls } from './modulos/OrbitControls.js';
 import { setupCamera } from './camera.js';
 import { crearLuces } from './luces.js';
-import RAPIER from '@dimforge/rapier3d-compat';
+import { TerrainPhysics } from './TerrainPhysics.js'; // Assuming this is where your class is defined
 import Joystick from './joystick.js';
-import { initializeAndCreateWorld, createTerrain, createDynamicBody, updatePhysics } from './physics.js';
-import { createNoise2D } from 'simplex-noise';
 
 export async function setupScene(container) {
     let lastTime = performance.now();
@@ -23,18 +21,15 @@ export async function setupScene(container) {
     // Add lighting
     crearLuces(scene);
 
-    // Initialize Rapier and create physics world
-    const world = await initializeAndCreateWorld();
-
-    // Create physical terrain
-    const terrainSize = 100; // size of the terrain
-    const terrainSubdivisions = 5; // Reduced for simplicity, can be increased if the collider works
-    createTerrain(world, terrainSize, terrainSubdivisions);
+    // Initialize physics
+    const terrainPhysics = new TerrainPhysics(100, 5); // Size and subdivisions, adjust as needed
+    await terrainPhysics.initialize();
+    const world = terrainPhysics.getWorld();
 
     // Create a dynamic body (cube)
     const cubeSize = { x: 1, y: 1, z: 1 };
     const cubePosition = { x: 0, y: 10, z: 0 }; // Ensure it's above the terrain
-    const rigidBody = createDynamicBody(world, cubePosition, cubeSize);
+    const rigidBody = terrainPhysics.createDynamicBody(cubePosition, cubeSize);
 
     // Visual representation of the cube
     const cubeGeometry = new THREE.BoxGeometry(cubeSize.x, cubeSize.y, cubeSize.z);
@@ -43,23 +38,9 @@ export async function setupScene(container) {
     cube.position.set(cubePosition.x, cubePosition.y, cubePosition.z);
     scene.add(cube);
 
-    // Generate visual terrain matching the physical terrain
-    function generateTerrainGeometry(width, height, subdivisions) {
-        const geometry = new THREE.PlaneGeometry(width, height, subdivisions, subdivisions);
-        const noise = createNoise2D();
-        const vertices = geometry.getAttribute('position').array;
-
-        for (let i = 0; i < vertices.length; i += 3) {
-            const x = vertices[i];
-            const z = vertices[i + 2];
-            vertices[i + 1] = noise(x / 10, z / 10) * 5; // Y coord, adjust these values for height modification
-        }
-
-        geometry.computeVertexNormals(); // Needed for lighting
-        return geometry;
-    }
-
-    const terrainGeometry = generateTerrainGeometry(terrainSize, terrainSize, terrainSubdivisions);
+    // Generate visual terrain - Here you would use your TerrainGeometry class
+    // Assuming you have the class available:
+    const terrainGeometry = new TerrainGeometry(100, 100, 5, 5).generate(); // Use same size and subdivisions
     const terrainMaterial = new THREE.MeshStandardMaterial({ color: 0x8B4513, wireframe: false });
     const terrainMesh = new THREE.Mesh(terrainGeometry, terrainMaterial);
     terrainMesh.rotation.x = -Math.PI / 2; // Rotate so it's horizontal
@@ -80,7 +61,7 @@ export async function setupScene(container) {
         const now = performance.now();
         const delta = (now - lastTime) / 1000; // Convert to seconds
         lastTime = now;
-        updatePhysics(world, delta); // Call Rapier's update function
+        terrainPhysics.update(delta); // Update physics simulation
         const position = rigidBody.translation();
         cube.position.set(position.x, position.y, position.z);
     }
