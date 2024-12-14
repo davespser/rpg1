@@ -2,7 +2,7 @@ import * as THREE from './modulos/three.module.js';
 import { OrbitControls } from './modulos/OrbitControls.js';
 import { setupCamera } from './camera.js';
 import { crearLuces } from './luces.js';
-import { TerrainPhysics } from './TerrainPhysics.js'; // Assuming this is where your class is defined
+import { TerrainPhysics } from './physics.js'; // Assuming this is where your class is defined
 import Joystick from './joystick.js';
 
 export async function setupScene(container) {
