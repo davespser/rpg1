@@ -1,35 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Three.js y Rapier3D Terreno</title>
+    <title>Terreno con Three.js y Rapier3D</title>
     <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-        }
-        canvas {
-            display: block;
-        }
+        body { margin: 0; overflow: hidden; }
     </style>
 </head>
 <body>
-    <script>
-        var exports = {};
-    </script>
     <script type="importmap">
-    {
+      {
         "imports": {
-            "three": "./modulos/three.module.js",
-            "rapier3d-compat": "https://cdn.jsdelivr.net/npm/@dimforge/rapier3d-compat"
+          "three": "https://unpkg.com/three@0.158.0/build/three.module.js",
+          "@dimforge/rapier3d": "https://cdn.jsdelivr.net/npm/@dimforge/rapier3d@0.16.3/rapier.js"
         }
-    }
+      }
     </script>
-    <script type="module">
-        import * as THREE from 'three';
-        import * as RAPIER from 'rapier3d-compat';
-        import './main.js';
-    </script>
+    <script type="module" src="main.js"></script>
 </body>
 </html>
