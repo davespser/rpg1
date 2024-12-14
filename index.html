@@ -1,24 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Three.js y Rapier3D Terreno</title>
-    <style>
-        body {
-            margin: 0;
-            overflow: hidden;
+    <title>Proyecto con Three.js y Rapier</title>
+    <link rel="stylesheet" href="./styles.css">
+    
+    <!-- Import Map para usar Three.js y Rapier desde archivos locales -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "./modulos/three.module.js",
+            "@dimforge/rapier3d-compat": "https://cdn.skypack.dev/@dimforge/rapier3d-compat@0.12.0"
         }
-        canvas {
-            display: block;
-        }
-    </style>
+    }
+    </script>
+    
+    <!-- Incluir el archivo JavaScript principal como módulo -->
+    <script type="module" src="./main.js"></script>
 </head>
 <body>
-    <script type="module">
-        import * as THREE from 'https://cdn.skypack.dev/three';
-        import * as RAPIER from 'https://cdn.skypack.dev/@dimforge/rapier3d-compat';
-        import './main.js';
-    </script>
+    <div id="joystick-container">
+        <div id="joystick">
+            <div class="knob"></div>
+        </div>
+    </div>
+
+    <div id="interfaz">
+        <h2>Controles</h2>
+        <button id="reiniciar">Reiniciar Juego</button>
+    </div>
 </body>
 </html>
