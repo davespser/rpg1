@@ -39,7 +39,34 @@ loader.load('.casa.png', (texture) => {
     const material = new THREE.MeshBasicMaterial({ map: texture });
     const plane = new THREE.Mesh(geometry, material);
     scene.add(plane);
-
-    // Integración de la física con Rapier3D
+// Integración de la física con Rapier3D
     const heights = [];
     for (let y = 0; y < img.height; y++) {
+        for (let x = 0; x < img.width; x++) {
+            const height = data[(y * img.width + x) * 4] / 255;
+            heights.push(height * 10); // Ajusta la escala de altura
+        }
+    }
+
+    const heightfieldShape = RAPIER.ColliderDesc.heightfield(
+        img.height,
+        img.width,
+        heights,
+        1, // escala en el eje X
+        10 // escala en el eje Y
+    );
+
+    const collider = world.createCollider(heightfieldShape);
+});
+
+// Ajustes de cámara y renderizado
+camera.position.z = 100;
+camera.position.y = 50;
+camera.lookAt(0, 0, 0);
+
+function animate() {
+    requestAnimationFrame(animate);
+    world.step(); // Actualiza la física de Rapier3D
+    renderer.render(scene, camera);
+}
+animate();) {
