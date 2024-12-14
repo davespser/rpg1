@@ -1,32 +1,24 @@
-<!DOCTYPE html>
-<html lang="es">
+!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1, minimum-scale=1">
-    <title>Proyecto con Three.js y Rapier</title>
-    <link rel="stylesheet" href="./styles.css">
-    
-    <!-- Import Map para usar Three.js, Rapier y Simplex Noise desde archivos locales o CDN -->
-    <script type="importmap">
-    {
-        "imports": {
-            "three": "./modulos/three.module.js",
-            "three/examples/jsm/": "./modulos/",
-            "@dimforge/rapier3d-compat": "https://cdn.skypack.dev/@dimforge/rapier3d-compat@0.12.0",
-        "simplex-noise": "https://cdn.jsdelivr.net/npm/simplex-noise@4.0.0/+esm"
-    }
-
-    
-    }
-    </script>
-    
-    <!-- Incluir el archivo JavaScript principal como módulo -->
-    <script type="module" src="./main.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three.js y Rapier3D Terreno</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
 </head>
 <body>
-    <div id="app"></div>
-    <canvas id="gameCanvas"></canvas>
-    <div id="joystick"></div>
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@dimforge/rapier3d-compat"></script>
+    <script type="module">
+        import './main.js';
+    </script>
 </body>
 </html>
