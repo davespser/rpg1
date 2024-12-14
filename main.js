@@ -69,4 +69,4 @@ function animate() {
     world.step(); // Actualiza la física de Rapier3D
     renderer.render(scene, camera);
 }
-animate();) {
+animate()
