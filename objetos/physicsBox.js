@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import * as THREE from /modulos/three.module.js';
 import { RigidBodyDesc, ColliderDesc } from '@dimforge/rapier3d-compat';
 
 export class PhysicsBox {
