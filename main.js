@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import RAPIER from 'https://unpkg.com/@dimforge/rapier3d@0.17.0/rapier.js';
+import RAPIER from 'https://unpkg.com/@dimforge/rapier3d@0.16.0/rapier.js';
 
 
 let world;
