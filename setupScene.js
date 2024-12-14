@@ -4,10 +4,10 @@ import { setupCamera } from './camera.js';
 import { crearLuces } from './luces.js';
 import RAPIER from '@dimforge/rapier3d-compat';
 import Joystick from './joystick.js';
-import { createWorld, createTerrain, createDynamicBody, updatePhysics } from './physics.js';
+import { initializeAndCreateWorld, createTerrain, createDynamicBody, updatePhysics } from './physics.js';
 import { createNoise2D } from 'simplex-noise';
 
-export function setupScene(container) {
+export async function setupScene(container) {
     let lastTime = performance.now();
     
     // Three.js Setup
@@ -23,12 +23,12 @@ export function setupScene(container) {
     // Add lighting
     crearLuces(scene);
 
-    // Create the physics world
-    const world = createWorld();
+    // Initialize Rapier and create physics world
+    const world = await initializeAndCreateWorld();
 
     // Create physical terrain
     const terrainSize = 100; // size of the terrain
-    const terrainSubdivisions = 50; // terrain subdivisions
+    const terrainSubdivisions = 5; // Reduced for simplicity, can be increased if the collider works
     createTerrain(world, terrainSize, terrainSubdivisions);
 
     // Create a dynamic body (cube)
