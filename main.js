@@ -99,7 +99,7 @@ function createTerrain(imageData) {
   });
 
   const terrainMesh = new THREE.Mesh(geometry, material);
-  terrainMesh.receiveShadow = true;
+  terrainMesh.receiveShadow = false;
   scene.add(terrainMesh);
 
   // Crear el cuerpo rígido del terreno
