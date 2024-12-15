@@ -23,7 +23,7 @@ scene.add(directionalLight);
 // ------------------ Carga del Mapa de Altura ---------------------
 const loader = new THREE.TextureLoader();
 
-loader.load('heightmap.png', function(texture) {
+loader.load('/.casa.png', function(texture) {
   const image = texture.image;
   const canvas = document.createElement('canvas');
   canvas.width = image.width;
