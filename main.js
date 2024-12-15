@@ -23,19 +23,18 @@ scene.add(directionalLight);
 // ------------------ Carga del Mapa de Altura ---------------------
 const loader = new THREE.TextureLoader();
 
-loader.load('/casa.png', function(texture) {
-  const image = texture.image;
-  const canvas = document.createElement('canvas');
-  canvas.width = image.width;
-  canvas.height = image.height;
-  const ctx = canvas.getContext('2d');
-  ctx.drawImage(image, 0, 0);
-  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  createTerrain(imageData);
+loader.load('https://raw.githubusercontent.com/davespser/rpg1/main/casa.png', function(texture) {
+    const image = texture.image;
+    const canvas = document.createElement('canvas');
+    canvas.width = image.width;
+    canvas.height = image.height;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(image, 0, 0);
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    createTerrain(imageData);
 }, undefined, function(err) {
-  console.error('Error al cargar la imagen:', err);
+    console.error('Error al cargar la imagen:', err);
 });
-
 // ------------------ Creación del Terreno -------------------------
 function createTerrain(imageData) {
     const width = imageData.width;
