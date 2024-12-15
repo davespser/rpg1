@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import RAPIER from 'https://unpkg.com/@dimforge/rapier3d@0.16.0/rapier.js';
 
-
 let world;
 // ------------------ Escena, Cámara, Renderer ---------------------
 const scene = new THREE.Scene();
@@ -24,7 +23,7 @@ scene.add(directionalLight);
 // ------------------ Carga del Mapa de Altura ---------------------
 const loader = new THREE.TextureLoader();
 
-loader.load('heightmap.png', function(texture) { // Reemplaza 'heightmap.png' con tu imagen
+loader.load('heightmap.png', function(texture) {
   const image = texture.image;
   const canvas = document.createElement('canvas');
   canvas.width = image.width;
@@ -43,7 +42,12 @@ function createTerrain(imageData) {
     const height = imageData.height;
     const vertices = [];
     const indices = [];
-    const scale = 1; // Ajusta este valor para la escala del terreno
+    const scale = 1; // Escala de posición del terreno
+    const maxHeight = 50; // Altura máxima del terreno
+
+    // Normalizar los valores de altura
+    const minGray = 82;  // Valor mínimo de gris (de análisis)
+    const maxGray = 176; // Valor máximo de gris
 
     for (let z = 0; z < height; z++) {
         for (let x = 0; x < width; x++) {
@@ -52,12 +56,16 @@ function createTerrain(imageData) {
             const g = imageData.data[index + 1];
             const b = imageData.data[index + 2];
 
-            // Usar la media de RGB como la altura
-            const heightValue = ((r + g + b) / 3) / 255; // Normalizado a [0, 1]
-            const y = heightValue * 50 * scale; // Ajusta la altura máxima
+            // Promedio RGB como valor de gris
+            const grayValue = (r + g + b) / 3;
+
+            // Normalizar entre 0 y 1
+            const normalizedHeight = (grayValue - minGray) / (maxGray - minGray);
+            const y = Math.max(0, normalizedHeight) * maxHeight * scale;
 
             vertices.push(x * scale, y, z * scale);
 
+            // Generar índices para las caras del terreno
             if (x < width - 1 && z < height - 1) {
                 const a = z * width + x;
                 const b = z * width + x + 1;
@@ -83,20 +91,19 @@ function createTerrain(imageData) {
     scene.add(terrainMesh);
 
     // Crear el cuerpo rígido del terreno
-    createTerrainRigidBody(terrainMesh)
+    createTerrainRigidBody(terrainMesh);
 }
-
 
 // ------------------ Inicialización de Física con Rapier -------------------------
 async function initPhysics() {
-  await RAPIER.init();
-  world = new RAPIER.World({ x: 0.0, y: -9.81, z: 0.0 });
+    await RAPIER.init();
+    world = new RAPIER.World({ x: 0.0, y: -9.81, z: 0.0 });
 }
 
 // ------------------ Creación del Collider del Terreno -------------------------
 async function createTerrainRigidBody(terrainMesh) {
     if (!world) {
-      await initPhysics()
+        await initPhysics();
     }
     const vertices = terrainMesh.geometry.attributes.position.array;
     const indices = terrainMesh.geometry.index.array;
@@ -106,17 +113,16 @@ async function createTerrainRigidBody(terrainMesh) {
     const rigidBody = world.createRigidBody(rigidBodyDesc);
     world.createCollider(colliderDesc, rigidBody);
 
-    // Puedes agregar una visualización del collider (opcional)
-    const colliderShape = new THREE.BufferGeometry()
+    // Opcional: Visualización del collider
+    const colliderShape = new THREE.BufferGeometry();
     colliderShape.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
     colliderShape.setIndex(indices);
 
-    const colliderMaterial = new THREE.MeshBasicMaterial({color: 0x00ff00, wireframe: true})
-    const colliderMesh = new THREE.Mesh(colliderShape, colliderMaterial)
-    colliderMesh.visible = false; // Dejar invisible si no quieres ver el collider
-    scene.add(colliderMesh)
- }
-
+    const colliderMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
+    const colliderMesh = new THREE.Mesh(colliderShape, colliderMaterial);
+    colliderMesh.visible = false; // Invisible por defecto
+    scene.add(colliderMesh);
+}
 
 // ------------------ Animación -------------------------
 function animate() {
