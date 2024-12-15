@@ -25,7 +25,7 @@ const ambientLight = new THREE.AmbientLight(0xffffff, 2); // Luz ambiental
 scene.add(ambientLight);
 
 const hemiLight = new THREE.HemisphereLight(0xaaaaaa, 0x444444, 1.2); // Luz hemisférica
-hemiLight.position.set(0, 50, 0);
+hemiLight.position.set(0, 80, 0);
 scene.add(hemiLight);
 
 const directionalLight1 = new THREE.DirectionalLight(0xffffff, 1.5); // Luz direccional principal
