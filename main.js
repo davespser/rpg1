@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/controls/OrbitControls.js';
-import RAPIER from '@dimforge/rapier3d-compat';';
+import RAPIER from '@dimforge/rapier3d-compat';
 
 let world;
 // ------------------ Escena, Cámara, Renderer ---------------------
