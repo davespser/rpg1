@@ -9,7 +9,7 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-camera.position.set(100, 80, 150);
+camera.position.set(150, 140, 200);
 camera.lookAt(scene.position);
 
 // Luces
