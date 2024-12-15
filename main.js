@@ -94,8 +94,7 @@ function createTerrain(imageData) {
   // Material con color y textura básica
   const material = new THREE.MeshStandardMaterial({
     color: 0x165916, // Color verde para el terreno
-    roughness: 0.8,  // Mayor rugosidad
-    metalness: 0.1   // Baja reflectividad metálica
+     // Baja reflectividad metálica
   });
 
   const terrainMesh = new THREE.Mesh(geometry, material);
