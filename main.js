@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import RAPIER from 'https://unpkg.com/@dimforge/rapier3d@0.16.0/rapier.js';
+import RAPIER from '/dimforge/rapier3d-compat@0.14.0/rapier3d-compat.mjs';
 
 let world;
 // ------------------ Escena, Cámara, Renderer ---------------------
