@@ -42,7 +42,7 @@ function createTerrain(imageData) {
     const vertices = [];
     const indices = [];
     const scale = 1; // Escala de posición del terreno
-    const maxHeight = 50; // Altura máxima del terreno
+    const maxHeight = 40; // Altura máxima del terreno
 
     // Normalizar los valores de altura
     const minGray = 82;  // Valor mínimo de gris (de análisis)
