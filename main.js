@@ -13,12 +13,28 @@ camera.position.set(150, 140, 200);
 camera.lookAt(scene.position);
 
 // Luces
-const ambientLight = new THREE.AmbientLight(0x404040);
+// Luz ambiental
+const ambientLight = new THREE.AmbientLight(0xffffff, 2);
 scene.add(ambientLight);
 
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
-directionalLight.position.set(1, 1, 1).normalize();
-scene.add(directionalLight);
+// Luz hemisférica
+const hemiLight = new THREE.HemisphereLight(0xaaaaaa, 0x444444, 1.2);
+hemiLight.position.set(0, 50, 0);
+scene.add(hemiLight);
+
+// Luz direccional principal
+const directionalLight1 = new THREE.DirectionalLight(0xffffff, 1.5);
+directionalLight1.position.set(1, 1, 1);
+directionalLight1.castShadow = true; // Sombras
+scene.add(directionalLight1);
+
+// Luz direccional secundaria (relleno)
+const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.5);
+directionalLight2.position.set(-1, 1, -1);
+scene.add(directionalLight2);
+
+// Configuración de sombras
+renderer.shadowMap.enabled = true;
 
 // ------------------ Carga del Mapa de Altura ---------------------
 const loader = new THREE.TextureLoader();
