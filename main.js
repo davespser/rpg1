@@ -7,7 +7,7 @@ import { Stats } from './stats.js';
 
 let world;
 
-// Escena, cámara y renderer
+// Configuración de la escena, cámara y renderizador
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 5000);
 const renderer = new THREE.WebGLRenderer();
@@ -17,11 +17,13 @@ document.body.appendChild(renderer.domElement);
 camera.position.set(100, 80, 150);
 camera.lookAt(scene.position);
 
+// Crear el menú de estadísticas
 function crearMenuEstadisticas() {
     const menu = document.createElement('div');
     menu.id = 'menu';
     menu.classList.add('hidden');
-const titulo = document.createElement('h3');
+
+    const titulo = document.createElement('h3');
     titulo.textContent = 'Estadísticas';
     menu.appendChild(titulo);
     
@@ -37,16 +39,16 @@ const titulo = document.createElement('h3');
     
     document.body.appendChild(menu);
 }
-
-// Llamar a la función para crear el menú al cargar la página
 crearMenuEstadisticas();
+
+// Configuración de los controles de la cámara
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.25;
 controls.minDistance = 10;  // Mínima distancia a la que puedes acercarte
 controls.maxDistance = 4000;  // Máxima distancia a la que puedes alejarte
 
-// Luces
+// Añadir luces a la escena
 const ambientLight = new THREE.AmbientLight(0xffffff, 2);
 scene.add(ambientLight);
 
@@ -55,8 +57,10 @@ directionalLight.position.set(100, 100, 100);
 directionalLight.castShadow = true;
 scene.add(directionalLight);
 
+// Crear el cielo
 createSky(scene);
-// Carga de textura y heightmap
+
+// Cargar textura y heightmap
 const texturePath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa_t.jpg';
 const heightMapPath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa.png';
 
@@ -87,12 +91,13 @@ Promise.all([
   createTerrainRigidBody(terrainMesh);
 }).catch((error) => console.error('Error al cargar recursos:', error));
 
-// Física
+// Inicializar la física
 async function initPhysics() {
   await RAPIER.init();
   world = new RAPIER.World({ x: 0.0, y: -9.81, z: 0.0 });
 }
 
+// Crear el cuerpo rígido del terreno
 async function createTerrainRigidBody(terrainMesh) {
   if (!world) await initPhysics();
 
@@ -103,6 +108,8 @@ async function createTerrainRigidBody(terrainMesh) {
   const rigidBody = world.createRigidBody(RAPIER.RigidBodyDesc.fixed());
   world.createCollider(colliderDesc, rigidBody);
 }
+
+// Agregar evento para el botón de alternar menú
 document.getElementById('toggleMenu').addEventListener('click', function() {
     const menu = document.getElementById('menu');
     if (menu.classList.contains('hidden')) {
@@ -112,7 +119,7 @@ document.getElementById('toggleMenu').addEventListener('click', function() {
     }
 });
 
-// Animación
+// Función de animación
 function animate() {
   requestAnimationFrame(animate);
 
