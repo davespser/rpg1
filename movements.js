@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 export function manejarMovimiento(character, deltaTime, input) {
     const velocidad = 5; // Velocidad de movimiento.
 
