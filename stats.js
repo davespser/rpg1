@@ -19,12 +19,12 @@ export class Stats {
     }
 
     modificarVida(valor) {
-        this.vida = Math.max(0, this.vida + valor); // Asegurar que vida no sea negativa
+        this.vida = Math.max(0, this.vida + valor);
         this.actualizarUI();
     }
 
     modificarEnergia(valor) {
-        this.energia = Math.max(0, this.energia + valor); // Asegurar que energía no sea negativa
+        this.energia = Math.max(0, this.energia + valor);
         this.actualizarUI();
     }
 }
