@@ -4,6 +4,14 @@ import RAPIER from '@dimforge/rapier3d-compat';
 import { loadTexture, createTerrain } from './createTerrain.js';
 import { createSky } from './sky.js';
 
+document.getElementById('toggleMenu').addEventListener('click', function() {
+       const menu = document.getElementById('menu');
+       if (menu.classList.contains('hidden')) {
+           menu.classList.remove('hidden');
+       } else {
+           menu.classList.add('hidden');
+       }
+   });
 let world;
 
 // Escena, cámara y renderer
