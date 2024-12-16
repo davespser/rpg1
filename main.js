@@ -74,8 +74,12 @@ Promise.all([
     );
   }),
 ]).then(([terrainTexture, imageData]) => {
-  // Mantener la geometría del terreno
-  const terrainMesh = createTerrain(imageData, terrainTexture);
+  // Mantener la geometría del terreno y asegurarse de que la textura esté aplicada correctamente
+  const geometry = new THREE.PlaneGeometry(100, 100, 256, 256); // Ajusta según sea necesario
+  const material = new THREE.MeshStandardMaterial({
+    map: terrainTexture
+  });
+  const terrainMesh = new THREE.Mesh(geometry, material);
   scene.add(terrainMesh);
 
   // Crear cuerpo físico para el terreno
