@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { GLTFLoader } from "GLTFLoader";
-import RAPIER from '@dimforge/rapier3d';
+import RAPIER from '@dimforge/rapier3d-compat';
 
 export function cargarModelo(world, posX = 250, posY = 5, posZ = 250, rutaModelo = './robotauro_walk.glb') {
     const loader = new GLTFLoader();
