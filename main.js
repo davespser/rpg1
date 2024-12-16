@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'OrbitControls';
 import RAPIER from '@dimforge/rapier3d-compat';
 import { loadTexture, createTerrain } from './createTerrain.js';
+import { createSky } from './sky.js';
 
 let world;
 
@@ -28,6 +29,7 @@ directionalLight.position.set(100, 100, 100);
 directionalLight.castShadow = true;
 scene.add(directionalLight);
 
+createSky(scene);
 // Carga de textura y heightmap
 const texturePath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa_t.jpg';
 const heightMapPath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa.png';
