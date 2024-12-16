@@ -36,7 +36,17 @@ scene.add(directionalLight1);
 const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.5);
 directionalLight2.position.set(-1, 101, -1);
 scene.add(directionalLight2);
+// Helper para la luz direccional 1
+const dirLightHelper1 = new THREE.DirectionalLightHelper(directionalLight1, 10); // El 10 es el tamaño del helper
+scene.add(dirLightHelper1);
 
+// Helper para la luz direccional 2
+const dirLightHelper2 = new THREE.DirectionalLightHelper(directionalLight2, 10);
+scene.add(dirLightHelper2);
+
+// Helper para la luz hemisférica
+const hemiLightHelper = new THREE.HemisphereLightHelper(hemiLight, 10);
+scene.add(hemiLightHelper);
 // ------------------ Carga de Imagen y Creación del Terreno ---------------------
 const texturePath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa_t.jpg'; // Ruta de la textura
 const heightMapPath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa.png';
