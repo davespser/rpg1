@@ -29,7 +29,7 @@ scene.add(hemiLight);
 
 const directionalLight1 = new THREE.DirectionalLight(0xffffff, 1.5);
 directionalLight1.position.set(180, 100, 180);
-directionalLight1.intensity = 2,5;
+directionalLight1.intensity = 2.5;
 directionalLight1.castShadow = true;
 scene.add(directionalLight1);
 
@@ -49,6 +49,7 @@ scene.add(dirLightHelper2);
 // Helper para la luz hemisférica
 const hemiLightHelper = new THREE.HemisphereLightHelper(hemiLight, 10);
 scene.add(hemiLightHelper);
+
 // ------------------ Carga de Imagen y Creación del Terreno ---------------------
 const texturePath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa_t.jpg'; // Ruta de la textura
 const heightMapPath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa.png';
@@ -74,7 +75,11 @@ Promise.all([
     );
   }),
 ]).then(([terrainTexture, imageData]) => {
-  const terrainMesh = createTerrain(imageData, terrainTexture);
+  const geometry = new THREE.PlaneGeometry(100, 100, 256, 256); // Ajusta según sea necesario
+  const material = new THREE.MeshStandardMaterial({
+    map: terrainTexture
+  });
+  const terrainMesh = new THREE.Mesh(geometry, material);
   scene.add(terrainMesh);
 
   // Crear cuerpo físico para el terreno
