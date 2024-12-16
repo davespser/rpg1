@@ -1,37 +1,18 @@
 import * as THREE from 'three';
-import { OrbitControls } from 'OrbitControls';
+import { GLTFLoader } from 'GLTFLoader';
 import RAPIER from '@dimforge/rapier3d-compat';
 import { initScene } from './scene.js';
-import { crearMenuEstadisticas } from './menu.js';
-import { Stats } from './stats.js';
-import { initPhysics, createTerrainRigidBody, stepPhysics } from './physics.js';
-import { loadTexture, createTerrain } from './createTerrain.js';
-import { createSky } from './sky.js';
-import { cargarModelo } from './objetos.js'; 
+import { initPhysics, stepPhysics } from './physics.js';
+import { cargarModelo } from './objetos.js';
 import { manejarMovimiento } from './movements.js';
-import { setupAnimation } from './animations.js';
 
+// Inicializar la escena, físicas y otros elementos
 const { scene, camera, renderer, controls } = initScene();
-const stats = new Stats();
-crearMenuEstadisticas();
-createSky(scene);
+let world, character; // Variables globales para el mundo físico y el personaje
+const clock = new THREE.Clock();
+const input = { forward: false, backward: false, left: false, right: false };
 
-const texturePath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa_t.jpg';
-const heightMapPath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa.png';
-
-// Inicializar física
-const world = initPhysics();  // Asegúrate de que esto devuelva el objeto world
-
-// Cargar el modelo
-
-
-// Crear el personaje con las físicas
-const modelo = cargarModelo(world, 0, 5, 0, './robotauro_walk.glb');
-    scene.add(modelo);
-// Configurar animaciones (si las tiene)
-
-// Entrada del jugador
-const input = { forward: false, backward: false, left: false, right: false, attack: false };
+// Configurar entrada de usuario
 window.addEventListener('keydown', (event) => {
     if (event.key === 'w') input.forward = true;
     if (event.key === 's') input.backward = true;
@@ -45,47 +26,34 @@ window.addEventListener('keyup', (event) => {
     if (event.key === 'd') input.right = false;
 });
 
-// Cargar terreno y texturas
-Promise.all([
-    loadTexture(texturePath),
-    new Promise((resolve, reject) => {
-        new THREE.TextureLoader().load(
-            heightMapPath,
-            (texture) => {
-                const canvas = document.createElement('canvas');
-                canvas.width = texture.image.width;
-                canvas.height = texture.image.height;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(texture.image, 0, 0);
-                resolve(ctx.getImageData(0, 0, canvas.width, canvas.height));
-            },
-            undefined,
-            (err) => reject(err)
-        );
-    }),
-]).then(([terrainTexture, imageData]) => {
-    const terrainMesh = createTerrain(imageData, terrainTexture);
-    scene.add(terrainMesh);
-    createTerrainRigidBody(terrainMesh);
-}).catch((error) => console.error('Error al cargar recursos:', error));
+// Inicializar físicas y cargar el modelo
+(async function main() {
+    // Inicializar RAPIER y el mundo físico
+    await initPhysics();
+    world = new RAPIER.World({ x: 0, y: -9.81, z: 0 });
 
-// Bucle de animación principal
-const clock = new THREE.Clock();
+    // Cargar el modelo y agregarlo a la escena
+    cargarModelo(world, 250, 5, 250, './robotauro_walk.glb', (modelo) => {
+        character = modelo; // Asignar el modelo cargado a la variable global
+        scene.add(character); // Agregar el modelo a la escena
+    });
+
+    animate();
+})();
+
+// Bucle principal de animación
 function animate() {
+    requestAnimationFrame(animate);
+
     const deltaTime = clock.getDelta();
 
-    // Manejar el movimiento del personaje
-    manejarMovimiento(modelo, deltaTime, input);
+    // Manejar el movimiento solo si el modelo está listo
+    if (character) {
+        manejarMovimiento(character, deltaTime, input);
+    }
 
-        // Actualizar físicas y renderizar
-        world.step();
-        renderer.render(scene, camera);
-        controls.update();
     // Actualizar físicas y renderizar
     stepPhysics();
-    renderer.render(scene, camera);
     controls.update();
-    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
 }
-
-animate();
