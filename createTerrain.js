@@ -1,56 +1,51 @@
 import * as THREE from 'three';
 
-export function createTerrain(imageData, terrainTexture) {
+// Función para cargar textura
+export function loadTexture(texturePath) {
+  return new Promise((resolve, reject) => {
+    const loader = new THREE.TextureLoader();
+    loader.load(
+      texturePath,
+      (texture) => {
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set(10, 10); // Repetición de la textura
+        resolve(texture);
+      },
+      undefined,
+      (err) => reject(err)
+    );
+  });
+}
+
+// Función para crear el terreno
+export function createTerrain(imageData, texture) {
   const width = imageData.width;
   const height = imageData.height;
-  const vertices = [];
-  const indices = [];
-  const scale = 1; // Escala del terreno
+  const geometry = new THREE.PlaneGeometry(width, height, width - 1, height - 1);
+  const position = geometry.attributes.position;
 
-  // Generar vértices y caras a partir del heightmap
-  for (let z = 0; z < height; z++) {
-    for (let x = 0; x < width; x++) {
-      const index = (z * width + x) * 4;
-      const r = imageData.data[index];
-      const g = imageData.data[index + 1];
-      const b = imageData.data[index + 2];
-
-      const heightValue = ((r + g + b) / 3) / 255; // Normalizado a [0, 1]
-      const y = heightValue * 50 * scale;
-
-      vertices.push(x * scale, y, z * scale);
-
-      if (x < width - 1 && z < height - 1) {
-        const a = z * width + x;
-        const b = z * width + x + 1;
-        const c = (z + 1) * width + x;
-        const d = (z + 1) * width + x + 1;
-
-        indices.push(a, b, c);
-        indices.push(b, d, c);
-      }
-    }
+  // Ajustar altura de los vértices usando el heightmap
+  for (let i = 0; i < position.count; i++) {
+    const x = i % width;
+    const y = Math.floor(i / width);
+    const index = (y * width + x) * 4; // Índice RGBA
+    const heightValue = imageData.data[index] / 10; // Escalar altura
+    position.setZ(i, heightValue);
   }
 
-  // Crear la geometría
-  const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
-  geometry.setIndex(indices);
+  position.needsUpdate = true;
   geometry.computeVertexNormals();
 
-  // **Aplicar la textura al material**
-  terrainTexture.wrapS = THREE.RepeatWrapping;
-  terrainTexture.wrapT = THREE.RepeatWrapping;
-  terrainTexture.repeat.set(10, 10); // Ajusta el tamaño del mosaico de la textura
-
+  // Material con la textura
   const material = new THREE.MeshStandardMaterial({
-    map: terrainTexture, // Asignar la textura
-    metalness: 0.3,
-    roughness: 0.8,
+    map: texture,
+    side: THREE.DoubleSide,
   });
 
-  const terrainMesh = new THREE.Mesh(geometry, material);
-  terrainMesh.receiveShadow = true;
+  const terrain = new THREE.Mesh(geometry, material);
+  terrain.rotation.x = -Math.PI / 2; // Rotar el terreno para que quede horizontal
+  terrain.receiveShadow = true;
 
-  return terrainMesh;
+  return terrain;
 }
