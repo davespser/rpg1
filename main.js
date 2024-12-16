@@ -35,4 +35,85 @@ scene.add(directionalLight1);
 
 
 const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.5);
-directionalLight2.position.set
+directionalLight2.position.set(-1, 101, -1);
+scene.add(directionalLight2);
+// Helper para la luz direccional 1
+const dirLightHelper1 = new THREE.DirectionalLightHelper(directionalLight1, 10); // El 10 es el tamaño del helper
+scene.add(dirLightHelper1);
+
+// Helper para la luz direccional 2
+const dirLightHelper2 = new THREE.DirectionalLightHelper(directionalLight2, 10);
+scene.add(dirLightHelper2);
+
+// Helper para la luz hemisférica
+const hemiLightHelper = new THREE.HemisphereLightHelper(hemiLight, 10);
+scene.add(hemiLightHelper);
+
+// ------------------ Carga de Imagen y Creación del Terreno ---------------------
+const texturePath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa_t.jpg'; // Ruta de la textura
+const heightMapPath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa.png';
+
+Promise.all([
+  loadTexture(texturePath), // Cargar textura
+  new Promise((resolve, reject) => {
+    const loader = new THREE.TextureLoader();
+    loader.load(
+      heightMapPath,
+      (texture) => {
+        const image = texture.image;
+        const canvas = document.createElement('canvas');
+        canvas.width = image.width;
+        canvas.height = image.height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(image, 0, 0);
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        resolve(imageData);
+      },
+      undefined,
+      (err) => reject(err)
+    );
+  }),
+]).then(([terrainTexture, imageData]) => {
+  // Usar la función createTerrain con el mapa de alturas y la textura
+  const terrainMesh = createTerrain(imageData, terrainTexture);
+  scene.add(terrainMesh);
+
+  // Crear cuerpo físico para el terreno
+  createTerrainRigidBody(terrainMesh);
+}).catch((error) => {
+  console.error('Error al cargar recursos:', error);
+});
+
+// ------------------ Inicialización de Física ---------------------
+async function initPhysics() {
+  await RAPIER.init();
+  world = new RAPIER.World({ x: 0.0, y: -9.81, z: 0.0 });
+}
+
+// ------------------ Creación del Collider del Terreno ---------------------
+async function createTerrainRigidBody(terrainMesh) {
+  if (!world) {
+    await initPhysics();
+  }
+  const vertices = terrainMesh.geometry.attributes.position.array;
+  const indices = terrainMesh.geometry.index.array;
+
+  const colliderDesc = RAPIER.ColliderDesc.trimesh(vertices, indices);
+  const rigidBodyDesc = RAPIER.RigidBodyDesc.fixed();
+  const rigidBody = world.createRigidBody(rigidBodyDesc);
+  world.createCollider(colliderDesc, rigidBody);
+}
+
+// ------------------ Animación ---------------------
+function animate() {
+  requestAnimationFrame(animate);
+
+  if (world) {
+    world.step();
+  }
+
+  controls.update();
+  renderer.render(scene, camera);
+}
+
+animate();
