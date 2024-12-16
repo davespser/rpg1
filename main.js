@@ -20,53 +20,50 @@ controls.enableDamping = true;
 controls.dampingFactor = 0.25;
 
 // ------------------ Luces ---------------------
-const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+const ambientLight = new THREE.AmbientLight(0xffffff, 2);
 scene.add(ambientLight);
 
-const hemiLight = new THREE.HemisphereLight(0xaaaaaa, 0x444444, 1.2);
-hemiLight.position.set(360, 80, 360);
-scene.add(hemiLight);
-
 const directionalLight1 = new THREE.DirectionalLight(0xffffff, 1.5);
-directionalLight1.position.set(180, 100, 180);
-directionalLight1.intensity = 2.5;
+directionalLight1.position.set(100, 100, 100);
 directionalLight1.castShadow = true;
 scene.add(directionalLight1);
 
-
-const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.5);
-directionalLight2.position.set(-1, 101, -1);
-scene.add(directionalLight2);
-// Helper para la luz direccional 1
-const dirLightHelper1 = new THREE.DirectionalLightHelper(directionalLight1, 10); // El 10 es el tamaño del helper
-scene.add(dirLightHelper1);
-
-// Helper para la luz direccional 2
-const dirLightHelper2 = new THREE.DirectionalLightHelper(directionalLight2, 10);
-scene.add(dirLightHelper2);
-
-// Helper para la luz hemisférica
-const hemiLightHelper = new THREE.HemisphereLightHelper(hemiLight, 10);
-scene.add(hemiLightHelper);
+// ------------------ Función para redimensionar imágenes ---------------------
+function resizeImageToPowerOf2(image, size = 512) {
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(image, 0, 0, size, size);
+  return canvas;
+}
 
 // ------------------ Carga de Imagen y Creación del Terreno ---------------------
-const texturePath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa_t.jpg'; // Ruta de la textura
+const texturePath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa_t.jpg';
 const heightMapPath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa.png';
 
 Promise.all([
-  loadTexture(texturePath), // Cargar textura
+  new Promise((resolve, reject) => {
+    const loader = new THREE.TextureLoader();
+    loader.load(
+      texturePath,
+      (texture) => {
+        const resizedCanvas = resizeImageToPowerOf2(texture.image);
+        const resizedTexture = new THREE.CanvasTexture(resizedCanvas);
+        resolve(resizedTexture);
+      },
+      undefined,
+      (err) => reject(err)
+    );
+  }),
   new Promise((resolve, reject) => {
     const loader = new THREE.TextureLoader();
     loader.load(
       heightMapPath,
       (texture) => {
-        const image = texture.image;
-        const canvas = document.createElement('canvas');
-        canvas.width = image.width;
-        canvas.height = image.height;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(image, 0, 0);
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const resizedCanvas = resizeImageToPowerOf2(texture.image);
+        const ctx = resizedCanvas.getContext('2d');
+        const imageData = ctx.getImageData(0, 0, resizedCanvas.width, resizedCanvas.height);
         resolve(imageData);
       },
       undefined,
@@ -74,11 +71,8 @@ Promise.all([
     );
   }),
 ]).then(([terrainTexture, imageData]) => {
-  // Usar la función createTerrain con el mapa de alturas y la textura
   const terrainMesh = createTerrain(imageData, terrainTexture);
   scene.add(terrainMesh);
-
-  // Crear cuerpo físico para el terreno
   createTerrainRigidBody(terrainMesh);
 }).catch((error) => {
   console.error('Error al cargar recursos:', error);
@@ -90,7 +84,6 @@ async function initPhysics() {
   world = new RAPIER.World({ x: 0.0, y: -9.81, z: 0.0 });
 }
 
-// ------------------ Creación del Collider del Terreno ---------------------
 async function createTerrainRigidBody(terrainMesh) {
   if (!world) {
     await initPhysics();
