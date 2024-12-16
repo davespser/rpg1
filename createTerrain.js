@@ -7,9 +7,8 @@ export function loadTexture(texturePath) {
     loader.load(
       texturePath,
       (texture) => {
-        texture.wrapS = THREE.RepeatWrapping;
-        texture.wrapT = THREE.RepeatWrapping;
-        texture.repeat.set(10, 10); // Repetición de la textura
+        texture.wrapS = THREE.ClampToEdgeWrapping; // No repetir horizontalmente
+        texture.wrapT = THREE.ClampToEdgeWrapping; // No repetir verticalmente
         resolve(texture);
       },
       undefined,
@@ -24,6 +23,7 @@ export function createTerrain(imageData, texture) {
   const height = imageData.height;
   const geometry = new THREE.PlaneGeometry(width, height, width - 1, height - 1);
   const position = geometry.attributes.position;
+  const uv = geometry.attributes.uv; // Coordenadas UV
 
   // Ajustar altura de los vértices usando el heightmap
   for (let i = 0; i < position.count; i++) {
@@ -32,9 +32,13 @@ export function createTerrain(imageData, texture) {
     const index = (y * width + x) * 4; // Índice RGBA
     const heightValue = imageData.data[index] / 10; // Escalar altura
     position.setZ(i, heightValue);
+
+    // Generar coordenadas UV para estirar la textura
+    uv.setXY(i, x / (width - 1), y / (height - 1));
   }
 
   position.needsUpdate = true;
+  uv.needsUpdate = true;
   geometry.computeVertexNormals();
 
   // Material con la textura
