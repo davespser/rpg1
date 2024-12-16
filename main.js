@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'OrbitControls';
 import RAPIER from '@dimforge/rapier3d-compat';
-import { loadTexture, createTerrain } from './createTerrain.js';
+import { loadTexture } from './createTerrain.js';  // Asumiendo que loadTexture está definido aquí
 
 let world;
 
@@ -74,11 +74,25 @@ Promise.all([
     );
   }),
 ]).then(([terrainTexture, imageData]) => {
-  // Mantener la geometría del terreno y asegurarse de que la textura esté aplicada correctamente
-  const geometry = new THREE.PlaneGeometry(100, 100, 256, 256); // Ajusta según sea necesario
+  // Crear la geometría del terreno
+  const width = 100;
+  const height = 100;
+  const segments = 256;
+  const geometry = new THREE.PlaneGeometry(width, height, segments, segments);
+
+  // Ajustar la geometría del terreno basándose en el mapa de alturas
+  const vertices = geometry.attributes.position.array;
+  for (let i = 0, j = 0; i < vertices.length; i += 3, j++) {
+    vertices[i + 2] = imageData.data[j * 4] / 255 * 10;  // Ajusta la escala según sea necesario
+  }
+  geometry.computeVertexNormals();
+
+  // Aplicar la textura al material
   const material = new THREE.MeshStandardMaterial({
     map: terrainTexture
   });
+
+  // Crear el mesh del terreno
   const terrainMesh = new THREE.Mesh(geometry, material);
   scene.add(terrainMesh);
 
