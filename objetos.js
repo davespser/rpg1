@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from './modulos/GLTFLoader.js';
 
-export function cargarModelo(posX = 250, posY = 3, posZ = 250, rutaModelo = './negro.glb') {
+export function cargarModelo(posX = 250, posY = 3, posZ = 250, rutaModelo = './robotauro_walk.glb') {
     const loader = new GLTFLoader();
     const modelo = new THREE.Group(); // Grupo para el modelo
     loader.load(
