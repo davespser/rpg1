@@ -18,7 +18,7 @@ const texturePath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa_
 const heightMapPath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa.png';
 
 // Cargar el modelo en lugar del cubo
-const modeloNegro = cargarModelo(250, 20, 250, './robotauro_walk.glb');
+const modeloNegro = cargarModelo(250, 24, 250, './robotauro_walk.glb');
 scene.add(modeloNegro); // Añadir el modelo a la escena
 
 // Cargar terreno y texturas
