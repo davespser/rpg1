@@ -33,7 +33,6 @@ directionalLight1.intensity = 2.5;
 directionalLight1.castShadow = true;
 scene.add(directionalLight1);
 
-const ambientLightHelper = new THREE.AmbientLightHelper(ambientLight, 2);
-scene.add(ambientLightHelper);
+
 const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.5);
 directionalLight2.position.set
