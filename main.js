@@ -23,14 +23,12 @@ const heightMapPath = 'https://raw.githubusercontent.com/davespser/rpg1/main/cas
 const world = initPhysics();  // Asegúrate de que esto devuelva el objeto world
 
 // Cargar el modelo
-const modeloNegro = cargarModelo(250, 24, 250, './robotauro_walk.glb');
-scene.add(modeloNegro);
+
 
 // Crear el personaje con las físicas
-
+const modelo = cargarModelo(world, 0, 5, 0, './robotauro_walk.glb');
+    scene.add(modelo);
 // Configurar animaciones (si las tiene)
-const mixer = new THREE.AnimationMixer(modeloNegro);
-setupAnimation(modeloNegro, mixer);
 
 // Entrada del jugador
 const input = { forward: false, backward: false, left: false, right: false, attack: false };
