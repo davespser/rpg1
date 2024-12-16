@@ -24,7 +24,7 @@ const ambientLight = new THREE.AmbientLight(0xffffff, 2);
 scene.add(ambientLight);
 
 const hemiLight = new THREE.HemisphereLight(0xaaaaaa, 0x444444, 1.2);
-hemiLight.position.set(0, 80, 0);
+hemiLight.position.set(360, 80, 360);
 scene.add(hemiLight);
 
 const directionalLight1 = new THREE.DirectionalLight(0xffffff, 1.5);
