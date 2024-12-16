@@ -1,4 +1,4 @@
-// sky.js
+import * as THREE from 'three';// sky.js
 
 export function createSky(scene) {
   // Shaders para el cielo
