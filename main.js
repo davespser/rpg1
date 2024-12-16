@@ -37,7 +37,7 @@ directionalLight2.position.set(-1, 1, -1);
 scene.add(directionalLight2);
 
 // ------------------ Carga de Imagen y Creación del Terreno ---------------------
-const texturePath = 'casa_t.jpg'; // Ruta de la textura
+const texturePath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa_t.jpg'; // Ruta de la textura
 const heightMapPath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa.png';
 
 Promise.all([
