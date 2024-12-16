@@ -6,7 +6,7 @@ export function cargarModeloNegro(posX = 250, posY = 3, posZ = 250) {
     let modeloNegro;
 
     loader.load(
-        'ruta/hacia/tu/modelo/negro.glb',
+        'https://raw.githubusercontent.com/davespser/rpg1/main/negro.glb',
         function (gltf) {
             // Aquí 'gltf.scene' es el objeto principal del modelo cargado
             modeloNegro = gltf.scene;
