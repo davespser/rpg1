@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 export function crearCubo() {
     // Crear geometría del cubo
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const geometry = new THREE.BoxGeometry(10, 10, 10);
     const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
     const cubo = new THREE.Mesh(geometry, material);
 
