@@ -108,3 +108,13 @@ async function createTerrainRigidBody(terrainMesh) {
 // ------------------ Animación ---------------------
 function animate() {
   requestAnimationFrame(animate);
+
+  if (world) {
+    world.step();
+  }
+
+  controls.update();
+  renderer.render(scene, camera);
+}
+
+animate();
