@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { GLTFLoader } from './modulos/GLTFLoader.js';
 
 export function cargarModelo(posX = 250, posY = 3, posZ = 250, rutaModelo = './negro.glb') {
     const loader = new GLTFLoader();
