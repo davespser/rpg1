@@ -47,4 +47,19 @@ export function createTerrain(imageData, texture) {
   }
 
   const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute('position', new THREE
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+  geometry.setIndex(indices);
+  geometry.computeVertexNormals();
+
+  // Material con textura
+  const material = new THREE.MeshPhysicalMaterial({
+    map: texture,
+    metalness: 0.2,
+    roughness: 0.8,
+  });
+
+  const terrainMesh = new THREE.Mesh(geometry, material);
+  terrainMesh.receiveShadow = false;
+
+  return terrainMesh;
+}
