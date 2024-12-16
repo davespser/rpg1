@@ -5,7 +5,7 @@ import { loadTexture, createTerrain } from './createTerrain.js';
 import { createSky } from './sky.js';
 import { Stats } from './stats.js';
 import { initScene} from './scene.js;
-
+import { initPhysics, createTerrainRigidBody, stepPhysics } from './physics.js';
 const {scene, camera, renderer, controls} = initScene();
 // Configuración de la escena, cámara y renderizador
 
