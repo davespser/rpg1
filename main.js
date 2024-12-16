@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'OrbitControls';
 import RAPIER from '@dimforge/rapier3d-compat';
-import { loadTexture, createTerrain } from './createTerrain.js';
+import { createTerrain } from './createTerrain.js';
 
 let world;
 
