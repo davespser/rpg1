@@ -1,27 +1,21 @@
 import * as THREE from 'three';
 
-export function crearCubo() {
-    // Crear geometría del cubo
-    const geometry = new THREE.BoxGeometry(10, 10, 10);
+export function crearCubo(posX = 0, posY = 0, posZ = 0) {
+    const geometry = new THREE.BoxGeometry(1, 1, 1);
     const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
     const cubo = new THREE.Mesh(geometry, material);
-
-    // Habilitar sombras
     cubo.castShadow = true;
     cubo.receiveShadow = true;
-
+    cubo.position.set(posX, posY, posZ); // Establecer posición inicial
     return cubo;
 }
 
-export function crearEsfera() {
-    // Crear geometría de la esfera
+export function crearEsfera(posX = 0, posY = 0, posZ = 0) {
     const geometry = new THREE.SphereGeometry(0.5, 32, 32);
     const material = new THREE.MeshStandardMaterial({ color: 0x0000ff });
     const esfera = new THREE.Mesh(geometry, material);
-
-    // Habilitar sombras
     esfera.castShadow = true;
     esfera.receiveShadow = true;
-
+    esfera.position.set(posX, posY, posZ); // Establecer posición inicial
     return esfera;
 }
