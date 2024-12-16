@@ -1,29 +1,28 @@
-import * as THREE from './modulos/three.module.js';
-import RAPIER from '@dimforge/rapier3d-compat';
+import * as THREE from 'three';
+import { OrbitControls } from 'OrbitControls';
 
-// Funciones auxiliares para la escena
-export function addDynamicObject(scene, world, position) {
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const material = new THREE.MeshStandardMaterial({ color: 0xff0000 });
-    const mesh = new THREE.Mesh(geometry, material);
-    mesh.position.set(position.x, position.y, position.z);
-    scene.add(mesh);
+export function initScene() {
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 5000);
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
 
-    const rigidBodyDesc = RAPIER.RigidBodyDesc.dynamic()
-        .setTranslation(position.x, position.y, position.z);
-    const rigidBody = world.createRigidBody(rigidBodyDesc);
-    const colliderDesc = RAPIER.ColliderDesc.cuboid(0.5, 0.5, 0.5);
-    world.createCollider(colliderDesc, rigidBody);
+    camera.position.set(100, 80, 150);
+    camera.lookAt(scene.position);
 
-    return { mesh, rigidBody };
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.25;
+    controls.minDistance = 10;
+    controls.maxDistance = 4000;
+
+    scene.add(new THREE.AmbientLight(0xffffff, 2));
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 2.5);
+    directionalLight.position.set(100, 100, 100);
+    directionalLight.castShadow = true;
+    scene.add(directionalLight);
+
+    return { scene, camera, renderer, controls };
 }
-
-// Añadir luces dinámicas
-export function addLight(scene, position, color, intensity) {
-    const light = new THREE.PointLight(color, intensity);
-    light.position.set(position.x, position.y, position.z);
-    scene.add(light);
-    return light;
-}
-
-// Otras funciones útiles pueden ir aquí
