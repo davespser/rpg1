@@ -28,12 +28,13 @@ hemiLight.position.set(0, 80, 0);
 scene.add(hemiLight);
 
 const directionalLight1 = new THREE.DirectionalLight(0xffffff, 1.5);
-directionalLight1.position.set(1, 1, 1);
+directionalLight1.position.set(100, 100, 100);
+directionalLight1.intensity = 2,5;
 directionalLight1.castShadow = true;
 scene.add(directionalLight1);
 
 const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.5);
-directionalLight2.position.set(-1, 1, -1);
+directionalLight2.position.set(-1, 101, -1);
 scene.add(directionalLight2);
 
 // ------------------ Carga de Imagen y Creación del Terreno ---------------------
