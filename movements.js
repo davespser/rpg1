@@ -1,23 +1,22 @@
-import * as THREE from 'three';
-export function handleMovement(character, deltaTime, input) {
-  const speed = 5; // Velocidad de movimiento.
+export function manejarMovimiento(character, deltaTime, input) {
+    const velocidad = 5; // Velocidad de movimiento.
 
-  const direction = new THREE.Vector3();
-  if (input.forward) direction.z -= 1;
-  if (input.backward) direction.z += 1;
-  if (input.left) direction.x -= 1;
-  if (input.right) direction.x += 1;
+    const direccion = new THREE.Vector3();
+    if (input.forward) direccion.z -= 1;
+    if (input.backward) direccion.z += 1;
+    if (input.left) direccion.x -= 1;
+    if (input.right) direccion.x += 1;
 
-  direction.normalize().multiplyScalar(speed * deltaTime);
+    direccion.normalize().multiplyScalar(velocidad * deltaTime);
 
-  // Actualizar física
-  const position = character.body.translation();
-  character.body.setNextKinematicTranslation({
-    x: position.x + direction.x,
-    y: position.y,
-    z: position.z + direction.z,
-  });
+    // Actualizar la física
+    const position = character.body.translation();
+    character.body.setNextKinematicTranslation({
+        x: position.x + direccion.x,
+        y: position.y,
+        z: position.z + direccion.z,
+    });
 
-  // Sincronizar el modelo con la posición física
-  character.model.position.copy(character.body.translation());
+    // Sincronizar el modelo con la posición física
+    character.children[0].position.copy(character.body.translation()); // El modelo es hijo del grupo
 }
