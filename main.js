@@ -20,7 +20,7 @@ controls.enableDamping = true;
 controls.dampingFactor = 0.25;
 
 // ------------------ Luces ---------------------
-const ambientLight = new THREE.AmbientLight(0xffffff, 2);
+const ambientLight = new THREE.AmbientLight(0xffffff, 1);
 scene.add(ambientLight);
 
 const hemiLight = new THREE.HemisphereLight(0xaaaaaa, 0x444444, 1.2);
@@ -33,6 +33,8 @@ directionalLight1.intensity = 2,5;
 directionalLight1.castShadow = true;
 scene.add(directionalLight1);
 
+const ambientLightHelper = new THREE.AmbientLightHelper(ambientLight, 2);
+scene.add(ambientLightHelper);
 const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.5);
 directionalLight2.position.set(-1, 101, -1);
 scene.add(directionalLight2);
