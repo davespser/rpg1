@@ -2,43 +2,50 @@ import * as THREE from 'three';
 import { GLTFLoader } from "GLTFLoader";
 import RAPIER from '@dimforge/rapier3d-compat';
 
-export function cargarModelo(world, posX = 250, posY = 5, posZ = 250, rutaModelo = './robotauro_walk.glb') {
+export async function cargarModelo(world, posX = 250, posY = 5, posZ = 250, rutaModelo = './robotauro_walk.glb') {
     const loader = new GLTFLoader();
     const modelo = new THREE.Group(); // Grupo para el modelo
-    loader.load(
-        rutaModelo,
-        (gltf) => {
-            const objeto = gltf.scene;
-            objeto.traverse((node) => {
-                if (node.isMesh) {
-                    node.castShadow = true; // Habilitar sombras
-                    node.receiveShadow = true;
-                }
-            });
-            objeto.position.set(posX, posY, posZ); // Establecer posición inicial
-            modelo.add(objeto); // Agregar el modelo cargado al grupo
 
-            // Obtener las dimensiones del modelo GLB
-            const bbox = new THREE.Box3().setFromObject(objeto);
-            const size = bbox.getSize(new THREE.Vector3());
+    // Usar una promesa para manejar la carga del modelo
+    return new Promise((resolve, reject) => {
+        loader.load(
+            rutaModelo,
+            (gltf) => {
+                const objeto = gltf.scene;
+                objeto.traverse((node) => {
+                    if (node.isMesh) {
+                        node.castShadow = true; // Habilitar sombras
+                        node.receiveShadow = true;
+                    }
+                });
+                objeto.position.set(posX, posY, posZ); // Establecer posición inicial
+                modelo.add(objeto); // Agregar el modelo cargado al grupo
 
-            // Crear el cuerpo físico correspondiente
-            const bodyDesc = RAPIER.RigidBodyDesc.dynamic().setTranslation(posX, posY, posZ);
-            const body = world.createRigidBody(bodyDesc);
+                // Obtener las dimensiones del modelo GLB
+                const bbox = new THREE.Box3().setFromObject(objeto);
+                const size = bbox.getSize(new THREE.Vector3());
 
-            // Crear el collider para el cuerpo basado en el tamaño del modelo (una caja)
-            const colliderDesc = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2);
-            world.createCollider(colliderDesc, body);
+                // Crear el cuerpo físico correspondiente
+                const bodyDesc = RAPIER.RigidBodyDesc.dynamic().setTranslation(posX, posY, posZ);
+                const body = world.createRigidBody(bodyDesc);
 
-            // Añadir el cuerpo a la propiedad del modelo para su actualización
-            modelo.body = body;
-        },
-        undefined,
-        (error) => {
-            console.error('Error al cargar el modelo:', error);
-        }
-    );
-    return { modelo, body }; // Devuelve el grupo vacío inicialmente
+                // Crear el collider para el cuerpo basado en el tamaño del modelo (una caja)
+                const colliderDesc = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2);
+                world.createCollider(colliderDesc, body);
+
+                // Añadir el cuerpo a la propiedad del modelo para su actualización
+                modelo.body = body;
+
+                // Resolver la promesa, retornando el modelo y el cuerpo
+                resolve({ modelo, body });
+            },
+            undefined,
+            (error) => {
+                console.error('Error al cargar el modelo:', error);
+                reject(error);
+            }
+        );
+    });
 }
 
 export function crearEsfera(posX = 0, posY = 0, posZ = 0) {
