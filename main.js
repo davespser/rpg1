@@ -8,7 +8,7 @@ let world;
 
 // Escena, cámara y renderer
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 5000);
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
@@ -19,6 +19,8 @@ camera.lookAt(scene.position);
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.25;
+controls.minDistance = 10;  // Mínima distancia a la que puedes acercarte
+controls.maxDistance = 4000;  // Máxima distancia a la que puedes alejarte
 
 // Luces
 const ambientLight = new THREE.AmbientLight(0xffffff, 2);
