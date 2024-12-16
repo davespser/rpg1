@@ -3,7 +3,7 @@ import { OrbitControls } from 'OrbitControls';
 import RAPIER from '@dimforge/rapier3d-compat';
 import { loadTexture, createTerrain } from './createTerrain.js';
 import { createSky } from './sky.js';
-
+import { Stats } from './stats.js';
 
 let world;
 
