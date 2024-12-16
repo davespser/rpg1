@@ -39,7 +39,7 @@ export function cargarModelo(world, posX = 250, posY = 5, posZ = 250, rutaModelo
             console.error('Error al cargar el modelo:', error);
         }
     );
-    return modelo; // Devuelve el grupo vacío inicialmente
+    return { modelo, body }; // Devuelve el grupo vacío inicialmente
 }
 
 export function crearEsfera(posX = 0, posY = 0, posZ = 0) {
