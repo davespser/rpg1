@@ -8,8 +8,8 @@ import { initPhysics, createTerrainRigidBody, stepPhysics } from './physics.js';
 import { loadTexture, createTerrain } from './createTerrain.js';
 import { createSky } from './sky.js';
 import { cargarModelo } from './objetos.js'; 
-import { handleMovement } from './movement';
-import { setupAnimation } from './animation';
+import { handleMovement } from './movement.js';
+import { setupAnimation } from './animation.js';
 
 const { scene, camera, renderer, controls } = initScene();
 const stats = new Stats();
