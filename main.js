@@ -15,7 +15,8 @@ createSky(scene);
 
 const texturePath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa_t.jpg';
 const heightMapPath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa.png';
-
+const cubo = crearCubo(); // Crear el cubo
+   scene.add(cubo); // Añadir el cubo a la escena
 Promise.all([
     loadTexture(texturePath),
     new Promise((resolve, reject) => {
