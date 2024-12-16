@@ -7,7 +7,7 @@ import { Stats } from './stats.js';
 import { initPhysics, createTerrainRigidBody, stepPhysics } from './physics.js';
 import { loadTexture, createTerrain } from './createTerrain.js';
 import { createSky } from './sky.js';
-import { crearCubo } from './objetos.js';
+import { cargarModeloNegro } from './objetos.js';
 const { scene, camera, renderer, controls } = initScene();
 const stats = new Stats();
 crearMenuEstadisticas();
