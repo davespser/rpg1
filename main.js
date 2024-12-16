@@ -8,7 +8,7 @@ import { initPhysics, createTerrainRigidBody, stepPhysics } from './physics.js';
 import { loadTexture, createTerrain } from './createTerrain.js';
 import { createSky } from './sky.js';
 import { cargarModelo } from './objetos.js'; 
-import { handleMovement } from './movements.js';
+import { msnejarMovimiento } from './movements.js';
 import { setupAnimation } from './animations.js';
 
 const { scene, camera, renderer, controls } = initScene();
@@ -78,11 +78,12 @@ function animate() {
     const deltaTime = clock.getDelta();
 
     // Manejar el movimiento del personaje
-    handleMovement(character, deltaTime, input);
+    manejarMovimiento(modelo, deltaTime, input);
 
-    // Actualizar las animaciones
-    mixer.update(deltaTime);
-
+        // Actualizar físicas y renderizar
+        world.step();
+        renderer.render(scene, camera);
+        controls.update();
     // Actualizar físicas y renderizar
     stepPhysics();
     renderer.render(scene, camera);
