@@ -17,6 +17,10 @@ document.body.appendChild(renderer.domElement);
 camera.position.set(100, 80, 150);
 camera.lookAt(scene.position);
 
+function crearMenuEstadisticas() {
+    const menu = document.createElement('div');
+    menu.id = 'menu';
+    menu.classList.add('hidden');
 const titulo = document.createElement('h3');
     titulo.textContent = 'Estadísticas';
     menu.appendChild(titulo);
