@@ -8,7 +8,7 @@ import { initPhysics, createTerrainRigidBody, stepPhysics } from './physics.js';
 import { loadTexture, createTerrain } from './createTerrain.js';
 import { createSky } from './sky.js';
 import { cargarModelo } from './objetos.js'; 
-import { msnejarMovimiento } from './movements.js';
+import { manejarMovimiento } from './movements.js';
 import { setupAnimation } from './animations.js';
 
 const { scene, camera, renderer, controls } = initScene();
