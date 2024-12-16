@@ -28,7 +28,7 @@ hemiLight.position.set(360, 80, 360);
 scene.add(hemiLight);
 
 const directionalLight1 = new THREE.DirectionalLight(0xffffff, 1.5);
-directionalLight1.position.set(100, 100, 100);
+directionalLight1.position.set(180, 100, 180);
 directionalLight1.intensity = 2,5;
 directionalLight1.castShadow = true;
 scene.add(directionalLight1);
