@@ -1,7 +1,9 @@
 import * as THREE from 'three';
-import { GLTFLoader } from "GLTFLoader";
+import * as THREE from 'three';
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import RAPIER from '@dimforge/rapier3d';
 
-export function cargarModelo(posX = 250, posY = 5, posZ = 250, rutaModelo = './robotauro_walk.glb') {
+export function cargarModelo(world, posX = 250, posY = 5, posZ = 250, rutaModelo = './robotauro_walk.glb') {
     const loader = new GLTFLoader();
     const modelo = new THREE.Group(); // Grupo para el modelo
     loader.load(
@@ -16,6 +18,21 @@ export function cargarModelo(posX = 250, posY = 5, posZ = 250, rutaModelo = './r
             });
             objeto.position.set(posX, posY, posZ); // Establecer posición inicial
             modelo.add(objeto); // Agregar el modelo cargado al grupo
+
+            // Obtener las dimensiones del modelo GLB
+            const bbox = new THREE.Box3().setFromObject(objeto);
+            const size = bbox.getSize(new THREE.Vector3());
+
+            // Crear el cuerpo físico correspondiente
+            const bodyDesc = RAPIER.RigidBodyDesc.dynamic().setTranslation(posX, posY, posZ);
+            const body = world.createRigidBody(bodyDesc);
+
+            // Crear el collider para el cuerpo basado en el tamaño del modelo (una caja)
+            const colliderDesc = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2);
+            world.createCollider(colliderDesc, body);
+
+            // Añadir el cuerpo a la propiedad del modelo para su actualización
+            modelo.body = body;
         },
         undefined,
         (error) => {
