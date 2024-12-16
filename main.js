@@ -35,7 +35,7 @@ function resizeImageToPowerOf2(image, size = 512) {
   canvas.height = size;
   const ctx = canvas.getContext('2d');
   ctx.drawImage(image, 0, 0, size, size);
-  return canvas;
+  return new THREE.CanvasTexture(canvas);
 }
 
 // ------------------ Carga de Imagen y Creación del Terreno ---------------------
