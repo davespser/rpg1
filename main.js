@@ -1,3 +1,6 @@
+import * as THREE from 'three';
+import { OrbitControls } from 'OrbitControls';
+import RAPIER from '@dimforge/rapier3d-compat';
 import { initScene } from './scene.js';
 import { crearMenuEstadisticas } from './menu.js';
 import { Stats } from './stats.js';
