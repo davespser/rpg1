@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { GLTFLoader } from "GLTFLoader";
 import RAPIER from '@dimforge/rapier3d';
 
 export function cargarModelo(world, posX = 250, posY = 5, posZ = 250, rutaModelo = './robotauro_walk.glb') {
