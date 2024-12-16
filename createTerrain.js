@@ -1,33 +1,13 @@
 import * as THREE from 'three';
 
-// Función para cargar una textura
-export function loadTexture(texturePath) {
-  return new Promise((resolve, reject) => {
-    const loader = new THREE.TextureLoader();
-    loader.load(
-      texturePath,
-      (texture) => {
-        // Configuración de repetición y envoltura de la textura
-        texture.wrapS = THREE.RepeatWrapping;
-        texture.wrapT = THREE.RepeatWrapping;
-        texture.repeat.set(4, 4); // Repetir la textura 4x4
-        resolve(texture);
-      },
-      undefined,
-      (err) => reject(err)
-    );
-  });
-}
-
-// Función para crear el terreno con altura y textura
 export function createTerrain(imageData, terrainTexture) {
   const width = imageData.width;
   const height = imageData.height;
   const vertices = [];
   const indices = [];
-  const scale = 1; // Ajusta la escala del terreno
-  const heightScale = 50; // Ajusta la altura máxima del terreno
+  const scale = 1; // Escala del terreno
 
+  // Generar vértices y caras a partir del heightmap
   for (let z = 0; z < height; z++) {
     for (let x = 0; x < width; x++) {
       const index = (z * width + x) * 4;
@@ -35,9 +15,8 @@ export function createTerrain(imageData, terrainTexture) {
       const g = imageData.data[index + 1];
       const b = imageData.data[index + 2];
 
-      // Promedio de RGB como altura normalizada
-      const heightValue = ((r + g + b) / 3) / 255;
-      const y = heightValue * heightScale * scale;
+      const heightValue = ((r + g + b) / 3) / 255; // Normalizado a [0, 1]
+      const y = heightValue * 50 * scale;
 
       vertices.push(x * scale, y, z * scale);
 
@@ -53,20 +32,24 @@ export function createTerrain(imageData, terrainTexture) {
     }
   }
 
+  // Crear la geometría
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
   geometry.setIndex(indices);
   geometry.computeVertexNormals();
 
-  // Material con textura y ajustes de iluminación
+  // **Aplicar la textura al material**
+  terrainTexture.wrapS = THREE.RepeatWrapping;
+  terrainTexture.wrapT = THREE.RepeatWrapping;
+  terrainTexture.repeat.set(10, 10); // Ajusta el tamaño del mosaico de la textura
+
   const material = new THREE.MeshStandardMaterial({
-    map: terrainTexture, // Textura aplicada
-    metalness: 0.2,
+    map: terrainTexture, // Asignar la textura
+    metalness: 0.3,
     roughness: 0.8,
   });
 
   const terrainMesh = new THREE.Mesh(geometry, material);
-  terrainMesh.castShadow = true;
   terrainMesh.receiveShadow = true;
 
   return terrainMesh;
