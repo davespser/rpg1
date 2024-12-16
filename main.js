@@ -4,14 +4,7 @@ import RAPIER from '@dimforge/rapier3d-compat';
 import { loadTexture, createTerrain } from './createTerrain.js';
 import { createSky } from './sky.js';
 
-document.getElementById('toggleMenu').addEventListener('click', function() {
-       const menu = document.getElementById('menu');
-       if (menu.classList.contains('hidden')) {
-           menu.classList.remove('hidden');
-       } else {
-           menu.classList.add('hidden');
-       }
-   });
+
 let world;
 
 // Escena, cámara y renderer
@@ -24,6 +17,25 @@ document.body.appendChild(renderer.domElement);
 camera.position.set(100, 80, 150);
 camera.lookAt(scene.position);
 
+const titulo = document.createElement('h3');
+    titulo.textContent = 'Estadísticas';
+    menu.appendChild(titulo);
+    
+    const statVida = document.createElement('div');
+    statVida.classList.add('stat');
+    statVida.innerHTML = 'Vida: <span id="vida">100</span>';
+    menu.appendChild(statVida);
+    
+    const statEnergia = document.createElement('div');
+    statEnergia.classList.add('stat');
+    statEnergia.innerHTML = 'Energía: <span id="energia">100</span>';
+    menu.appendChild(statEnergia);
+    
+    document.body.appendChild(menu);
+}
+
+// Llamar a la función para crear el menú al cargar la página
+crearMenuEstadisticas();
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.25;
@@ -87,6 +99,14 @@ async function createTerrainRigidBody(terrainMesh) {
   const rigidBody = world.createRigidBody(RAPIER.RigidBodyDesc.fixed());
   world.createCollider(colliderDesc, rigidBody);
 }
+document.getElementById('toggleMenu').addEventListener('click', function() {
+    const menu = document.getElementById('menu');
+    if (menu.classList.contains('hidden')) {
+        menu.classList.remove('hidden');
+    } else {
+        menu.classList.add('hidden');
+    }
+});
 
 // Animación
 function animate() {
