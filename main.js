@@ -4,18 +4,12 @@ import RAPIER from '@dimforge/rapier3d-compat';
 import { loadTexture, createTerrain } from './createTerrain.js';
 import { createSky } from './sky.js';
 import { Stats } from './stats.js';
-
+import { initScene} from './scene.js;
 let world;
 
+const {scene, camera, renderer, controls} = initScene();
 // Configuración de la escena, cámara y renderizador
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 5000);
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
 
-camera.position.set(100, 80, 150);
-camera.lookAt(scene.position);
 
 // Crear el menú de estadísticas
 function crearMenuEstadisticas() {
@@ -42,11 +36,7 @@ function crearMenuEstadisticas() {
 crearMenuEstadisticas();
 
 // Configuración de los controles de la cámara
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-controls.dampingFactor = 0.25;
-controls.minDistance = 10;  // Mínima distancia a la que puedes acercarte
-controls.maxDistance = 4000;  // Máxima distancia a la que puedes alejarte
+  // Máxima distancia a la que puedes alejarte
 
 // Añadir luces a la escena
 const ambientLight = new THREE.AmbientLight(0xffffff, 2);
