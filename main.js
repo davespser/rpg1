@@ -27,7 +27,6 @@ const modeloNegro = cargarModelo(250, 24, 250, './robotauro_walk.glb');
 scene.add(modeloNegro);
 
 // Crear el personaje con las físicas
-const character = createCharacter(world, modeloNegro);
 
 // Configurar animaciones (si las tiene)
 const mixer = new THREE.AnimationMixer(modeloNegro);
