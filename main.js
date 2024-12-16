@@ -33,7 +33,8 @@ directionalLight1.intensity = 2.5;
 directionalLight1.castShadow = true;
 scene.add(directionalLight1);
 
-
+const ambientLightHelper = new THREE.AmbientLightHelper(ambientLight, 2);
+scene.add(ambientLightHelper);
 const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.5);
 directionalLight2.position.set(-1, 101, -1);
 scene.add(directionalLight2);
@@ -74,11 +75,8 @@ Promise.all([
     );
   }),
 ]).then(([terrainTexture, imageData]) => {
-  const geometry = new THREE.PlaneGeometry(100, 100, 256, 256); // Ajusta según sea necesario
-  const material = new THREE.MeshStandardMaterial({
-    map: terrainTexture
-  });
-  const terrainMesh = new THREE.Mesh(geometry, material);
+  // Mantener la geometría del terreno
+  const terrainMesh = createTerrain(imageData, terrainTexture);
   scene.add(terrainMesh);
 
   // Crear cuerpo físico para el terreno
@@ -110,13 +108,3 @@ async function createTerrainRigidBody(terrainMesh) {
 // ------------------ Animación ---------------------
 function animate() {
   requestAnimationFrame(animate);
-
-  if (world) {
-    world.step();
-  }
-
-  controls.update();
-  renderer.render(scene, camera);
-}
-
-animate();
