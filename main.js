@@ -17,8 +17,6 @@ createSky(scene);
 const texturePath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa_t.jpg';
 const heightMapPath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa.png';
 
-let world; // Declarar el mundo de física
-
 // Inicializar física y luego cargar el modelo y el terreno
 let world;
 
