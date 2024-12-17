@@ -10,6 +10,12 @@ export function cargarModelo(posX = 1, posY = 2, posZ = 1, rutaModelo = './negro
             (gltf) => {
                 console.log("Modelo cargado:", gltf);
 
+                const posYInicial = 20; // Ajusta esto a una altura por encima del terreno
+
+const bodyDesc = RAPIER.RigidBodyDesc.dynamic()
+    .setTranslation(posX, posYInicial, posZ);
+
+const body = world.createRigidBody(bodyDesc);
                 // Modelo visual de Three.js
                 const objeto = gltf.scene;
                 const escala = { x: 5, y: 5, z: 5 }; // Escala del modelo
