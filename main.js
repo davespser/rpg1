@@ -59,7 +59,7 @@ if (terrainMesh.geometry) {
         console.log("Posición inicial del cuerpo físico:", body.translation());
 
         // Apuntar la cámara al modelo
-        camera.position.set(250, 50, 300); // Configura la posición de la cámara
+        camera.position.set(250, 10, 300); // Configura la posición de la cámara
         camera.lookAt(modelo.position);
 
         // Actualizar los controles de la cámara
