@@ -12,7 +12,7 @@ export function cargarModelo(posX = 1, posY = 20, posZ = 1, rutaModelo = './negr
 
                 // Modelo visual de Three.js
                 const objeto = gltf.scene;
-                const escala = { x: 5, y: 5, z: 5 }; // Escala del modelo
+                const escala = { x: 1, y: 1, z: 1 }; // Escala del modelo
                 objeto.scale.set(escala.x, escala.y, escala.z);
                 objeto.position.set(posX, posY, posZ); // Corregido: Y ahora usa posY
 
