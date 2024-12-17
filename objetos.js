@@ -47,16 +47,16 @@ export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro
                     const modelCenter = modelBoundingBox.getCenter(new THREE.Vector3());  // Obtener el centro del modelo
 
                     // Posicionamos el colisionador en el centro del modelo
-                    colliderMesh.position.set(modelCenter.x, modelCenter.y, modelCenter.z);
+                    colliderMesh.position.set(modelCenter.x+1, modelCenter.y+1, modelCenter.z+1);
                     colliderMesh.name = "colliderMesh";  // Nombre para poder acceder fácilmente
                     objeto.add(colliderMesh); // Añadir visualización del colisionador al objeto
 
                     console.log("Posición del colisionador:", colliderMesh.position);  // Verificar la posición del colisionador
 
                     // Visualización del Bounding Box
-                    const box = new THREE.Box3().setFromObject(bodyDesc);
+                    const box = new THREE.Box3().setFromObject(objeto);
                     const helper = new THREE.Box3Helper(box, 0xffff00); // Bounding Box en color amarillo
-                    bodyDesc.add(helper); // Añade el helper al objeto, o podrías añadirlo directamente a la 'scene' si prefieres
+                    objeto.add(helper); // Añade el helper al objeto, o podrías añadirlo directamente a la 'scene' si prefieres
 
                     // Devolver el modelo y el cuerpo físico
                     resolve({ modelo: objeto, body });
