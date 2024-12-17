@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from "GLTFLoader";
 import RAPIER from '@dimforge/rapier3d-compat';
 
-export function cargarModelo(posX = 1, posY = 3, posZ = 1, rutaModelo = './negro.glb', world) {
+export function cargarModelo(posX = 1, posY = 10, posZ = 1, rutaModelo = './negro.glb', world) {
     return new Promise((resolve, reject) => {
         const loader = new GLTFLoader();
         loader.load(
@@ -12,7 +12,7 @@ export function cargarModelo(posX = 1, posY = 3, posZ = 1, rutaModelo = './negro
                 
                 // Modelo visual de Three.js
                 const objeto = gltf.scene;
-                objeto.scale.set(4, 4, 4);  // Escala ajustada
+                objeto.scale.set(10, 10, 10);  // Escala ajustada
                 objeto.traverse((node) => {
                     if (node.isMesh) {
                         node.castShadow = true;
