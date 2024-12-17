@@ -24,7 +24,6 @@ const texturePath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa_
 const heightMapPath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa.png';
 
 // Función principal de inicialización
-// Función principal de inicialización
 async function init() {
     try {
         // Inicializar física
@@ -65,6 +64,7 @@ async function init() {
         console.error('Error durante la inicialización:', error);
     }
 }
+
 // Función para cargar el mapa de altura
 function cargarMapaDeAltura(path) {
     return new Promise((resolve, reject) => {
@@ -87,7 +87,32 @@ function cargarMapaDeAltura(path) {
     });
 }
 
+// Función de animación
+function animate() {
+    requestAnimationFrame(animate);
 
+    stepPhysics(world); // Actualizar la física
+    controls.update();
+    renderer.render(scene, camera);
+
+    // Sincronización del modelo con la física
+    if (body && modelo) {
+        const translation = body.translation();
+        const rotation = body.rotation();
+        modelo.position.set(translation.x, translation.y, translation.z);
+        modelo.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
+
+        // Sincronización del colisionador con el modelo
+        const colliderMesh = modelo.getObjectByName("colliderMesh");
+        if (colliderMesh) {
+            colliderMesh.position.set(translation.x, translation.y, translation.z);
+            colliderMesh.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
+        }
+    }
+
+    // Actualizar estadísticas
+    // stats.modificarVida(-0.1); // Ejemplo de daño gradual
+}
 
 // Ejecutar la función principal
 init();
