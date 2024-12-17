@@ -42,12 +42,13 @@ async function init() {
         console.log("Terreno añadido a la escena:", terrainMesh);
 
         // Crear colisionador para el terreno
-        if (terrainMesh.geometry) {
-            createTerrainRigidBody(terrainMesh);
-            console.log("Colisionador del terreno creado.");
-        } else {
-            console.error("Error: El terreno no tiene geometría válida.");
-        }
+        // Crear colisionador para el terreno
+if (terrainMesh.geometry) {
+    createTerrainRigidBody(terrainMesh, world); // Pasar 'world' como parámetro
+    console.log("Colisionador del terreno creado.");
+} else {
+    console.error("Error: El terreno no tiene geometría válida.");
+}
 
         // Cargar modelo con física
         const resultado = await cargarModelo(1, 1, 1, './negro.glb', world);
