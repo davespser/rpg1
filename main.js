@@ -31,23 +31,24 @@ async function init() {
         console.log('Mundo de física inicializado:', world);
 
         // Cargar terreno y texturas
-        const [terrainTexture, imageData] = await Promise.all([
-            loadTexture(texturePath), // Cargar textura
-            cargarMapaDeAltura(heightMapPath),
-        ]);
+        // Cargar terreno y texturas
+const [terrainTexture, imageData] = await Promise.all([
+    loadTexture(texturePath),
+    cargarMapaDeAltura(heightMapPath),
+]);
 
-        // Crear terreno
-        terrainMesh = createTerrain(imageData, terrainTexture);
-        terrainMesh.scale.set(1, 1, 1); // Ajusta escala si es necesario
-        terrainMesh.position.set(0, 0, 0); // Asegúrate de que el terreno esté en el origen
-        scene.add(terrainMesh);
-        console.log("Terreno añadido a la escena:", terrainMesh);
+// Crear terreno
+terrainMesh = createTerrain(imageData, terrainTexture);
+terrainMesh.scale.set(1, 1, 1);
+terrainMesh.position.set(0, 0, 0); // Ajusta la posición del terreno si es necesario
+scene.add(terrainMesh);
+console.log("Terreno añadido a la escena:", terrainMesh);
 
-        // Crear colisionador para el terreno
-        if (terrainMesh.geometry) {
-            createTerrainRigidBody(terrainMesh, world); // Pasar 'world'
-            console.log("Colisionador del terreno creado.");
-        }
+// Crear colisionador para el terreno
+if (terrainMesh.geometry) {
+    createTerrainRigidBody(terrainMesh, world);
+    console.log("Colisionador del terreno creado.");
+}
 
         // Cargar modelo con física
         const resultado = await cargarModelo(1, 30, 1, './negro.glb', world);
