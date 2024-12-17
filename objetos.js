@@ -24,11 +24,11 @@ export function cargarModelo(posX = 250, posY = 5, posZ = 250, rutaModelo = './n
             objeto.position.set(posX, posY, posZ);
 
             // Crear un cuerpo físico para el modelo
-            const bodyDesc = Rapier.RigidBodyDesc.dynamic().setTranslation(posX, posY, posZ);
+            const bodyDesc = RAPIER.RigidBodyDesc.dynamic().setTranslation(posX, posY, posZ);
             body = world.createRigidBody(bodyDesc);
 
             // Ajustar colisión (aquí usamos una caja como ejemplo, ajusta según tu modelo)
-            const colliderDesc = Rapier.ColliderDesc.cuboid(1.5, 1.5, 1.5); // Ajusta según el tamaño del modelo escalado
+            const colliderDesc = RAPIER.ColliderDesc.cuboid(1.5, 1.5, 1.5); // Ajusta según el tamaño del modelo escalado
             world.createCollider(colliderDesc, body);
 
             // Sincronización visual con física (esto debería hacerse en cada frame)
