@@ -45,4 +45,3 @@ export function cargarModelo(posX = 1, posY = 20, posZ = 1, rutaModelo = './negr
         );
     });
 }
-}
