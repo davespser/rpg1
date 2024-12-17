@@ -20,13 +20,18 @@ const heightMapPath = 'https://raw.githubusercontent.com/davespser/rpg1/main/cas
 let world; // Declarar el mundo de física
 
 // Inicializar física y luego cargar el modelo y el terreno
+let world;
+
 initPhysics().then((physicsWorld) => {
     console.log('Mundo de física inicializado:', physicsWorld);
     world = physicsWorld;
     const { modelo, body } = cargarModelo(250, 24, 250, './negro.glb', world);
-    console.log('Modelo y cuerpo físico después de cargar:', { modelo, body });
-    scene.add(modelo);
-    // ... Resto de tu código
+    if (modelo) {
+        scene.add(modelo);
+    } else {
+        console.error('No se pudo cargar el modelo debido a un problema con el mundo de física');
+    }
+    // Resto de tu lógica aquí
 });
     
 
