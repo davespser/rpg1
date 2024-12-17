@@ -20,11 +20,10 @@ export function cargarModelo(posX = 1, posY = 20, posZ = 1, rutaModelo = './negr
 
                 // Crear cuerpo físico alineado con el modelo
                 const bodyDesc = RAPIER.RigidBodyDesc.dynamic()
-                    .setTranslation(posX, posY + size.y / 2, posZ)
-                    .setDensity(2.0); // Ajustar la densidad
+                    .setTranslation(posX, posY + size.y / 2, posZ);
                 const body = world.createRigidBody(bodyDesc);
 
-                // Crear colisionador con propiedades adicionales
+                // Crear colisionador con propiedades de fricción y restitución
                 const colliderDesc = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2)
                     .setFriction(0.5) // Ajustar la fricción
                     .setRestitution(0.3); // Ajustar la restitución
