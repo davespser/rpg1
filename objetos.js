@@ -13,7 +13,7 @@ export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro
                 // Modelo visual de Three.js
                 const objeto = gltf.scene;
                 objeto.scale.set(1, 1, 1);
-                objeto.position.set(1,10,1);// Escala ajustada
+                objeto.position.set(1,15,1);// Escala ajustada
                 objeto.traverse((node) => {
                     if (node.isMesh) {
                         node.castShadow = true;
@@ -54,9 +54,9 @@ export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro
                     console.log("Posición del colisionador:", colliderMesh.position);  // Verificar la posición del colisionador
 
                     // Visualización del Bounding Box
-                    const box = new THREE.Box3().setFromObject(objeto);
+                    const box = new THREE.Box3().setFromObject(colliderGeometry);
                     const helper = new THREE.Box3Helper(box, 0xffff00); // Bounding Box en color amarillo
-                    objeto.add(helper); // Añade el helper al objeto, o podrías añadirlo directamente a la 'scene' si prefieres
+                    colliderGeometry.add(helper); // Añade el helper al objeto, o podrías añadirlo directamente a la 'scene' si prefieres
 
                     // Devolver el modelo y el cuerpo físico
                     resolve({ modelo: objeto, body });
