@@ -25,6 +25,10 @@ export async function createTerrainRigidBody(terrainMesh, world) {
     world.createCollider(colliderDesc, rigidBody);
 
     console.log("Terreno configurado como cuerpo fijo.");
-};
-    
+}
 
+export function stepPhysics() {
+    if (world) {
+        world.step();
+    }
+}
