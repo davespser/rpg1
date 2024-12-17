@@ -18,8 +18,14 @@ const texturePath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa_
 const heightMapPath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa.png';
 
 // Cargar el modelo en lugar del cubo
-const modeloNegro = cargarModelo(250, 24, 250, './negro.glb');
-scene.add(modeloNegro); // Añadir el modelo a la escena
+ /let world; // Declarar el mundo de física
+
+// Cargar el modelo en lugar del cubo
+initPhysics().then((physicsWorld) => {
+    world = physicsWorld;
+    
+    const { modelo, body } = cargarModelo(250, 24, 250, './negro.glb', world); // Asegúrate de que `cargarModelo` devuelva el cuerpo físico
+    scene.add(modelo); //  Añadir el modelo a la escena
 
 // Cargar terreno y texturas
 Promise.all([
@@ -47,9 +53,14 @@ Promise.all([
 
 function animate() {
     requestAnimationFrame(animate);
-    stepPhysics();
+    stepPhysics(world);
     controls.update();
     renderer.render(scene, camera);
+    if (body) {
+            const translation = body.translation();
+            modelo.position.set(translation.x, translation.y, translation.z);
+            modelo.quaternion.setFromRotationMatrix(body.rotation());
+    }
 }
 
 animate();
