@@ -1,7 +1,4 @@
 import RAPIER from '@dimforge/rapier3d-compat';
-
-let world;
-
 let world;
 
 export async function initPhysics() {
