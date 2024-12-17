@@ -13,13 +13,18 @@ export async function initPhysics() {
 }
 
 export async function createTerrainRigidBody(terrainMesh, world) {
-    if (!world) await initPhysics();
+    // Verificar si 'world' está inicializado
+    if (!world) {
+        console.error('Error: el mundo de física no está inicializado.');
+        return;
+    }
 
     const vertices = terrainMesh.geometry.attributes.position.array;
     const indices = terrainMesh.geometry.index.array;
 
-    // Configurar el terreno como cuerpo fijo
     const colliderDesc = RAPIER.ColliderDesc.trimesh(vertices, indices);
+
+    // Asegúrate de que el cuerpo sea fijo
     const rigidBodyDesc = RAPIER.RigidBodyDesc.fixed();
     const rigidBody = world.createRigidBody(rigidBodyDesc);
     world.createCollider(colliderDesc, rigidBody);
