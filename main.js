@@ -88,6 +88,7 @@ function cargarMapaDeAltura(path) {
 }
 
 // Función de animación
+// Función de animación
 function animate() {
     requestAnimationFrame(animate);
 
@@ -101,6 +102,13 @@ function animate() {
         const rotation = body.rotation();
         modelo.position.set(translation.x, translation.y, translation.z);
         modelo.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
+
+        // Sincronización del colisionador con el modelo
+        if (modelo && modelo.getObjectByName("colliderMesh")) {
+            const colliderMesh = modelo.getObjectByName("colliderMesh");
+            colliderMesh.position.set(translation.x, translation.y, translation.z);
+            colliderMesh.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
+        }
     }
 
     // Actualizar estadísticas
