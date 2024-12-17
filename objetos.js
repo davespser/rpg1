@@ -1,8 +1,11 @@
 import * as THREE from 'three';
-import { GLTFLoader } from "GLTFLoader";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { Rapier } from '@dimforge/rapier3d-compat';
 
-export function cargarModelo(posX = 250, posY = 5, posZ = 250, rutaModelo = './negro.glb') {
+// Supongamos que 'world' es una variable global o pasada como parámetro desde main.js o physics.js
+let world; // Esta debería ser inicializada fuera de esta función
+
+export function cargarModelo(posX = 250, posY = 5, posZ = 250, rutaModelo = './negro.glb', world) {
     const loader = new GLTFLoader();
     const modelo = new THREE.Group();
     let body; // Para almacenar el cuerpo físico de Rapier
@@ -30,15 +33,16 @@ export function cargarModelo(posX = 250, posY = 5, posZ = 250, rutaModelo = './n
 
             // Sincronización visual con física (esto debería hacerse en cada frame)
             const sync = () => {
-                const translation = body.translation();
-                const rotation = body.rotation();
-                objeto.position.set(translation.x, translation.y, translation.z);
-                objeto.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
+                if (body) {
+                    const translation = body.translation();
+                    const rotation = body.rotation();
+                    objeto.position.set(translation.x, translation.y, translation.z);
+                    objeto.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
+                }
             };
 
             modelo.add(objeto);
-            // Aquí deberías tener un ciclo de actualización para sincronizar la posición
-            // sync(); // Llamar a sync en cada frame
+            // No podemos ejecutar 'sync' aquí, debe hacerse en el ciclo de renderizado
         },
         undefined,
         (error) => {
