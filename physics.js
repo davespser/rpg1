@@ -39,6 +39,8 @@ export function createTerrainRigidBody(terrainMesh, world) {
     
 export function stepPhysics() {
     if (world) {
-        world.step();
+        // Reducir el tiempo de paso de la física para aumentar la precisión
+        const timeStep = 1 / 120; // Aumentar el framerate de la física a 120 Hz
+        world.step(timeStep);
     }
 }
