@@ -34,6 +34,14 @@ export function cargarModelo(posX = 250, posY = 8, posZ = 250, rutaModelo = './n
                     world.createCollider(colliderDesc, body);
 
                     console.log("Modelo y cuerpo físico listos:", { objeto, body });
+
+                    // Visualización del colisionador (cuboide verde)
+                    const colliderGeometry = new THREE.BoxGeometry(22, 22, 22); // Ajusta las dimensiones según tu modelo
+                    const colliderMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
+                    const colliderMesh = new THREE.Mesh(colliderGeometry, colliderMaterial);
+                    colliderMesh.position.set(posX, posY, posZ); // Posición del colisionador
+                    objeto.add(colliderMesh); // Añadir visualización del colisionador al objeto
+
                     resolve({ modelo: objeto, body }); // Devolver modelo y cuerpo físico
                 } else {
                     console.error('Error: el mundo físico no está inicializado.');
