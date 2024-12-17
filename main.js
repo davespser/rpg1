@@ -52,7 +52,7 @@ initPhysics().then((physicsWorld) => {
 
     function animate() {
         requestAnimationFrame(animate);
-        stepPhysics(world);
+        stepPhysics();
         controls.update();
         renderer.render(scene, camera);
 
