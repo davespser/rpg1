@@ -11,6 +11,7 @@ import { cargarModelo } from './objetos.js'; // Importar la función para cargar
 
 // Declaración de variables globales
 let world, modelo, body;
+let terrainMesh; // Guardar el terreno cargado
 
 // Inicialización de la escena y estadísticas
 const { scene, camera, renderer, controls } = initScene();
@@ -18,31 +19,45 @@ const stats = new Stats();
 crearMenuEstadisticas();
 createSky(scene);
 
+// Rutas de las texturas y mapas
 const texturePath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa_t.jpg';
 const heightMapPath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa.png';
 
-// Inicializar física y cargar modelo
-initPhysics().then((physicsWorld) => {
-    console.log('Mundo de física inicializado:', physicsWorld);
-    world = physicsWorld;
+// Función principal de inicialización
+async function init() {
+    try {
+        // Inicializar física
+        world = await initPhysics();
+        console.log('Mundo de física inicializado:', world);
 
-    // Cargar modelo
-    const resultado = cargarModelo(250, 24, 250, './negro.glb', world);
-    if (resultado) {
-        modelo = resultado.modelo; // Asignar el modelo globalmente
-        body = resultado.body;     // Asignar el cuerpo físico globalmente
+        // Cargar terreno y texturas
+        const [terrainTexture, imageData] = await Promise.all([
+            loadTexture(texturePath), // Cargar textura
+            cargarMapaDeAltura(heightMapPath),
+        ]);
+
+        terrainMesh = createTerrain(imageData, terrainTexture);
+        scene.add(terrainMesh);
+        createTerrainRigidBody(terrainMesh, world);
+
+        // Cargar modelo
+        const resultado = await cargarModelo(250, 24, 250, './negro.glb', world);
+        modelo = resultado.modelo;
+        body = resultado.body;
         scene.add(modelo);
-    } else {
-        console.error('No se pudo cargar el modelo debido a un problema con la física');
-    }
-}).catch((err) => console.error('Error al inicializar física:', err));
 
-// Cargar terreno y texturas
-Promise.all([
-    loadTexture(texturePath), // Cargar textura
-    new Promise((resolve, reject) => {
+        // Iniciar la animación
+        animate();
+    } catch (error) {
+        console.error('Error durante la inicialización:', error);
+    }
+}
+
+// Función para cargar el mapa de altura
+function cargarMapaDeAltura(path) {
+    return new Promise((resolve, reject) => {
         new THREE.TextureLoader().load(
-            heightMapPath,
+            path,
             (texture) => {
                 const canvas = document.createElement('canvas');
                 canvas.width = texture.image.width;
@@ -53,37 +68,32 @@ Promise.all([
             },
             undefined,
             (err) => {
-                console.error(`Error al cargar el mapa de altura desde ${heightMapPath}:`, err);
+                console.error(`Error al cargar el mapa de altura desde ${path}:`, err);
                 reject(err);
             }
         );
-    }),
-]).then(([terrainTexture, imageData]) => {
-    // Crear terreno y añadirlo a la escena
-    const terrainMesh = createTerrain(imageData, terrainTexture);
-    scene.add(terrainMesh);
-    createTerrainRigidBody(terrainMesh, world);
-}).catch((error) => console.error('Error al cargar el terreno o texturas:', error));
+    });
+}
 
 // Función de animación
 function animate() {
     requestAnimationFrame(animate);
 
-    stepPhysics(world);
+    stepPhysics(world); // Actualizar la física
     controls.update();
     renderer.render(scene, camera);
 
-    // Sincronización de modelo físico
+    // Sincronización del modelo con la física
     if (body && modelo) {
         const translation = body.translation();
         const rotation = body.rotation();
         modelo.position.set(translation.x, translation.y, translation.z);
         modelo.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
     }
-    
-    // Actualizar vida o energía si es necesario
-    // Ejemplo: stats.modificarVida(-0.1); // Simula pérdida de vida
+
+    // Actualizar estadísticas
+    // stats.modificarVida(-0.1); // Ejemplo de daño gradual
 }
 
-// Iniciar animación
-animate();
+// Ejecutar la función principal
+init();
