@@ -14,27 +14,25 @@ export function createTerrainRigidBody(terrainMesh, world) {
     const vertices = terrainMesh.geometry.attributes.position.array;
     const indices = terrainMesh.geometry.index.array;
 
-    const colliderDesc = RAPIER.ColliderDesc.trimesh(vertices, indices);
-    colliderDesc.setRotation({ x: 0, y: 0, z: 0, w: 1 }); // Rotación por defecto (sin cambios)
+    // Crear descripción del colisionador
+    const colliderDesc = RAPIER.ColliderDesc.trimesh(vertices, indices)
+        .setFriction(0.8)        // Añadir fricción
+        .setRestitution(0.1);    // Añadir restitución (rebote)
 
-    // Cambiar la forma de crear el cuerpo físico fijo
+    // Configurar el cuerpo rígido estático
     const rigidBodyDesc = RAPIER.RigidBodyDesc.fixed().setTranslation(
         terrainMesh.position.x, terrainMesh.position.y, terrainMesh.position.z
     );
 
+    // Crear el cuerpo rígido y colisionador
     const rigidBody = world.createRigidBody(rigidBodyDesc);
     const collider = world.createCollider(colliderDesc, rigidBody);
 
-    // Añadir un helper para visualizar el colisionador del terreno
-    const wireframeGeometry = new THREE.WireframeGeometry(terrainMesh.geometry);
-    const wireframeMaterial = new THREE.LineBasicMaterial({ color: 0xff0000 });
-    const wireframe = new THREE.LineSegments(wireframeGeometry, wireframeMaterial);
-    terrainMesh.add(wireframe);
+    console.log("Terreno físico configurado correctamente:", collider);
 
-    console.log("Terreno físico configurado correctamente.");
-    return collider;
+    // Opcional: Añadir eventos de contacto
+    collider.setSensor(false); // Asegúrate de que no sea un sensor
 }
-
 
     
 export function stepPhysics() {
