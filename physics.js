@@ -16,7 +16,7 @@ export async function createTerrainRigidBody(terrainMesh) {
     if (!world) await initPhysics();
 
     // Ajusta la posición y escala del colisionador
-    const scale = new THREE.Vector3(4, 1, 4);  // Ajusta la escala del colisionador si es necesario
+    const scale = new THREE.Vector3(1, 1, 1);  // Ajusta la escala del colisionador si es necesario
     terrainMesh.scale.set(scale.x, scale.y, scale.z); // Escala del terreno visual
 
     // Aquí puedes modificar la posición si el terreno tiene una posición diferente
