@@ -18,7 +18,7 @@ const texturePath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa_
 const heightMapPath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa.png';
 
 // Cargar el modelo en lugar del cubo
- /let world; // Declarar el mundo de física
+ let world; // Declarar el mundo de física
 
 // Cargar el modelo en lugar del cubo
 initPhysics().then((physicsWorld) => {
