@@ -121,7 +121,7 @@ function animate() {
 
     // Actualizar estadísticas
     // stats.update(); // Descomentarlo si lo necesitas
-}
+
 
 // Ejecutar la función principal
 init();
