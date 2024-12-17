@@ -10,7 +10,6 @@ export async function initPhysics() {
     console.log('Mundo de física inicializado:', world);
     return world;
 }
-
 export function createTerrainRigidBody(terrainMesh, world) {
     const vertices = terrainMesh.geometry.attributes.position.array;
     const indices = terrainMesh.geometry.index.array;
@@ -24,9 +23,20 @@ export function createTerrainRigidBody(terrainMesh, world) {
     );
 
     const rigidBody = world.createRigidBody(rigidBodyDesc);
-    world.createCollider(colliderDesc, rigidBody);
+    const collider = world.createCollider(colliderDesc, rigidBody);
+
+    // Añadir un helper para visualizar el colisionador del terreno
+    const wireframeGeometry = new THREE.WireframeGeometry(terrainMesh.geometry);
+    const wireframeMaterial = new THREE.LineBasicMaterial({ color: 0xff0000 });
+    const wireframe = new THREE.LineSegments(wireframeGeometry, wireframeMaterial);
+    terrainMesh.add(wireframe);
+
     console.log("Terreno físico configurado correctamente.");
+    return collider;
 }
+
+
+    
 export function stepPhysics() {
     if (world) {
         world.step();
