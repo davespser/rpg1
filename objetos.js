@@ -9,7 +9,7 @@ export function cargarModelo(posX = 1, posY = 20, posZ = 1, rutaModelo = './negr
             rutaModelo,
             (gltf) => {
                 const objeto = gltf.scene;
-                const escala = { x: 2, y: 2, z: 3 }; 
+                const escala = { x: 10, y: 10, z: 10 }; // Aumentar la escala
                 objeto.scale.set(escala.x, escala.y, escala.z);
                 objeto.position.set(posX, posY, posZ);
 
@@ -23,20 +23,19 @@ export function cargarModelo(posX = 1, posY = 20, posZ = 1, rutaModelo = './negr
                     .setTranslation(posX, posY + size.y / 2, posZ);
                 const body = world.createRigidBody(bodyDesc);
 
-                const colliderDesc = RAPIER.ColliderDesc.cuboid(
-                    (size.x / 2), (size.y / 2), (size.z / 2)
-                );
-                world.createCollider(colliderDesc, body);
+                // Crear colisionador
+                const colliderDesc = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2);
+                const collider = world.createCollider(colliderDesc, body);
 
-                // Colisionador visual para depuración
+                // Sincronizar colisionador visual para depuración
                 const colliderGeometry = new THREE.BoxGeometry(size.x, size.y, size.z);
                 const colliderMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
                 const colliderMesh = new THREE.Mesh(colliderGeometry, colliderMaterial);
-                colliderMesh.position.set(0, 0, 0); 
+                colliderMesh.position.set(0, size.y / 2, 0);
                 objeto.add(colliderMesh);
 
                 console.log("Modelo y colisionador alineados.");
-                resolve({ modelo: objeto, body });
+                resolve({ modelo: objeto, body, collider });
             },
             undefined,
             (error) => {
@@ -45,4 +44,5 @@ export function cargarModelo(posX = 1, posY = 20, posZ = 1, rutaModelo = './negr
             }
         );
     });
+}
 }
