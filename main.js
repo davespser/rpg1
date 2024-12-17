@@ -41,10 +41,19 @@ async function init() {
         createTerrainRigidBody(terrainMesh, world);
 
         // Cargar modelo
-        const resultado = await cargarModelo(250, 24, 250, './negro.glb', world);
-        modelo = resultado.modelo;
-        body = resultado.body;
-        scene.add(modelo);
+        // Cargar modelo
+const resultado = await cargarModelo(250, 24, 250, './negro.glb', world);
+modelo = resultado.modelo;
+body = resultado.body;
+scene.add(modelo);
+
+// Apuntar la cámara al modelo
+camera.position.set(250, 30, 280); // Configura la posición de la cámara
+camera.lookAt(modelo.position);   // La cámara mira hacia la posición del modelo
+
+// Actualizar los controles de la cámara (si usas OrbitControls)
+controls.target.copy(modelo.position);
+controls.update();
 
         // Iniciar la animación
         animate();
