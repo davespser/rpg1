@@ -33,7 +33,7 @@ export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro
                 const colliderGeometry = new THREE.BoxGeometry(size.x, size.y, size.z);
                 const colliderMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
                 const colliderMesh = new THREE.Mesh(colliderGeometry, colliderMaterial);
-                colliderMesh.position.set(0, size.y / 2, 0);
+                colliderMesh.position.set(0, 1, 0);
                 objeto.add(colliderMesh);
 
                 console.log("Modelo y colisionador alineados.");
