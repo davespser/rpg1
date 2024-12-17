@@ -24,6 +24,7 @@ const texturePath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa_
 const heightMapPath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa.png';
 
 // Función principal de inicialización
+// Función principal de inicialización
 async function init() {
     try {
         // Inicializar física
@@ -41,19 +42,22 @@ async function init() {
         createTerrainRigidBody(terrainMesh, world);
 
         // Cargar modelo
-        // Cargar modelo
-const resultado = await cargarModelo(250, 28, 250, './negro.glb', world);
-modelo = resultado.modelo;
-body = resultado.body;
-scene.add(modelo);
+        const resultado = await cargarModelo(250, 28, 250, './negro.glb', world);
+        modelo = resultado.modelo;
+        body = resultado.body;
+        scene.add(modelo);
 
-// Apuntar la cámara al modelo
-camera.position.set(250, 30, 280); // Configura la posición de la cámara
-camera.lookAt(modelo.position);   // La cámara mira hacia la posición del modelo
+        // Apuntar la cámara al modelo
+        camera.position.set(250, 30, 280); // Configura la posición de la cámara
+        camera.lookAt(modelo.position);   // La cámara mira hacia la posición del modelo
 
-// Actualizar los controles de la cámara (si usas OrbitControls)
-controls.target.copy(modelo.position);
-controls.update();
+        // Actualizar los controles de la cámara
+        controls.target.copy(modelo.position);
+        controls.update();
+
+        // Verifica que el colisionador está en el campo de visión
+        console.log("Posición del modelo:", modelo.position);
+        console.log("Posición del cuerpo físico:", body.translation());
 
         // Iniciar la animación
         animate();
@@ -61,7 +65,6 @@ controls.update();
         console.error('Error durante la inicialización:', error);
     }
 }
-
 // Función para cargar el mapa de altura
 function cargarMapaDeAltura(path) {
     return new Promise((resolve, reject) => {
