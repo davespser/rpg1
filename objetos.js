@@ -30,7 +30,7 @@ export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro
                 const collider = world.createCollider(colliderDesc, body);
 
                 // Sincronizar colisionador visual para depuración
-                const colliderGeometry = new THREE.BoxGeometry(size.x, size.y, size.z);
+                const colliderGeometry = new THREE.BoxGeometry(size.x / 2, size.y / 2, size.z / 2);
                 const colliderMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
                 const colliderMesh = new THREE.Mesh(colliderGeometry, colliderMaterial);
                 colliderMesh.position.set(0, -1, 0);
