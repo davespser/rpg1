@@ -30,7 +30,7 @@ export function cargarModelo(posX = 250, posY = 8, posZ = 250, rutaModelo = './n
                     const body = world.createRigidBody(bodyDesc);
 
                     // Colisionador (caja simple como ejemplo)
-                    const colliderDesc = RAPIER.ColliderDesc.cuboid(11, 11, 11); 
+                    const colliderDesc = RAPIER.ColliderDesc.cuboid(22, 22, 22); 
                     world.createCollider(colliderDesc, body);
 
                     console.log("Modelo y cuerpo físico listos:", { objeto, body });
