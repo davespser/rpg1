@@ -17,7 +17,7 @@ export function createTerrainRigidBody(terrainMesh, world) {
 
     const colliderDesc = RAPIER.ColliderDesc.trimesh(vertices, indices);
     colliderDesc.setRotation({ x: 0, y: 0, z: 0, w: 1 }); // Rotación por defecto (sin cambios)
-    
+
     // Cambiar la forma de crear el cuerpo físico fijo
     const rigidBodyDesc = RAPIER.RigidBodyDesc.fixed().setTranslation(
         terrainMesh.position.x, terrainMesh.position.y, terrainMesh.position.z
