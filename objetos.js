@@ -3,11 +3,13 @@ import { GLTFLoader } from "GLTFLoader";
 
 export function cargarModelo(posX = 250, posY = 5, posZ = 250, rutaModelo = './negro.glb') {
     const loader = new GLTFLoader();
+    
     const modelo = new THREE.Group(); // Grupo para el modelo
     loader.load(
         rutaModelo,
         (gltf) => {
             const objeto = gltf.scene;
+            objeto.scale.set(3, 3, 3);
             objeto.traverse((node) => {
                 if (node.isMesh) {
                     node.castShadow = true; // Habilitar sombras
