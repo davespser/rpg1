@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { GLTFLoader } from "GLTFLoader";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"; // Asegúrate de usar la ruta correcta para GLTFLoader
 import RAPIER from '@dimforge/rapier3d-compat';
 
 // Supongamos que 'world' es una variable global o pasada como parámetro desde main.js o physics.js
