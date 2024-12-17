@@ -123,7 +123,7 @@ function animate() {
         colliderMesh.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
     }
 }
-
+}
     // Actualizar estadísticas
     // stats.update(); // Descomentarlo si lo necesitas
 
