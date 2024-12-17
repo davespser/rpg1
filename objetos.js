@@ -14,7 +14,7 @@ export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro
                 const objeto = gltf.scene;
                 const escala = { x: 5, y: 5, z: 5 }; // Escala del modelo
                 objeto.scale.set(escala.x, escala.y, escala.z);
-                objeto.position.set(posX, 10, posZ);
+                objeto.position.set(posX, posX, posZ);
                 
                 objeto.traverse((node) => {
                     if (node.isMesh) {
