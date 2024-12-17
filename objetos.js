@@ -9,54 +9,63 @@ export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro
             rutaModelo,
             (gltf) => {
                 console.log("Modelo cargado:", gltf);
-                
+
                 // Modelo visual de Three.js
                 const objeto = gltf.scene;
-                objeto.scale.set(5, 5, 6);
-                objeto.position.set(1,16,1);// Escala ajustada
+                const escala = { x: 5, y: 5, z: 5 }; // Escala del modelo
+                objeto.scale.set(escala.x, escala.y, escala.z);
+                objeto.position.set(posX, posY, posZ);
+                
                 objeto.traverse((node) => {
                     if (node.isMesh) {
                         node.castShadow = true;
                         node.receiveShadow = true;
                     }
                 });
-                objeto.position.set(posX, posY, posZ);
-                console.log("Posición del objeto en la escena:", objeto.position);  // Verificar posición del modelo
+
+                console.log("Posición del objeto en la escena:", objeto.position);
 
                 // Verificar si 'world' está listo
                 if (world && typeof world.createRigidBody === 'function') {
                     console.log('Creando cuerpo físico...');
-                    
-                    // Crear cuerpo físico dinámico
+
+                    // Calcular Bounding Box para ajustar el tamaño del colisionador
+                    const boundingBox = new THREE.Box3().setFromObject(objeto);
+                    const size = new THREE.Vector3();
+                    boundingBox.getSize(size); // Tamaño del modelo escalado
+                    const center = new THREE.Vector3();
+                    boundingBox.getCenter(center); // Centro del modelo
+
+                    console.log("Tamaño del modelo:", size);
+                    console.log("Centro del modelo:", center);
+
+                    // Crear cuerpo físico dinámico en Rapier
                     const bodyDesc = RAPIER.RigidBodyDesc.dynamic().setTranslation(posX, posY, posZ);
                     const body = world.createRigidBody(bodyDesc);
 
-                    // Colisionador (caja simple como ejemplo)
-                    const colliderDesc = RAPIER.ColliderDesc.cuboid(7, 7, 7); 
+                    // Crear colisionador con el tamaño del modelo
+                    const colliderDesc = RAPIER.ColliderDesc.cuboid(
+                        size.x / 2, size.y / 2, size.z / 2
+                    ); // Dividimos entre 2 porque Rapier usa la mitad del tamaño
                     world.createCollider(colliderDesc, body);
 
                     console.log("Modelo y cuerpo físico listos:", { objeto, body });
 
-                    // Visualización del colisionador (cuboide verde)
-                    const colliderGeometry = new THREE.BoxGeometry(5, 5, 5);  // Aumentamos el tamaño para asegurar visibilidad
+                    // Visualización del colisionador (wireframe)
+                    const colliderGeometry = new THREE.BoxGeometry(size.x, size.y, size.z);
                     const colliderMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
                     const colliderMesh = new THREE.Mesh(colliderGeometry, colliderMaterial);
 
-                    // Ajuste de la posición del colisionador con respecto al modelo
-                    const modelBoundingBox = new THREE.Box3().setFromObject(objeto);
-                    const modelCenter = modelBoundingBox.getCenter(new THREE.Vector3());  // Obtener el centro del modelo
+                    // Ajustamos la posición del colisionador visual al centro calculado
+                    colliderMesh.position.set(center.x, center.y, center.z);
+                    colliderMesh.name = "colliderMesh";
 
-                    // Posicionamos el colisionador en el centro del modelo
-                    colliderMesh.position.set(modelCenter.x+1, modelCenter.y+1, modelCenter.z+1);
-                    colliderMesh.name = "colliderMesh";  // Nombre para poder acceder fácilmente
-                    objeto.add(colliderMesh); // Añadir visualización del colisionador al objeto
+                    // Añadir el colisionador visual y el bounding box helper
+                    objeto.add(colliderMesh);
+                    const helper = new THREE.Box3Helper(boundingBox, 0xffff00);
+                    objeto.add(helper);
 
-                    console.log("Posición del colisionador:", colliderMesh.position);  // Verificar la posición del colisionador
-
-                    // Visualización del Bounding Box
-                    const box = new THREE.Box3().setFromObject(objeto);
-                    const helper = new THREE.Box3Helper(box, 0xffff00); // Bounding Box en color amarillo
-                    objeto.add(helper); // Añade el helper al objeto, o podrías añadirlo directamente a la 'scene' si prefieres
+                    console.log("Colisionador visual añadido en:", colliderMesh.position);
 
                     // Devolver el modelo y el cuerpo físico
                     resolve({ modelo: objeto, body });
