@@ -46,6 +46,11 @@ export function cargarModelo(posX = 250, posY = 8, posZ = 250, rutaModelo = './n
 
                     console.log("Posición del colisionador:", colliderMesh.position);  // Verificar la posición del colisionador
 
+                    // Visualización del Bounding Box
+                    const box = new THREE.Box3().setFromObject(objeto);
+                    const helper = new THREE.Box3Helper(box, 0xffff00); // Bounding Box en color amarillo
+                    objeto.add(helper); // Añade el helper al objeto, o podrías añadirlo directamente a la 'scene' si prefieres
+
                     // Devolver el modelo y el cuerpo físico
                     resolve({ modelo: objeto, body });
                 } else {
