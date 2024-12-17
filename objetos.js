@@ -21,6 +21,7 @@ export function cargarModelo(posX = 1, posY = 20, posZ = 1, rutaModelo = './negr
                 // Crear cuerpo físico alineado con el modelo
                 const bodyDesc = RAPIER.RigidBodyDesc.dynamic()
                     .setTranslation(posX, posY + size.y / 2, posZ);
+                    .setDensity(2.0);
                 const body = world.createRigidBody(bodyDesc);
 
                 // Crear colisionador
