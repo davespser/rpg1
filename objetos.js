@@ -2,10 +2,11 @@ import * as THREE from 'three';
 import { GLTFLoader } from "GLTFLoader"; 
 import RAPIER from '@dimforge/rapier3d-compat';
 
-// Supongamos que 'world' es una variable global o pasada como parámetro desde main.js o physics.js
 let world; // Esta debería ser inicializada fuera de esta función
 
 export function cargarModelo(posX = 250, posY = 5, posZ = 250, rutaModelo = './negro.glb', world) {
+    console.log("Iniciando la carga del modelo con world:", world); // Debug log
+
     const loader = new GLTFLoader();
     const modelo = new THREE.Group();
     let body; // Para almacenar el cuerpo físico de Rapier
@@ -13,6 +14,8 @@ export function cargarModelo(posX = 250, posY = 5, posZ = 250, rutaModelo = './n
     loader.load(
         rutaModelo,
         (gltf) => {
+            console.log("Modelo cargado:", gltf); // Debug log
+            
             const objeto = gltf.scene;
             objeto.scale.set(3, 3, 3);
             objeto.traverse((node) => {
@@ -25,6 +28,7 @@ export function cargarModelo(posX = 250, posY = 5, posZ = 250, rutaModelo = './n
 
             // Verificar que 'world' está definido antes de usarlo
             if (world && typeof world.createRigidBody === 'function') {
+                console.log('world está inicializado, procediendo con la creación del cuerpo físico'); // Debug log
                 // Crear un cuerpo físico para el modelo
                 const bodyDesc = RAPIER.RigidBodyDesc.dynamic().setTranslation(posX, posY, posZ);
                 body = world.createRigidBody(bodyDesc);
@@ -46,18 +50,21 @@ export function cargarModelo(posX = 250, posY = 5, posZ = 250, rutaModelo = './n
                 modelo.add(objeto);
                 // No podemos ejecutar 'sync' aquí, debe hacerse en el ciclo de renderizado
             } else {
-                console.error('El mundo de física no está correctamente inicializado');
+                console.error('El mundo de física no está correctamente inicializado. world:', world); // Debug error log
             }
+            
+            console.log("Modelo y cuerpo físico cargados:", { modelo, body }); // Debug log
         },
         undefined,
         (error) => {
-            console.error('Error al cargar el modelo:', error);
+            console.error('Error al cargar el modelo:', error); // Debug error log
         }
     );
     return { modelo, body }; // Devuelve una estructura con el modelo y el cuerpo físico, aunque 'body' podría ser undefined si 'world' no está inicializado
 }
 
 export function crearEsfera(posX = 0, posY = 0, posZ = 0) {
+    // Aquí no hacemos nada con 'world', pero podrías añadir logs si quisieras
     const geometry = new THREE.SphereGeometry(0.5, 32, 32);
     const material = new THREE.MeshStandardMaterial({ color: 0x0000ff });
     const esfera = new THREE.Mesh(geometry, material);
