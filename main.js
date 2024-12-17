@@ -37,17 +37,16 @@ async function init() {
         ]);
 
         // Crear terreno
-        terrainMesh = createTerrain(imageData, terrainTexture);
-        scene.add(terrainMesh);
-        console.log("Terreno añadido a la escena:", terrainMesh);
+terrainMesh = createTerrain(imageData, terrainTexture);
+terrainMesh.scale.set(1, 1, 1); // Ajusta escala si es necesario
+terrainMesh.position.set(0, 0, 0); // Asegúrate de que el terreno esté en el origen
+scene.add(terrainMesh);
+console.log("Terreno añadido a la escena:", terrainMesh);
 
-        // Crear colisionador para el terreno
-        // Crear colisionador para el terreno
+// Crear colisionador para el terreno
 if (terrainMesh.geometry) {
-    createTerrainRigidBody(terrainMesh, world); // Pasar 'world' como parámetro
+    createTerrainRigidBody(terrainMesh, world); // Pasar 'world'
     console.log("Colisionador del terreno creado.");
-} else {
-    console.error("Error: El terreno no tiene geometría válida.");
 }
 
         // Cargar modelo con física
