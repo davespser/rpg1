@@ -31,13 +31,13 @@ export function cargarModelo(posX = 1, posY = 10, posZ = 1, rutaModelo = './negr
                     const body = world.createRigidBody(bodyDesc);
 
                     // Colisionador (caja simple como ejemplo)
-                    const colliderDesc = RAPIER.ColliderDesc.cuboid(22, 22, 22); 
+                    const colliderDesc = RAPIER.ColliderDesc.cuboid(8, 8, 8); 
                     world.createCollider(colliderDesc, body);
 
                     console.log("Modelo y cuerpo físico listos:", { objeto, body });
 
                     // Visualización del colisionador (cuboide verde)
-                    const colliderGeometry = new THREE.BoxGeometry(10, 10, 10);  // Aumentamos el tamaño para asegurar visibilidad
+                    const colliderGeometry = new THREE.BoxGeometry(6, 6, 6);  // Aumentamos el tamaño para asegurar visibilidad
                     const colliderMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
                     const colliderMesh = new THREE.Mesh(colliderGeometry, colliderMaterial);
 
