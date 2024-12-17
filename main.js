@@ -10,7 +10,7 @@ import { createSky } from './sky.js';
 import { cargarModelo } from './objetos.js'; // Importar la función para cargar el modelo
 
 // Declaración de variables globales
-let world, modelo, body;
+let world, modelo, body, collider;
 let terrainMesh; // Guardar el terreno cargado
 
 // Inicialización de la escena y estadísticas
@@ -18,12 +18,7 @@ const { scene, camera, renderer, controls } = initScene();
 const stats = new Stats();
 crearMenuEstadisticas();
 createSky(scene);
-// Añadir una malla para visualizar el colisionador
-const colliderGeometry = new THREE.BoxGeometry(body.shape().half_extents().x * 2, body.shape().half_extents().y * 2, body.shape().half_extents().z * 2);
-const colliderMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true });
-const colliderMesh = new THREE.Mesh(colliderGeometry, colliderMaterial);
-colliderMesh.name = "colliderMesh"; // Nombrar la malla para identificarla
-scene.add(colliderMesh);
+
 // Rutas de las texturas y mapas
 const texturePath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa_t.jpg';
 const heightMapPath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa.png';
@@ -42,22 +37,23 @@ async function init() {
         ]);
 
         // Crear terreno
-terrainMesh = createTerrain(imageData, terrainTexture);
-terrainMesh.scale.set(1, 1, 1); // Ajusta escala si es necesario
-terrainMesh.position.set(0, 0, 0); // Asegúrate de que el terreno esté en el origen
-scene.add(terrainMesh);
-console.log("Terreno añadido a la escena:", terrainMesh);
+        terrainMesh = createTerrain(imageData, terrainTexture);
+        terrainMesh.scale.set(1, 1, 1); // Ajusta escala si es necesario
+        terrainMesh.position.set(0, 0, 0); // Asegúrate de que el terreno esté en el origen
+        scene.add(terrainMesh);
+        console.log("Terreno añadido a la escena:", terrainMesh);
 
-// Crear colisionador para el terreno
-if (terrainMesh.geometry) {
-    createTerrainRigidBody(terrainMesh, world); // Pasar 'world'
-    console.log("Colisionador del terreno creado.");
-}
+        // Crear colisionador para el terreno
+        if (terrainMesh.geometry) {
+            createTerrainRigidBody(terrainMesh, world); // Pasar 'world'
+            console.log("Colisionador del terreno creado.");
+        }
 
         // Cargar modelo con física
         const resultado = await cargarModelo(1, 1, 1, './negro.glb', world);
         modelo = resultado.modelo;
         body = resultado.body;
+        collider = resultado.collider;
         scene.add(modelo);
 
         console.log("Modelo y cuerpo físico añadidos a la escena.");
@@ -108,25 +104,23 @@ function animate() {
     controls.update();
     renderer.render(scene, camera);
 
-    // Sincronización del modelo con la física
     if (body && modelo) {
-    const translation = body.translation();
-    const rotation = body.rotation();
+        const translation = body.translation();
+        const rotation = body.rotation();
 
-    modelo.position.set(translation.x, translation.y, translation.z);
-    modelo.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
+        modelo.position.set(translation.x, translation.y, translation.z);
+        modelo.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
 
-    // Sincronizar el colisionador visual
-    const colliderMesh = modelo.getObjectByName("colliderMesh");
-    if (colliderMesh) {
-        colliderMesh.position.set(translation.x, translation.y, translation.z);
-        colliderMesh.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
+        // Sincronizar el colisionador visual
+        if (collider) {
+            colliderMesh.position.set(translation.x, translation.y, translation.z);
+            colliderMesh.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
+        }
     }
-}
-}
+
     // Actualizar estadísticas
     // stats.update(); // Descomentarlo si lo necesitas
-
+}
 
 // Ejecutar la función principal
 init();
