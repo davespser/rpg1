@@ -119,7 +119,7 @@ function animate() {
     }
 
     // Actualizar estadísticas
-    stats.update();
+    //stats.update();
 }
 
 // Ejecutar la función principal
