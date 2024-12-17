@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { GLTFLoader } from "GLTFLoader";
-import { Rapier } from '@dimforge/rapier3d-compat';
+import RAPIER from '@dimforge/rapier3d-compat';
 
 // Supongamos que 'world' es una variable global o pasada como parámetro desde main.js o physics.js
 let world; // Esta debería ser inicializada fuera de esta función
