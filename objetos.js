@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { GLTFLoader } from 'GLTFLoader';
+import { GLTFLoader } from "GLTFLoader";
 import RAPIER from '@dimforge/rapier3d-compat';
 
 export function cargarModelo(posX = 1, posY = 20, posZ = 1, rutaModelo = './negro.glb', world) {
@@ -23,7 +23,7 @@ export function cargarModelo(posX = 1, posY = 20, posZ = 1, rutaModelo = './negr
                     .setTranslation(posX, posY + size.y / 2, posZ);
                 const body = world.createRigidBody(bodyDesc);
 
-                // Crear colisionador sin declarar duplicados
+                // Crear colisionador
                 const colliderDesc = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2);
                 const collider = world.createCollider(colliderDesc, body);
 
