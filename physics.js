@@ -12,24 +12,25 @@ export async function initPhysics() {
     return world;
 }
 
-export async function createTerrainRigidBody(terrainMesh, world) {
-    // Verificar si 'world' está inicializado
+export function createTerrainRigidBody(terrainMesh, world) {
     if (!world) {
         console.error('Error: el mundo de física no está inicializado.');
         return;
     }
 
+    // Extraer vértices e índices del terreno
     const vertices = terrainMesh.geometry.attributes.position.array;
     const indices = terrainMesh.geometry.index.array;
 
+    // Configuración del colisionador como un mesh fijo
     const colliderDesc = RAPIER.ColliderDesc.trimesh(vertices, indices);
-
-    // Asegúrate de que el cuerpo sea fijo
     const rigidBodyDesc = RAPIER.RigidBodyDesc.fixed();
     const rigidBody = world.createRigidBody(rigidBodyDesc);
+
+    // Crear colisionador
     world.createCollider(colliderDesc, rigidBody);
 
-    console.log("Terreno configurado como cuerpo fijo.");
+    console.log("Terreno configurado como cuerpo físico fijo.");
 }
 
 export function stepPhysics() {
