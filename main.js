@@ -45,6 +45,10 @@ async function init() {
         if (terrainMesh.geometry) {
             createTerrainRigidBody(terrainMesh, world);
             console.log("Colisionador del terreno creado.");
+
+            // Agregar helper para el terreno
+            const terrenoHelper = new THREE.BoxHelper(terrainMesh, 0xff0000); // Rojo
+            scene.add(terrenoHelper);
         } else {
             console.error("Error: El terreno no tiene geometría válida.");
         }
@@ -58,8 +62,12 @@ async function init() {
         console.log("Modelo y cuerpo físico añadidos a la escena.");
         console.log("Posición inicial del cuerpo físico:", body.translation());
 
+        // Agregar helper para el modelo
+        const modeloHelper = new THREE.BoxHelper(modelo, 0x00ff00); // Verde
+        scene.add(modeloHelper);
+
         // Apuntar la cámara al modelo
-        camera.position.set(250, 50, 300); // Configura la posición de la cámara
+        camera.position.set(250, 50, 300);
         camera.lookAt(modelo.position);
 
         // Actualizar los controles de la cámara
@@ -118,8 +126,8 @@ function animate() {
         }
     }
 
-    // Actualizar estadísticas
-    //stats.update();
+    // Actualizar estadísticas si son necesarias
+    // stats.update();
 }
 
 // Ejecutar la función principal
