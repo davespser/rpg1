@@ -18,19 +18,25 @@ export function createTerrainRigidBody(terrainMesh, world) {
         return;
     }
 
-    // Extraer vértices e índices del terreno
+    // Extraer vértices e índices
     const vertices = terrainMesh.geometry.attributes.position.array;
     const indices = terrainMesh.geometry.index.array;
 
-    // Configuración del colisionador como un mesh fijo
+    // Configuración del colisionador
     const colliderDesc = RAPIER.ColliderDesc.trimesh(vertices, indices);
     const rigidBodyDesc = RAPIER.RigidBodyDesc.fixed();
     const rigidBody = world.createRigidBody(rigidBodyDesc);
-
-    // Crear colisionador
     world.createCollider(colliderDesc, rigidBody);
 
     console.log("Terreno configurado como cuerpo físico fijo.");
+
+    // Helper para verificar posición del colisionador
+    const helperMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true });
+    const helperGeometry = terrainMesh.geometry.clone();
+    const helperMesh = new THREE.Mesh(helperGeometry, helperMaterial);
+    helperMesh.position.copy(terrainMesh.position);
+    helperMesh.scale.copy(terrainMesh.scale);
+    terrainMesh.parent.add(helperMesh); // Añadir helper a la escena
 }
 
 export function stepPhysics() {
