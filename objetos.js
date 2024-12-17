@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from "GLTFLoader";
 import RAPIER from '@dimforge/rapier3d-compat';
 
-export function cargarModelo(posX = 1, posY = 2, posZ = 1, rutaModelo = './negro.glb', world) {
+export function cargarModelo(posX = 1, posY = 20, posZ = 1, rutaModelo = './negro.glb', world) {
     return new Promise((resolve, reject) => {
         const loader = new GLTFLoader();
         loader.load(
@@ -10,18 +10,13 @@ export function cargarModelo(posX = 1, posY = 2, posZ = 1, rutaModelo = './negro
             (gltf) => {
                 console.log("Modelo cargado:", gltf);
 
-                const posYInicial = 20; // Ajusta esto a una altura por encima del terreno
-
-const bodyDesc = RAPIER.RigidBodyDesc.dynamic()
-    .setTranslation(posX, posYInicial, posZ);
-
-const body = world.createRigidBody(bodyDesc);
                 // Modelo visual de Three.js
                 const objeto = gltf.scene;
                 const escala = { x: 5, y: 5, z: 5 }; // Escala del modelo
                 objeto.scale.set(escala.x, escala.y, escala.z);
-                objeto.position.set(posX, posX, posZ);
-                
+                objeto.position.set(posX, posY, posZ); // Corregido: Y ahora usa posY
+
+                // Aplicar sombras
                 objeto.traverse((node) => {
                     if (node.isMesh) {
                         node.castShadow = true;
@@ -29,51 +24,45 @@ const body = world.createRigidBody(bodyDesc);
                     }
                 });
 
-                console.log("Posición del objeto en la escena:", objeto.position);
+                // Calcular Bounding Box después de escalar
+                const boundingBox = new THREE.Box3().setFromObject(objeto);
+                const size = new THREE.Vector3();
+                boundingBox.getSize(size);
+
+                console.log("Tamaño del modelo escalado:", size);
 
                 // Verificar si 'world' está listo
                 if (world && typeof world.createRigidBody === 'function') {
                     console.log('Creando cuerpo físico...');
 
-                    // Calcular Bounding Box para ajustar el tamaño del colisionador
-                    const boundingBox = new THREE.Box3().setFromObject(objeto);
-                    const size = new THREE.Vector3();
-                    boundingBox.getSize(size); // Tamaño del modelo escalado
-                    const center = new THREE.Vector3();
-                    boundingBox.getCenter(center); // Centro del modelo
-
-                    console.log("Tamaño del modelo:", size);
-                    console.log("Centro del modelo:", center);
-
-                    // Crear cuerpo físico dinámico en Rapier
+                    // Crear cuerpo rígido dinámico
                     const bodyDesc = RAPIER.RigidBodyDesc.dynamic().setTranslation(posX, posY, posZ);
                     const body = world.createRigidBody(bodyDesc);
 
-                    // Crear colisionador con el tamaño del modelo
+                    // Crear colisionador basado en el tamaño
                     const colliderDesc = RAPIER.ColliderDesc.cuboid(
-                        size.x / 2, size.y / 2, size.z / 2
-                    ); // Dividimos entre 2 porque Rapier usa la mitad del tamaño
+                        (size.x * escala.x) / 2, 
+                        (size.y * escala.y) / 2, 
+                        (size.z * escala.z) / 2
+                    );
                     world.createCollider(colliderDesc, body);
 
-                    console.log("Modelo y cuerpo físico listos:", { objeto, body });
+                    console.log("Cuerpo físico creado con colisionador.");
 
                     // Visualización del colisionador (wireframe)
-                    const colliderGeometry = new THREE.BoxGeometry(size.x, size.y, size.z);
+                    const colliderGeometry = new THREE.BoxGeometry(size.x * escala.x, size.y * escala.y, size.z * escala.z);
                     const colliderMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
                     const colliderMesh = new THREE.Mesh(colliderGeometry, colliderMaterial);
 
-                    // Ajustamos la posición del colisionador visual al centro calculado
-                    colliderMesh.position.set(center.x, center.y, center.z);
+                    // Ajustar posición del colisionador visual al modelo
+                    colliderMesh.position.set(0, size.y / 2, 0); // Alineado verticalmente
                     colliderMesh.name = "colliderMesh";
 
-                    // Añadir el colisionador visual y el bounding box helper
                     objeto.add(colliderMesh);
-                    const helper = new THREE.Box3Helper(boundingBox, 0xffff00);
-                    objeto.add(helper);
 
-                    console.log("Colisionador visual añadido en:", colliderMesh.position);
+                    console.log("Colisionador visual añadido correctamente.");
 
-                    // Devolver el modelo y el cuerpo físico
+                    // Devolver el modelo visual y el cuerpo físico
                     resolve({ modelo: objeto, body });
                 } else {
                     console.error('Error: el mundo físico no está inicializado.');
