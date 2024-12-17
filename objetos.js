@@ -40,6 +40,7 @@ export function cargarModelo(posX = 250, posY = 8, posZ = 250, rutaModelo = './n
                     const colliderMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00, wireframe: true });
                     const colliderMesh = new THREE.Mesh(colliderGeometry, colliderMaterial);
                     colliderMesh.position.set(posX, posY, posZ); // Posición del colisionador
+                    colliderMesh.name = "colliderMesh";  // Nombre para poder acceder fácilmente
                     objeto.add(colliderMesh); // Añadir visualización del colisionador al objeto
 
                     resolve({ modelo: objeto, body }); // Devolver modelo y cuerpo físico
@@ -56,4 +57,3 @@ export function cargarModelo(posX = 250, posY = 8, posZ = 250, rutaModelo = './n
         );
     });
 }
-    
