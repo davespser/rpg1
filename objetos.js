@@ -2,14 +2,14 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'GLTFLoader';
 import RAPIER from '@dimforge/rapier3d-compat';
 
-export function cargarModelo(posX = 1, posY = 20, posZ = 1, rutaModelo = './negro.glb', world) {
+export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro.glb', world) {
     return new Promise((resolve, reject) => {
         const loader = new GLTFLoader();
         loader.load(
             rutaModelo,
             (gltf) => {
                 const objeto = gltf.scene;
-                const escala = { x: 10, y: 10, z: 10 }; // Aumentar la escala
+                const escala = { x: 5, y: 5, z: 5 }; // Aumentar la escala
                 objeto.scale.set(escala.x, escala.y, escala.z);
                 objeto.position.set(posX, posY, posZ);
 
