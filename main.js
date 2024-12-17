@@ -1,59 +1,55 @@
 import * as THREE from 'three';
-import { GLTFLoader } from 'GLTFLoader';
+import { OrbitControls } from 'OrbitControls';
 import RAPIER from '@dimforge/rapier3d-compat';
 import { initScene } from './scene.js';
-import { initPhysics, stepPhysics } from './physics.js';
-import { cargarModelo } from './objetos.js';
-import { manejarMovimiento } from './movements.js';
+import { crearMenuEstadisticas } from './menu.js';
+import { Stats } from './stats.js';
+import { initPhysics, createTerrainRigidBody, stepPhysics } from './physics.js';
+import { loadTexture, createTerrain } from './createTerrain.js';
+import { createSky } from './sky.js';
+import { cargarModelo } from './objetos.js'; // Importar la función para cargar el modelo
 
-// Inicializar la escena, físicas y otros elementos
 const { scene, camera, renderer, controls } = initScene();
-let world, character; // Variables globales para el mundo físico y el personaje
-const clock = new THREE.Clock();
-const input = { forward: false, backward: false, left: false, right: false };
+const stats = new Stats();
+crearMenuEstadisticas();
+createSky(scene);
 
-// Configurar entrada de usuario
-window.addEventListener('keydown', (event) => {
-    if (event.key === 'w') input.forward = true;
-    if (event.key === 's') input.backward = true;
-    if (event.key === 'a') input.left = true;
-    if (event.key === 'd') input.right = true;
-});
-window.addEventListener('keyup', (event) => {
-    if (event.key === 'w') input.forward = false;
-    if (event.key === 's') input.backward = false;
-    if (event.key === 'a') input.left = false;
-    if (event.key === 'd') input.right = false;
-});
+const texturePath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa_t.jpg';
+const heightMapPath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa.png';
 
-// Inicializar físicas y cargar el modelo
-(async function main() {
-    // Inicializar RAPIER y el mundo físico
-    await initPhysics();
-    world = new RAPIER.World({ x: 0, y: -9.81, z: 0 });
+// Cargar el modelo en lugar del cubo
+const modeloNegro = cargarModelo(250, 24, 250, './robotauro_walk.glb');
+scene.add(modeloNegro); // Añadir el modelo a la escena
 
-    // Cargar el modelo y agregarlo a la escena
-    cargarModelo(world, 250, 5, 250, './robotauro_walk.glb', (modelo) => {
-        character = modelo; // Asignar el modelo cargado a la variable global
-        scene.add(character); // Agregar el modelo a la escena
-    });
+// Cargar terreno y texturas
+Promise.all([
+    loadTexture(texturePath),
+    new Promise((resolve, reject) => {
+        new THREE.TextureLoader().load(
+            heightMapPath,
+            (texture) => {
+                const canvas = document.createElement('canvas');
+                canvas.width = texture.image.width;
+                canvas.height = texture.image.height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(texture.image, 0, 0);
+                resolve(ctx.getImageData(0, 0, canvas.width, canvas.height));
+            },
+            undefined,
+            (err) => reject(err)
+        );
+    }),
+]).then(([terrainTexture, imageData]) => {
+    const terrainMesh = createTerrain(imageData, terrainTexture);
+    scene.add(terrainMesh);
+    createTerrainRigidBody(terrainMesh);
+}).catch((error) => console.error('Error al cargar recursos:', error));
 
-    animate();
-})();
-
-// Bucle principal de animación
 function animate() {
     requestAnimationFrame(animate);
-
-    const deltaTime = clock.getDelta();
-
-    // Manejar el movimiento solo si el modelo está listo
-    if (character) {
-        manejarMovimiento(character, deltaTime, input);
-    }
-
-    // Actualizar físicas y renderizar
     stepPhysics();
     controls.update();
     renderer.render(scene, camera);
 }
+
+animate();
