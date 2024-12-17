@@ -12,7 +12,7 @@ export function cargarModelo(posX = 250, posY = 5, posZ = 250, rutaModelo = './n
                 
                 // Modelo visual de Three.js
                 const objeto = gltf.scene;
-                objeto.scale.set(20, 20, 20);
+                objeto.scale.set(10, 10, 10);
                 objeto.traverse((node) => {
                     if (node.isMesh) {
                         node.castShadow = true;
@@ -30,7 +30,7 @@ export function cargarModelo(posX = 250, posY = 5, posZ = 250, rutaModelo = './n
                     const body = world.createRigidBody(bodyDesc);
 
                     // Colisionador (caja simple como ejemplo)
-                    const colliderDesc = RAPIER.ColliderDesc.cuboid(1.5, 1.5, 1.5); 
+                    const colliderDesc = RAPIER.ColliderDesc.cuboid(11, 11, 11); 
                     world.createCollider(colliderDesc, body);
 
                     console.log("Modelo y cuerpo físico listos:", { objeto, body });
