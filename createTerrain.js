@@ -21,6 +21,8 @@ export function loadTexture(texturePath) {
 export function createTerrain(imageData, texture) {
   const width = imageData.width;
   const height = imageData.height;
+
+  // Crear geometría plana con subdivisiones
   const geometry = new THREE.PlaneGeometry(width, height, width - 1, height - 1);
   const position = geometry.attributes.position;
   const uv = geometry.attributes.uv; // Coordenadas UV
@@ -41,15 +43,30 @@ export function createTerrain(imageData, texture) {
   uv.needsUpdate = true;
   geometry.computeVertexNormals();
 
+  // Asegurarse de que la geometría tenga índices
+  if (!geometry.index) {
+    console.warn("La geometría no tiene índices. Creando índices...");
+    geometry.mergeVertices(); // Fusionar vértices duplicados
+    geometry.computeVertexNormals(); // Recalcular normales
+  }
+
   // Material con la textura
   const material = new THREE.MeshStandardMaterial({
     map: texture,
     side: THREE.DoubleSide,
   });
 
+  // Crear el Mesh del terreno
   const terrain = new THREE.Mesh(geometry, material);
   terrain.rotation.x = -Math.PI / 2; // Rotar el terreno para que quede horizontal
   terrain.receiveShadow = true;
+
+  // Información adicional para física
+  terrain.userData = {
+    width: width,
+    height: height,
+    geometry: geometry,
+  };
 
   return terrain;
 }
