@@ -18,7 +18,12 @@ const { scene, camera, renderer, controls } = initScene();
 const stats = new Stats();
 crearMenuEstadisticas();
 createSky(scene);
-
+// Añadir una malla para visualizar el colisionador
+const colliderGeometry = new THREE.BoxGeometry(body.shape().half_extents().x * 2, body.shape().half_extents().y * 2, body.shape().half_extents().z * 2);
+const colliderMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true });
+const colliderMesh = new THREE.Mesh(colliderGeometry, colliderMaterial);
+colliderMesh.name = "colliderMesh"; // Nombrar la malla para identificarla
+scene.add(colliderMesh);
 // Rutas de las texturas y mapas
 const texturePath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa_t.jpg';
 const heightMapPath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa.png';
@@ -105,19 +110,19 @@ function animate() {
 
     // Sincronización del modelo con la física
     if (body && modelo) {
-    const translation = body.translation(); // Posición del cuerpo físico
-    const rotation = body.rotation();      // Rotación del cuerpo físico
+    const translation = body.translation();
+    const rotation = body.rotation();
 
-    // Actualizar posición y rotación del modelo visual
     modelo.position.set(translation.x, translation.y, translation.z);
     modelo.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
-    }        // Sincronización del colisionador visual (para depuración)
-        const colliderMesh = modelo.getObjectByName("colliderMesh");
-        if (colliderMesh) {
-            colliderMesh.position.copy(modelo.position);
-            colliderMesh.quaternion.copy(modelo.quaternion);
-        }
+
+    // Sincronizar el colisionador visual
+    const colliderMesh = modelo.getObjectByName("colliderMesh");
+    if (colliderMesh) {
+        colliderMesh.position.set(translation.x, translation.y, translation.z);
+        colliderMesh.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
     }
+}
 
     // Actualizar estadísticas
     // stats.update(); // Descomentarlo si lo necesitas
