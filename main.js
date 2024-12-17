@@ -69,21 +69,20 @@ Promise.all([
 function animate() {
     requestAnimationFrame(animate);
 
-    // Actualizar física y controles
     stepPhysics(world);
     controls.update();
-
-    // Renderizar escena
     renderer.render(scene, camera);
-    stats.update();
 
-    // Sincronizar posición y rotación del modelo con el cuerpo físico
+    // Sincronización de modelo físico
     if (body && modelo) {
         const translation = body.translation();
         const rotation = body.rotation();
         modelo.position.set(translation.x, translation.y, translation.z);
         modelo.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
     }
+    
+    // Actualizar vida o energía si es necesario
+    // Ejemplo: stats.modificarVida(-0.1); // Simula pérdida de vida
 }
 
 // Iniciar animación
