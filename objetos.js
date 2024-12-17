@@ -60,4 +60,9 @@ export function cargarModelo(posX = 250, posY = 5, posZ = 250, rutaModelo = './n
 export function crearEsfera(posX = 0, posY = 0, posZ = 0) {
     const geometry = new THREE.SphereGeometry(0.5, 32, 32);
     const material = new THREE.MeshStandardMaterial({ color: 0x0000ff });
-    const esfera = new THREE.Mesh(geometry, material
+    const esfera = new THREE.Mesh(geometry, material);
+    esfera.castShadow = true;
+    esfera.receiveShadow = true;
+    esfera.position.set(posX, posY, posZ); // Establecer posición inicial
+    return esfera;
+}
