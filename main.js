@@ -105,12 +105,13 @@ function animate() {
 
     // Sincronización del modelo con la física
     if (body && modelo) {
-        const translation = body.translation();
-        const rotation = body.rotation();
-        modelo.position.set(translation.x, translation.y, translation.z);
-        modelo.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
+    const translation = body.translation(); // Posición del cuerpo físico
+    const rotation = body.rotation();      // Rotación del cuerpo físico
 
-        // Sincronización del colisionador visual (para depuración)
+    // Actualizar posición y rotación del modelo visual
+    modelo.position.set(translation.x, translation.y, translation.z);
+    modelo.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
+    }        // Sincronización del colisionador visual (para depuración)
         const colliderMesh = modelo.getObjectByName("colliderMesh");
         if (colliderMesh) {
             colliderMesh.position.copy(modelo.position);
