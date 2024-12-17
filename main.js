@@ -17,51 +17,53 @@ createSky(scene);
 const texturePath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa_t.jpg';
 const heightMapPath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa.png';
 
-// Cargar el modelo en lugar del cubo
- let world; // Declarar el mundo de física
+let world; // Declarar el mundo de física
 
-// Cargar el modelo en lugar del cubo
+// Inicializar física y luego cargar el modelo y el terreno
 initPhysics().then((physicsWorld) => {
     world = physicsWorld;
-    
-    const { modelo, body } = cargarModelo(250, 24, 250, './negro.glb', world); // Asegúrate de que `cargarModelo` devuelva el cuerpo físico
-    scene.add(modelo); //  Añadir el modelo a la escena
 
-// Cargar terreno y texturas
-Promise.all([
-    loadTexture(texturePath),
-    new Promise((resolve, reject) => {
-        new THREE.TextureLoader().load(
-            heightMapPath,
-            (texture) => {
-                const canvas = document.createElement('canvas');
-                canvas.width = texture.image.width;
-                canvas.height = texture.image.height;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(texture.image, 0, 0);
-                resolve(ctx.getImageData(0, 0, canvas.width, canvas.height));
-            },
-            undefined,
-            (err) => reject(err)
-        );
-    }),
-]).then(([terrainTexture, imageData]) => {
-    const terrainMesh = createTerrain(imageData, terrainTexture);
-    scene.add(terrainMesh);
-    createTerrainRigidBody(terrainMesh);
-}).catch((error) => console.error('Error al cargar recursos:', error));
+    const { modelo, body } = cargarModelo(250, 24, 250, './negro.glb', world);
+    scene.add(modelo);
 
-function animate() {
-    requestAnimationFrame(animate);
-    stepPhysics(world);
-    controls.update();
-    renderer.render(scene, camera);
-    if (body) {
+    // Cargar terreno y texturas
+    Promise.all([
+        loadTexture(texturePath),
+        new Promise((resolve, reject) => {
+            new THREE.TextureLoader().load(
+                heightMapPath,
+                (texture) => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = texture.image.width;
+                    canvas.height = texture.image.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(texture.image, 0, 0);
+                    resolve(ctx.getImageData(0, 0, canvas.width, canvas.height));
+                },
+                undefined,
+                (err) => reject(err)
+            );
+        }),
+    ]).then(([terrainTexture, imageData]) => {
+        const terrainMesh = createTerrain(imageData, terrainTexture);
+        scene.add(terrainMesh);
+        createTerrainRigidBody(terrainMesh, world); // Asegúrate de que esta función acepte 'world'
+    }).catch((error) => console.error('Error al cargar recursos:', error));
+
+    function animate() {
+        requestAnimationFrame(animate);
+        stepPhysics(world);
+        controls.update();
+        renderer.render(scene, camera);
+
+        // Sincronización del modelo con el cuerpo físico
+        if (body) {
             const translation = body.translation();
+            const rotation = body.rotation();
             modelo.position.set(translation.x, translation.y, translation.z);
-            modelo.quaternion.setFromRotationMatrix(body.rotation());
+            modelo.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
+        }
     }
-}
 
-animate();
+    animate();
 });
