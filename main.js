@@ -36,27 +36,35 @@ async function init() {
             cargarMapaDeAltura(heightMapPath),
         ]);
 
+        // Crear terreno
         terrainMesh = createTerrain(imageData, terrainTexture);
         scene.add(terrainMesh);
-        createTerrainRigidBody(terrainMesh, world);
+        console.log("Terreno añadido a la escena:", terrainMesh);
 
-        // Cargar modelo
+        // Crear colisionador para el terreno
+        if (terrainMesh.geometry) {
+            createTerrainRigidBody(terrainMesh, world);
+            console.log("Colisionador del terreno creado.");
+        } else {
+            console.error("Error: El terreno no tiene geometría válida.");
+        }
+
+        // Cargar modelo con física
         const resultado = await cargarModelo(250, 33, 250, './negro.glb', world);
         modelo = resultado.modelo;
         body = resultado.body;
         scene.add(modelo);
 
+        console.log("Modelo y cuerpo físico añadidos a la escena.");
+        console.log("Posición inicial del cuerpo físico:", body.translation());
+
         // Apuntar la cámara al modelo
-        camera.position.set(250, 30, 280); // Configura la posición de la cámara
-        camera.lookAt(modelo.position);   // La cámara mira hacia la posición del modelo
+        camera.position.set(250, 50, 300); // Configura la posición de la cámara
+        camera.lookAt(modelo.position);
 
         // Actualizar los controles de la cámara
         controls.target.copy(modelo.position);
         controls.update();
-
-        // Verifica que el colisionador está en el campo de visión
-        console.log("Posición del modelo:", modelo.position);
-        console.log("Posición del cuerpo físico:", body.translation());
 
         // Iniciar la animación
         animate();
@@ -102,16 +110,16 @@ function animate() {
         modelo.position.set(translation.x, translation.y, translation.z);
         modelo.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
 
-        // Sincronización del colisionador con el modelo
+        // Sincronización del colisionador visual (para depuración)
         const colliderMesh = modelo.getObjectByName("colliderMesh");
         if (colliderMesh) {
-            colliderMesh.position.set(translation.x, translation.y, translation.z);
-            colliderMesh.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
+            colliderMesh.position.copy(modelo.position);
+            colliderMesh.quaternion.copy(modelo.quaternion);
         }
     }
 
     // Actualizar estadísticas
-    // stats.modificarVida(-0.1); // Ejemplo de daño gradual
+    stats.update();
 }
 
 // Ejecutar la función principal
