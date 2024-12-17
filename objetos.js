@@ -14,7 +14,9 @@ export function cargarModelo(posX = 1, posY = 20, posZ = 1, rutaModelo = './negr
                 objeto.position.set(posX, posY, posZ);
 
                 // Calcular Bounding Box
-                const boundingBox = new THREE.Box3().setFromObject(objeto);
+                const colliderDesc = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2);
+colliderDesc.setCollisionGroups(0b0010_0001); // Ajusta los grupos de colisión si es necesario
+const collider = world.createCollider(colliderDesc, body);
                 const size = new THREE.Vector3();
                 boundingBox.getSize(size);
 
