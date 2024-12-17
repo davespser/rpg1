@@ -41,7 +41,7 @@ async function init() {
         createTerrainRigidBody(terrainMesh, world);
 
         // Cargar modelo
-        const resultado = await cargarModelo(250, 28, 250, './negro.glb', world);
+        const resultado = await cargarModelo(250, 33, 250, './negro.glb', world);
         modelo = resultado.modelo;
         body = resultado.body;
         scene.add(modelo);
