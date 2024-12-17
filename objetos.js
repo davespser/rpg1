@@ -9,7 +9,7 @@ export function cargarModelo(posX = 1, posY = 20, posZ = 1, rutaModelo = './negr
             rutaModelo,
             (gltf) => {
                 const objeto = gltf.scene;
-                const escala = { x: 5, y: 5, z: 5 }; 
+                const escala = { x: 2, y: 2, z: 3 }; 
                 objeto.scale.set(escala.x, escala.y, escala.z);
                 objeto.position.set(posX, posY, posZ);
 
@@ -32,7 +32,7 @@ export function cargarModelo(posX = 1, posY = 20, posZ = 1, rutaModelo = './negr
                 const colliderGeometry = new THREE.BoxGeometry(size.x, size.y, size.z);
                 const colliderMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
                 const colliderMesh = new THREE.Mesh(colliderGeometry, colliderMaterial);
-                colliderMesh.position.set(0, -2, 0); 
+                colliderMesh.position.set(0, 0, 0); 
                 objeto.add(colliderMesh);
 
                 console.log("Modelo y colisionador alineados.");
