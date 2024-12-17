@@ -24,12 +24,8 @@ export function createTerrainRigidBody(terrainMesh, world) {
     // Crear el colisionador trimesh para el terreno
     const colliderDesc = RAPIER.ColliderDesc.trimesh(vertices, indices);
 
-    // Crear el cuerpo rígido para el terreno (fijo)
-    const rigidBodyDesc = RAPIER.RigidBodyDesc.fixed().setTranslation(
-        terrainMesh.position.x, terrainMesh.position.y, terrainMesh.position.z
-    );
-
-    const rigidBody = world.createRigidBody(rigidBodyDesc);
+    // Crear el cuerpo rígido de tipo fijo
+    const rigidBody = world.createRigidBody(RAPIER.RigidBody.fixed(terrainMesh.position));
 
     // Asignar el colisionador al cuerpo rígido
     world.createCollider(colliderDesc, rigidBody);
