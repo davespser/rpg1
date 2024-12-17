@@ -40,7 +40,13 @@ export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro
                     const colliderGeometry = new THREE.BoxGeometry(40, 40, 40);  // Aumentamos el tamaño para asegurar visibilidad
                     const colliderMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
                     const colliderMesh = new THREE.Mesh(colliderGeometry, colliderMaterial);
-                    colliderMesh.position.set(posX, posY, posZ); // Posición del colisionador
+
+                    // Ajuste de la posición del colisionador con respecto al modelo
+                    const modelBoundingBox = new THREE.Box3().setFromObject(objeto);
+                    const modelCenter = modelBoundingBox.getCenter(new THREE.Vector3());  // Obtener el centro del modelo
+
+                    // Posicionamos el colisionador en el centro del modelo
+                    colliderMesh.position.set(modelCenter.x, modelCenter.y, modelCenter.z);
                     colliderMesh.name = "colliderMesh";  // Nombre para poder acceder fácilmente
                     objeto.add(colliderMesh); // Añadir visualización del colisionador al objeto
 
