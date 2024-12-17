@@ -20,6 +20,7 @@ export function cargarModelo(posX = 250, posY = 8, posZ = 250, rutaModelo = './n
                     }
                 });
                 objeto.position.set(posX, posY, posZ);
+                console.log("Posición del objeto en la escena:", objeto.position);  // Verificar posición del modelo
 
                 // Verificar si 'world' está listo
                 if (world && typeof world.createRigidBody === 'function') {
@@ -36,14 +37,17 @@ export function cargarModelo(posX = 250, posY = 8, posZ = 250, rutaModelo = './n
                     console.log("Modelo y cuerpo físico listos:", { objeto, body });
 
                     // Visualización del colisionador (cuboide verde)
-                    const colliderGeometry = new THREE.BoxGeometry(22, 22, 22);  // Usando dimensiones coherentes
-                    const colliderMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00, wireframe: true });
+                    const colliderGeometry = new THREE.BoxGeometry(40, 40, 40);  // Aumentamos el tamaño para asegurar visibilidad
+                    const colliderMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
                     const colliderMesh = new THREE.Mesh(colliderGeometry, colliderMaterial);
                     colliderMesh.position.set(posX, posY, posZ); // Posición del colisionador
                     colliderMesh.name = "colliderMesh";  // Nombre para poder acceder fácilmente
                     objeto.add(colliderMesh); // Añadir visualización del colisionador al objeto
 
-                    resolve({ modelo: objeto, body }); // Devolver modelo y cuerpo físico
+                    console.log("Posición del colisionador:", colliderMesh.position);  // Verificar la posición del colisionador
+
+                    // Devolver el modelo y el cuerpo físico
+                    resolve({ modelo: objeto, body });
                 } else {
                     console.error('Error: el mundo físico no está inicializado.');
                     reject('El mundo físico no está inicializado.');
