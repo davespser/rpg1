@@ -12,7 +12,7 @@ export function cargarModelo(posX = 250, posY = 8, posZ = 250, rutaModelo = './n
                 
                 // Modelo visual de Three.js
                 const objeto = gltf.scene;
-                objeto.scale.set(10, 10, 10);
+                objeto.scale.set(10, 10, 10);  // Escala ajustada
                 objeto.traverse((node) => {
                     if (node.isMesh) {
                         node.castShadow = true;
@@ -36,8 +36,8 @@ export function cargarModelo(posX = 250, posY = 8, posZ = 250, rutaModelo = './n
                     console.log("Modelo y cuerpo físico listos:", { objeto, body });
 
                     // Visualización del colisionador (cuboide verde)
-                    const colliderGeometry = new THREE.BoxGeometry(40, 40, 40); // Ajusta las dimensiones según tu modelo
-                    const colliderMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
+                    const colliderGeometry = new THREE.BoxGeometry(22, 22, 22);  // Usando dimensiones coherentes
+                    const colliderMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00, wireframe: true });
                     const colliderMesh = new THREE.Mesh(colliderGeometry, colliderMaterial);
                     colliderMesh.position.set(posX, posY, posZ); // Posición del colisionador
                     objeto.add(colliderMesh); // Añadir visualización del colisionador al objeto
@@ -56,3 +56,4 @@ export function cargarModelo(posX = 250, posY = 8, posZ = 250, rutaModelo = './n
         );
     });
 }
+    
