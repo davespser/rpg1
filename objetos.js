@@ -40,7 +40,7 @@ export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro
                     const colliderGeometry = new THREE.BoxGeometry(40, 40, 40);  // Aumentamos el tamaño para asegurar visibilidad
                     const colliderMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
                     const colliderMesh = new THREE.Mesh(colliderGeometry, colliderMaterial);
-                    colliderMesh.position.set(body); // Posición del colisionador
+                    colliderMesh.position.set(posX, posY, posZ); // Posición del colisionador
                     colliderMesh.name = "colliderMesh";  // Nombre para poder acceder fácilmente
                     objeto.add(colliderMesh); // Añadir visualización del colisionador al objeto
 
