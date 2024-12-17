@@ -113,9 +113,7 @@ function animate() {
         modelo.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
 
         // Sincronizar el colisionador visual
-        if (collider) {
-            colliderMesh.position.set(translation.x, translation.y, translation.z);
-            colliderMesh.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
+        
         }
     }
 
