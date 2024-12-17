@@ -21,10 +21,14 @@ let world; // Declarar el mundo de física
 
 // Inicializar física y luego cargar el modelo y el terreno
 initPhysics().then((physicsWorld) => {
+    console.log('Mundo de física inicializado:', physicsWorld);
     world = physicsWorld;
-
     const { modelo, body } = cargarModelo(250, 24, 250, './negro.glb', world);
+    console.log('Modelo y cuerpo físico después de cargar:', { modelo, body });
     scene.add(modelo);
+    // ... Resto de tu código
+});
+    
 
     // Cargar terreno y texturas
     Promise.all([
