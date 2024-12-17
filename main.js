@@ -42,7 +42,7 @@ async function init() {
 
         // Cargar modelo
         // Cargar modelo
-const resultado = await cargarModelo(250, 24, 250, './negro.glb', world);
+const resultado = await cargarModelo(250, 28, 250, './negro.glb', world);
 modelo = resultado.modelo;
 body = resultado.body;
 scene.add(modelo);
