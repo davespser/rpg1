@@ -43,12 +43,8 @@ async function init() {
 
         // Crear colisionador para el terreno
         if (terrainMesh.geometry) {
-            createTerrainRigidBody(terrainMesh, world);
+            createTerrainRigidBody(terrainMesh);
             console.log("Colisionador del terreno creado.");
-
-            // Agregar helper para el terreno
-            const terrenoHelper = new THREE.BoxHelper(terrainMesh, 0xff0000); // Rojo
-            scene.add(terrenoHelper);
         } else {
             console.error("Error: El terreno no tiene geometría válida.");
         }
@@ -62,12 +58,8 @@ async function init() {
         console.log("Modelo y cuerpo físico añadidos a la escena.");
         console.log("Posición inicial del cuerpo físico:", body.translation());
 
-        // Agregar helper para el modelo
-        const modeloHelper = new THREE.BoxHelper(modelo, 0x00ff00); // Verde
-        scene.add(modeloHelper);
-
         // Apuntar la cámara al modelo
-        camera.position.set(250, 50, 300);
+        camera.position.set(250, 50, 300); // Configura la posición de la cámara
         camera.lookAt(modelo.position);
 
         // Actualizar los controles de la cámara
@@ -107,7 +99,7 @@ function cargarMapaDeAltura(path) {
 function animate() {
     requestAnimationFrame(animate);
 
-    stepPhysics(world); // Actualizar la física
+    stepPhysics(); // Actualizar la física
     controls.update();
     renderer.render(scene, camera);
 
@@ -126,8 +118,8 @@ function animate() {
         }
     }
 
-    // Actualizar estadísticas si son necesarias
-    // stats.update();
+    // Actualizar estadísticas
+    // stats.update(); // Descomentarlo si lo necesitas
 }
 
 // Ejecutar la función principal
