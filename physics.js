@@ -12,26 +12,31 @@ export async function initPhysics() {
 }
 
 export async function createTerrainRigidBody(terrainMesh) {
-    // Asegurarnos de que el mundo de física esté inicializado
     if (!world) await initPhysics();
 
-    // Obtener las posiciones de los vértices y los índices de la geometría del terreno
+    // Ajusta la posición y escala del colisionador
+    const scale = new THREE.Vector3(1, 1, 1);  // Ajusta la escala del colisionador si es necesario
+    terrainMesh.scale.set(scale.x, scale.y, scale.z); // Escala del terreno visual
+
+    // Aquí puedes modificar la posición si el terreno tiene una posición diferente
+    const posX = terrainMesh.position.x;
+    const posY = terrainMesh.position.y;
+    const posZ = terrainMesh.position.z;
+
+    // Obtener los vértices del terreno
     const vertices = terrainMesh.geometry.attributes.position.array;
     const indices = terrainMesh.geometry.index.array;
 
-    // Crear un colisionador de tipo "trimesh" (malla de triángulos) para el terreno
+    // Crear el colisionador tipo 'trimesh'
     const colliderDesc = RAPIER.ColliderDesc.trimesh(vertices, indices);
-    
-    // Obtener la posición del terreno
-    const { x, y, z } = terrainMesh.position;
 
     // Crear el cuerpo rígido del terreno (fijo)
-    const rigidBody = world.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(x, y, z));
+    const rigidBody = world.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(posX, posY, posZ));
 
-    // Crear el colisionador y asociarlo al cuerpo rígido
+    // Crear el colisionador y asociarlo al cuerpo físico
     world.createCollider(colliderDesc, rigidBody);
 
-    console.log("Colisionador del terreno creado en:", terrainMesh.position);
+    console.log("Colisionador de terreno creado con la posición y escala configuradas.");
 }
 
 export function stepPhysics() {
