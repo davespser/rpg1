@@ -50,7 +50,7 @@ async function init() {
         }
 
         // Cargar modelo con física
-        const resultado = await cargarModelo(1, 1, 1, './negro.glb', world);
+        const resultado = await cargarModelo(1, 10, 1, './negro.glb', world);
         modelo = resultado.modelo;
         body = resultado.body;
         collider = resultado.collider;
