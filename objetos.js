@@ -13,7 +13,7 @@ export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro
                 // Modelo visual de Three.js
                 const objeto = gltf.scene;
                 objeto.scale.set(10, 10, 10);
-                onjeto.position.set(1,10,1);// Escala ajustada
+                objeto.position.set(1,10,1);// Escala ajustada
                 objeto.traverse((node) => {
                     if (node.isMesh) {
                         node.castShadow = true;
