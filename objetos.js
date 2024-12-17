@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from "GLTFLoader";
 import RAPIER from '@dimforge/rapier3d-compat';
 
-export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro.glb', world) {
+export function cargarModelo(posX = 1, posY = 2, posZ = 1, rutaModelo = './negro.glb', world) {
     return new Promise((resolve, reject) => {
         const loader = new GLTFLoader();
         loader.load(
@@ -52,7 +52,7 @@ export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro
                     console.log("Modelo y cuerpo físico listos:", { objeto, body });
 
                     // Visualización del colisionador (wireframe)
-                    const colliderGeometry = new THREE.BoxGeometry(size.x+2, size.y+2, size.z+2);
+                    const colliderGeometry = new THREE.BoxGeometry(size.x, size.y, size.z);
                     const colliderMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
                     const colliderMesh = new THREE.Mesh(colliderGeometry, colliderMaterial);
 
