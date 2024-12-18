@@ -34,7 +34,7 @@ export function addBuilding(scene, terrain) {
         const terrainHeight = terrain.geometry.boundingBox
             ? terrain.geometry.boundingBox.max.y
             : -30; // Altura del terreno
-
+        building.rotation.y = rotationY;
         building.position.set(x, terrainHeight + 50, z);
         scene.add(building);
        
