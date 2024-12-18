@@ -3,10 +3,10 @@ import { GLTFLoader } from 'GLTFLoader';
 import RAPIER from '@dimforge/rapier3d-compat';
 import Joystick from './joystick.js'; // Asegúrate de que la ruta sea correcta
 
-export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro.glb', world) {
+export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro.glb', world, scene) {
     return new Promise((resolve, reject) => {
         const loader = new GLTFLoader();
-        
+
         loader.load(
             rutaModelo,
             (gltf) => {
@@ -14,7 +14,7 @@ export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro
 
                 // Escalar y posicionar el modelo
                 const escala = { x: 5, y: 5, z: 5 };
-                objeto.scale.set(escala.x*2, escala.y*2, escala.z*2);
+                objeto.scale.set(escala.x * 2, escala.y * 2, escala.z * 2);
                 objeto.position.set(0, 20, 0); // Inicialmente en el origen
 
                 // Calcular Bounding Box
@@ -34,16 +34,30 @@ export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro
                 objeto.position.set(posX, posY + size.y / 2, posZ);
 
                 // Depurador visual
-                const colliderGeometry = new THREE.BoxGeometry(size.x/6, size.y/8, size.z/6);
+                const colliderGeometry = new THREE.BoxGeometry(size.x / 6, size.y / 8, size.z / 6);
                 const colliderMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
                 const colliderMesh = new THREE.Mesh(colliderGeometry, colliderMaterial);
                 colliderMesh.position.set(0, 0, 0);
                 objeto.add(colliderMesh);
 
-                // Función para actualizar el colisionador visual
+                // Añadir el objeto a la escena
+                scene.add(objeto);
+
+                // Función para actualizar el colisionador visual y ajustar la altura según el terreno
+                const raycaster = new THREE.Raycaster();
                 const updateColliderVisual = () => {
                     const translation = body.translation();
-                    objeto.position.set(translation.x, translation.y, translation.z);
+                    const currentPosition = new THREE.Vector3(translation.x, translation.y, translation.z);
+
+                    // Raycast hacia abajo para encontrar el terreno
+                    raycaster.set(currentPosition, new THREE.Vector3(0, -1, 0));
+                    const intersects = raycaster.intersectObjects(scene.children, true);
+                    if (intersects.length > 0) {
+                        // Ajustar la posición del modelo para seguir el terreno
+                        currentPosition.y = intersects[0].point.y + size.y / 2; // Ajustar según la altura del modelo
+                    }
+
+                    objeto.position.set(currentPosition.x, currentPosition.y, currentPosition.z);
                     objeto.scale.set(escala.x, escala.y, escala.z);
                 };
 
