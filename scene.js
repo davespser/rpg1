@@ -55,7 +55,8 @@ export function initScene() {
     scene.add(directionalLight);
 
     // Configuración adicional: Ejes (opcional, para depuración)
-    if (process.env.NODE_ENV === 'development') {
+    const debugMode = false; // Cambiar a true si necesitas ver los ejes
+    if (debugMode) {
         const axesHelper = new THREE.AxesHelper(500);
         scene.add(axesHelper);
     }
