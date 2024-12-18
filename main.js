@@ -40,7 +40,7 @@ async function init() {
 
         // Crear terreno y añadirlo a la escena
         terrainMesh = createTerrain(imageData, terrainTexture);
-        terrainMesh.scale.set(5, 5, 5);
+        terrainMesh.scale.set(1, 1, 1);
         terrainMesh.position.set(0, -20, 0); // Ajustar la posición del terreno
         scene.add(terrainMesh);
         console.log("Terreno añadido a la escena:", terrainMesh);
@@ -55,7 +55,7 @@ async function init() {
         // Cargar modelo con física
         const resultado = await cargarModelo(1, 1, 1, './negro.glb', world, scene, true);
         modelo = resultado.modelo;
-        modelo.scale.set(1, 1, 1);
+        modelo.scale.set(5, 5, 5);
         body = resultado.body;
         collider = resultado.collider;
         scene.add(modelo);
