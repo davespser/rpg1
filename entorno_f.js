@@ -42,9 +42,9 @@ export function addBuilding(scene, terrain) {
 
     // **Segundo grupo de 2 edificios**
     const group2 = new THREE.Group();
-    const x2 = -330; // Coordenada X
-    const zStart2 = -140; // Coordenada Z inicial
-    const zOffset2 = 80; // Distancia entre edificios en Z
+    const x2 = -230; // Coordenada X
+    const zStart2 = -150; // Coordenada Z inicial
+    const zOffset2 = 90; // Distancia entre edificios en Z
 
     for (let i = 0; i < 2; i++) {
         const building = new THREE.Mesh(geometry, material);
@@ -71,7 +71,7 @@ export function addBuilding(scene, terrain) {
     singleBuilding.receiveShadow = true;
 
     const x3 = -290; // Coordenada X
-    const z3 = -150; // Coordenada Z
+    const z3 = 10; // Coordenada Z
     const terrainHeight = terrain.geometry.boundingBox
         ? terrain.geometry.boundingBox.max.y
         : -30;
