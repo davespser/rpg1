@@ -18,7 +18,7 @@ export function addBuilding(scene, terrain) {
     // Posiciones iniciales
     const x = -340; // Coordenada X
     const zStart = -140; // Coordenada Z inicial
-    const zOffset = 75; // Distancia entre edificios en Z
+    const zOffset = 95; // Distancia entre edificios en Z
     const numBuildings = 6; // Número total de edificios
 
     for (let i = 0; i < numBuildings; i++) {
@@ -30,7 +30,7 @@ export function addBuilding(scene, terrain) {
 
         // Posicionar cada edificio
         const z = zStart + i * zOffset; // Incrementar Z en cada iteración
-        const rotationY = THREE.MathUtils.degToRad(4 * i); //
+        const rotationY = THREE.MathUtils.degToRad(4); //
         const terrainHeight = terrain.geometry.boundingBox
             ? terrain.geometry.boundingBox.max.y
             : -30; // Altura del terreno
