@@ -17,8 +17,8 @@ export function addBuilding(scene, terrain) {
 
     // Posiciones iniciales
     const x = -340; // Coordenada X
-    const zStart = -50; // Coordenada Z inicial
-    const zOffset = 10; // Distancia entre edificios en Z
+    const zStart = -80; // Coordenada Z inicial
+    const zOffset = 30; // Distancia entre edificios en Z
     const numBuildings = 6; // Número total de edificios
 
     for (let i = 0; i < numBuildings; i++) {
