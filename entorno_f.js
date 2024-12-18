@@ -19,9 +19,9 @@ export function addBuilding(scene, terrain) {
     const material = new THREE.MeshStandardMaterial({ color: 0x8B0000 });
 
     // Posiciones iniciales
-    const x = -320; // Coordenada X
+    const x = -300; // Coordenada X
     const zStart = -180; // Coordenada Z inicial
-    const zOffset = 100; // Distancia entre edificios en Z
+    const zOffset = 90; // Distancia entre edificios en Z
     const numBuildings = 6; // Número total de edificios
 
     for (let i = 0; i < numBuildings; i++) {
@@ -42,7 +42,7 @@ export function addBuilding(scene, terrain) {
     }
 
     // Rotar el grupo completo 2 grados en el eje Y
-    const rotationY = THREE.MathUtils.degToRad(4); // Convertir grados a radianes
+    const rotationY = THREE.MathUtils.degToRad(-4); // Convertir grados a radianes
     buildingGroup.rotation.y = rotationY;
 
     // Añadir el grupo a la escena
