@@ -14,9 +14,17 @@ import Joystick from './joystick.js';
  * @param {boolean} debug - Habilitar colisionador visual para depuración.
  * @returns {Promise<object>} Promesa que resuelve con el modelo, cuerpo físico y funciones adicionales.
  */
-export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro.glb', world, scene, debug = false) {
-    if (!scene) {
-        console.error("La escena no está definida. Asegúrate de pasar 'scene' como parámetro.");
+export function cargarModelo(
+    posX = 0, 
+    posY = 2, 
+    posZ = 0, 
+    rutaModelo = './negro.glb', 
+    world, 
+    scene, 
+    debug = false
+) {
+    if (!scene || !world) {
+        console.error("La escena o el mundo físico no están definidos.");
         return;
     }
 
@@ -28,30 +36,26 @@ export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro
             (gltf) => {
                 const objeto = gltf.scene;
 
-                // Escalar y posicionar el modelo
-                const escala = { x: 5, y: 5, z: 5 };
-                objeto.scale.set(escala.x, escala.y, escala.z);
+                // Escalar y posicionar el modelo con valores estándar
+                const escala = 2; // Escala estándar uniforme
+                objeto.scale.set(escala, escala, escala);
                 objeto.position.set(posX, posY, posZ);
 
-                // Calcular Bounding Box para obtener el tamaño del modelo
-                const boundingBox = new THREE.Box3().setFromObject(objeto);
-                const size = new THREE.Vector3();
-                boundingBox.getSize(size);
+                // Configuración del colisionador como cápsula estándar
+                const alturaCapsula = 1.0; // Altura de la cápsula
+                const radioCapsula = 0.5;  // Radio de la cápsula
 
-                // Configurar el colisionador como cápsula
-                const alturaCapsula = size.y / 2; // La mitad de la altura de la cápsula
-                const radioCapsula = Math.min(size.x, size.z) / 4; // Radio basado en la anchura mínima
-
+                // Crear cuerpo físico con Rapier
                 const bodyDesc = RAPIER.RigidBodyDesc.kinematicPositionBased()
-                    .setTranslation(posX, posY + alturaCapsula, posZ); // Ajustar altura inicial
+                    .setTranslation(posX, posY + alturaCapsula, posZ); // Altura inicial
                 const body = world.createRigidBody(bodyDesc);
                 const colliderDesc = RAPIER.ColliderDesc.capsule(alturaCapsula, radioCapsula);
                 const collider = world.createCollider(colliderDesc, body);
 
-                // Alinear visualmente el modelo con el colisionador
+                // Ajustar modelo para alinearlo con el colisionador
                 objeto.position.set(posX, posY + alturaCapsula, posZ);
 
-                // Opcional: Visualizar el colisionador para depuración
+                // Visualización del colisionador para depuración
                 if (debug) {
                     const colliderGeometry = new THREE.CapsuleGeometry(radioCapsula, alturaCapsula * 2);
                     const colliderMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
@@ -63,15 +67,17 @@ export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro
                 // Añadir modelo a la escena
                 scene.add(objeto);
 
-                // Configuración del joystick
+                // Configurar joystick
                 const joystick = new Joystick({
                     container: document.body,
-                    radius: 100,
-                    innerRadius: 50,
-                    position: { x: 20, y: 20 }
+                    radius: 80,          // Tamaño estándar del joystick
+                    innerRadius: 40,
+                    position: { x: 50, y: 50 }
                 });
 
-                // Animación y movimiento del cuerpo físico
+                // Movimiento y actualización del modelo
+                const velocidad = 0.05; // Velocidad estándar del movimiento
+
                 const animate = () => {
                     requestAnimationFrame(animate);
 
@@ -79,11 +85,16 @@ export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro
                     if (x !== 0 || y !== 0) {
                         const translation = body.translation();
                         body.setNextKinematicTranslation({
-                            x: translation.x + x * 0.1,
+                            x: translation.x + x * velocidad,
                             y: translation.y,
-                            z: translation.z + y * 0.1
+                            z: translation.z + y * velocidad
                         });
-                        objeto.position.set(body.translation().x, body.translation().y - alturaCapsula, body.translation().z);
+
+                        objeto.position.set(
+                            body.translation().x, 
+                            body.translation().y - alturaCapsula, 
+                            body.translation().z
+                        );
                     }
                 };
                 animate();
