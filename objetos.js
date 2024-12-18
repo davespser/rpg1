@@ -43,6 +43,7 @@ export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro
                 const updateColliderVisual = () => {
                     const translation = body.translation();
                     objeto.position.set(translation.x, translation.y, translation.z);
+                    objeto.scale.set(escala.x, escala.y, escala.z);
                 };
 
                 // Llamar a la función de actualización en cada frame
