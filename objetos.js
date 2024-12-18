@@ -21,15 +21,15 @@ export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro
                 const size = new THREE.Vector3();
                 boundingBox.getSize(size);
 
-                // Crear cuerpo físico alineado con la posición exacta
-                const bodyDesc = RAPIER.RigidBodyDesc.dynamic()
-                    .setTranslation(posX, posY, + size.y / 2, posZ);
+                // Crear cuerpo cinemático alineado con la posición exacta
+                const bodyDesc = RAPIER.RigidBodyDesc.kinematicPositionBased()
+                    .setTranslation(posX, posY + size.y / 2, posZ);
                 const body = world.createRigidBody(bodyDesc);
 
                 const colliderDesc = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2);
                 const collider = world.createCollider(colliderDesc, body);
 
-                // Alinear visualmente el modelo a la posición del cuerpo físico
+                // Alinear visualmente el modelo a la posición del cuerpo cinemático
                 objeto.position.set(posX, posY + size.y / 2, posZ);
 
                 // Depurador visual
