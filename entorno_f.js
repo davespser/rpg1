@@ -18,7 +18,7 @@ export function addBuilding(scene, terrain) {
     // **Primer grupo de 6 edificios consecutivos**
     const group1 = new THREE.Group();
     const x1 = -340; // Coordenada X
-    const zStart1 = -140; // Coordenada Z inicial
+    const zStart1 = -40; // Coordenada Z inicial
     const zOffset1 = 91; // Distancia entre edificios en Z
 
     for (let i = 0; i < 6; i++) {
