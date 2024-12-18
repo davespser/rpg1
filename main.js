@@ -40,7 +40,7 @@ const [terrainTexture, imageData] = await Promise.all([
 // Crear terreno
 terrainMesh = createTerrain(imageData, terrainTexture);
 terrainMesh.scale.set(1, 1, 1);
-terrainMesh.position.set(0, 2, 0); // Ajusta la posición del terreno si es necesario
+terrainMesh.position.set(0, -5, 0); // Ajusta la posición del terreno si es necesario
 scene.add(terrainMesh);
 console.log("Terreno añadido a la escena:", terrainMesh);
 
