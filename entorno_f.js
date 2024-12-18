@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 
 /**
- * Añade varios edificios (cubos) consecutivos sobre el terreno y rota el grupo.
- * @param {THREE.Scene} scene - La escena donde se añadirá el grupo de cubos.
- * @param {THREE.Mesh} terrainMesh - El terreno donde se posicionará el grupo.
+ * Añade varios edificios y grupos de edificios sobre el terreno.
+ * @param {THREE.Scene} scene - La escena donde se añadirán los edificios.
+ * @param {THREE.Mesh} terrain - El terreno donde se posicionarán los edificios.
  */
 export function addBuilding(scene, terrain) {
     if (!terrain) {
@@ -11,42 +11,73 @@ export function addBuilding(scene, terrain) {
         return;
     }
 
-    // Crear el grupo de cubos
-    const buildingGroup = new THREE.Group();
-
-    // Crear la geometría y material del cubo (edificio)
+    // Crear geometría y material base
     const geometry = new THREE.BoxGeometry(100, 60, 85); // Anchura, altura, profundidad
     const material = new THREE.MeshStandardMaterial({ color: 0x8B0000 });
 
-    // Posiciones iniciales
-    const x = -340; // Coordenada X
-    const zStart = -140; // Coordenada Z inicial
-    const zOffset = 91; // Distancia entre edificios en Z
-    const numBuildings = 6; // Número total de edificios
+    // **Primer grupo de 6 edificios consecutivos**
+    const group1 = new THREE.Group();
+    const x1 = -340; // Coordenada X
+    const zStart1 = -140; // Coordenada Z inicial
+    const zOffset1 = 91; // Distancia entre edificios en Z
 
-    for (let i = 0; i < numBuildings; i++) {
+    for (let i = 0; i < 6; i++) {
         const building = new THREE.Mesh(geometry, material);
-
-        // Habilitar sombras para cada edificio
         building.castShadow = true;
         building.receiveShadow = true;
 
-        // Posicionar cada edificio
-        const z = zStart + i * zOffset; // Incrementar Z en cada iteración
+        const z = zStart1 + i * zOffset1;
         const terrainHeight = terrain.geometry.boundingBox
             ? terrain.geometry.boundingBox.max.y
-            : -30; // Altura del terreno
+            : -30;
 
-        building.position.set(x, terrainHeight + 50, z);
-        buildingGroup.add(building); // Añadir el edificio al grupo
+        building.position.set(x1, terrainHeight + 50, z);
+        group1.add(building);
     }
 
-    // Rotar el grupo completo 2 grados en el eje Y
-    const rotationY = THREE.MathUtils.degToRad(-3.5); // Convertir grados a radianes
-    buildingGroup.rotation.y = rotationY;
+    group1.rotation.y = THREE.MathUtils.degToRad(-3.5);
+    scene.add(group1);
 
-    // Añadir el grupo a la escena
-    scene.add(buildingGroup);
+    console.log("Primer grupo de edificios añadido.");
 
-    console.log(`Grupo de edificios añadido con rotación Y=2°.`);
+    // **Segundo grupo de 2 edificios**
+    const group2 = new THREE.Group();
+    const x2 = 100; // Coordenada X
+    const zStart2 = 50; // Coordenada Z inicial
+    const zOffset2 = 120; // Distancia entre edificios en Z
+
+    for (let i = 0; i < 2; i++) {
+        const building = new THREE.Mesh(geometry, material);
+        building.castShadow = true;
+        building.receiveShadow = true;
+
+        const z = zStart2 + i * zOffset2;
+        const terrainHeight = terrain.geometry.boundingBox
+            ? terrain.geometry.boundingBox.max.y
+            : -30;
+
+        building.position.set(x2, terrainHeight + 50, z);
+        group2.add(building);
+    }
+
+    group2.rotation.y = THREE.MathUtils.degToRad(10); // Rotar el grupo 10 grados en Y
+    scene.add(group2);
+
+    console.log("Segundo grupo de edificios añadido.");
+
+    // **Edificio suelto**
+    const singleBuilding = new THREE.Mesh(geometry, material);
+    singleBuilding.castShadow = true;
+    singleBuilding.receiveShadow = true;
+
+    const x3 = 200; // Coordenada X
+    const z3 = -300; // Coordenada Z
+    const terrainHeight = terrain.geometry.boundingBox
+        ? terrain.geometry.boundingBox.max.y
+        : -30;
+
+    singleBuilding.position.set(x3, terrainHeight + 50, z3);
+    scene.add(singleBuilding);
+
+    console.log("Edificio suelto añadido.");
 }
