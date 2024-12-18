@@ -52,6 +52,10 @@ export function cargarModelo(
                 const colliderDesc = RAPIER.ColliderDesc.capsule(alturaCapsula, radioCapsula);
                 const collider = world.createCollider(colliderDesc, body);
 
+                // Añadir un constraint para bloquear las rotaciones en los ejes X y Z
+                const lockRotation = RAPIER.RigidBodyDesc.fixed();
+                body.setLockRotations(true);  // Bloquea la rotación en los tres ejes (X, Y, Z)
+                
                 // Ajustar modelo para alinearlo con el colisionador
                 objeto.position.set(posX, posY + alturaCapsula, posZ);
 
