@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import RAPIER from '@dimforge/rapier3d-compat'; 
+export function crearEntornoFisico(scene, world) {
+ 
     // Crear un cuerpo físico cubo
     const physicsWorld = scene.physicsWorld;
 
