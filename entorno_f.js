@@ -30,3 +30,15 @@ export function crearEntornoFisico(scene, world, terrainHeight) {
             restitution: 0.3
         }
     });
+       // Crear un mesh para visualizar el cubo
+    const cubeGeometry = new THREE.BoxGeometry(cubeSize.x, cubeSize.y, cubeSize.z);
+    const cubeMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
+    cubeMesh.position.copy(cubePosition); 
+
+    // Asociar el mesh al cuerpo rígido
+    body.setCollider(cubeMesh);
+
+    // Agregar el mesh a la escena
+    scene.add(cubeMesh);
+}
