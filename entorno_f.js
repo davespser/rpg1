@@ -12,12 +12,12 @@ export function addBuilding(scene, terrain) {
     }
 
     // Crear la geometría y material del cubo (edificio)
-    const geometry = new THREE.BoxGeometry(50, 60, 80); // Anchura, altura, profundidad
+    const geometry = new THREE.BoxGeometry(50, 60, 90); // Anchura, altura, profundidad
     const material = new THREE.MeshStandardMaterial({ color: 0x8B0000 });
 
     // Posiciones iniciales
     const x = -340; // Coordenada X
-    const zStart = -160; // Coordenada Z inicial
+    const zStart = -140; // Coordenada Z inicial
     const zOffset = 75; // Distancia entre edificios en Z
     const numBuildings = 6; // Número total de edificios
 
@@ -36,7 +36,7 @@ export function addBuilding(scene, terrain) {
 
         building.position.set(x, terrainHeight + 50, z);
         scene.add(building);
-       const rotationY = THREE.MathUtils.degToRad(2); //
+       const rotationY = THREE.MathUtils.degToRad(4); //
         console.log(`Edificio ${i + 1} añadido en posición: x=${x}, y=${terrainHeight + 50}, z=${z}`);
     }
 }
