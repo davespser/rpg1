@@ -30,7 +30,7 @@ export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro
 
                 // Escalar y posicionar el modelo
                 const escala = { x: 5, y: 5, z: 5 };
-                objeto.scale.set(escala.x * 2, escala.y * 2, escala.z * 2);
+                objeto.scale.set(escala.x, escala.y, escala.z);
                 objeto.position.set(0, 20, 0);
 
                 // Calcular Bounding Box
@@ -43,14 +43,14 @@ export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro
                     .setTranslation(posX, posY + size.y / 4, posZ);
                 const body = world.createRigidBody(bodyDesc);
 
-                const colliderDesc = RAPIER.ColliderDesc.cuboid(size.x /8, size.y / 8, size.z / 8);
+                const colliderDesc = RAPIER.ColliderDesc.cuboid(size.x /2, size.y / 2, size.z / 2);
                 const collider = world.createCollider(colliderDesc, body);
 
                 // Alinear visualmente el modelo
                 objeto.position.set(posX, posY + size.y / 2, posZ);
 
                 // Depurador visual (opcional)
-                const colliderGeometry = new THREE.BoxGeometry(size.x, size.y, size.z);
+                const colliderGeometry = new THREE.BoxGeometry(size.x/2, size.y/2, size.z/2);
                 const colliderMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
                 const colliderMesh = new THREE.Mesh(colliderGeometry, colliderMaterial);
                 colliderMesh.position.set(0, 0, 0);
