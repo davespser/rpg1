@@ -5,7 +5,7 @@ import * as THREE from 'three';
  * @param {THREE.Scene} scene - La escena donde se añadirán los edificios.
  * @param {THREE.Mesh} terrain - El terreno donde se posicionarán los edificios.
  */
-export function addBuilding(scene, terrain) {
+export function addBuildings(scene, terrain) {
     if (!terrain) {
         console.error("El terreno no está definido. No se pueden agregar los edificios.");
         return;
@@ -60,12 +60,12 @@ export function addBuilding(scene, terrain) {
         group2.add(building);
     }
 
-    group2.rotation.y = THREE.MathUtils.degToRad(90); // Rotar el grupo 10 grados en Y
+    group2.rotation.y = THREE.MathUtils.degToRad(90); // Rotar el grupo 90 grados en Y
     scene.add(group2);
 
     console.log("Segundo grupo de edificios añadido.");
 
-    // **Edificio suelto**
+    // **Edificio suelto con escala personalizada**
     const singleBuilding = new THREE.Mesh(geometry, material);
     singleBuilding.castShadow = true;
     singleBuilding.receiveShadow = true;
@@ -77,7 +77,14 @@ export function addBuilding(scene, terrain) {
         : -30;
 
     singleBuilding.position.set(x3, terrainHeight + 15, z3);
+
+    // Escala personalizada para el edificio suelto
+    const customScale = new THREE.Vector3(2, 3, 1.5); // Escala en X, Y, Z
+    singleBuilding.scale.copy(customScale);
+
     scene.add(singleBuilding);
 
-    console.log("Edificio suelto añadido.");
+    console.log(
+        `Edificio suelto añadido en posición: x=${x3}, y=${terrainHeight + 15}, z=${z3} con escala: ${customScale.x}, ${customScale.y}, ${customScale.z}.`
+    );
 }
