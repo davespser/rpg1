@@ -13,7 +13,7 @@ export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro
 
                 // Escalar y posicionar el modelo
                 const escala = { x: 5, y: 5, z: 5 };
-                objeto.scale.set(escala.x, escala.y, escala.z);
+                objeto.scale.set(escala.x*2, escala.y*2, escala.z*2);
                 objeto.position.set(0, 20, 0); // Inicialmente en el origen
 
                 // Calcular Bounding Box
