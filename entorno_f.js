@@ -21,7 +21,7 @@ export function addBuilding(scene, terrain) {
     building.receiveShadow = true;
 
     // Posicionar el edificio en las coordenadas deseadas
-    const x = -330; // Coordenada X
+    const x = -340; // Coordenada X
     const z = 120; // Coordenada Z
     const terrainHeight = terrain.geometry.boundingBox
         ? terrain.geometry.boundingBox.max.y
