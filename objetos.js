@@ -43,7 +43,7 @@ export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro
                     .setTranslation(posX, posY + size.y / 4, posZ);
                 const body = world.createRigidBody(bodyDesc);
 
-                const colliderDesc = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2);
+                const colliderDesc = RAPIER.ColliderDesc.cuboid(size.x /8, size.y / 8, size.z / 8);
                 const collider = world.createCollider(colliderDesc, body);
 
                 // Alinear visualmente el modelo
