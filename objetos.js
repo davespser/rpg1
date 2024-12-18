@@ -3,7 +3,7 @@ import { GLTFLoader } from 'GLTFLoader';
 import RAPIER from '@dimforge/rapier3d-compat';
 import Joystick from './joystick.js'; // Asegúrate de que la ruta sea correcta
 
-export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro.glb', world, scene) {
+export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro.glb', world, scene) { // Añadido 'scene' como parámetro
     return new Promise((resolve, reject) => {
         const loader = new GLTFLoader();
 
@@ -41,7 +41,7 @@ export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro
                 objeto.add(colliderMesh);
 
                 // Añadir el objeto a la escena
-                scene.add(objeto);
+                scene.add(objeto); // Asegúrate de pasar correctamente la escena
 
                 // Función para actualizar el colisionador visual y ajustar la altura según el terreno
                 const raycaster = new THREE.Raycaster();
