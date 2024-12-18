@@ -42,8 +42,8 @@ export function addBuilding(scene, terrain) {
 
     // **Segundo grupo de 2 edificios**
     const group2 = new THREE.Group();
-    const x2 = 100; // Coordenada X
-    const zStart2 = 50; // Coordenada Z inicial
+    const x2 = 130; // Coordenada X
+    const zStart2 = 340; // Coordenada Z inicial
     const zOffset2 = 120; // Distancia entre edificios en Z
 
     for (let i = 0; i < 2; i++) {
@@ -60,7 +60,7 @@ export function addBuilding(scene, terrain) {
         group2.add(building);
     }
 
-    group2.rotation.y = THREE.MathUtils.degToRad(10); // Rotar el grupo 10 grados en Y
+    group2.rotation.y = THREE.MathUtils.degToRad(90); // Rotar el grupo 10 grados en Y
     scene.add(group2);
 
     console.log("Segundo grupo de edificios añadido.");
