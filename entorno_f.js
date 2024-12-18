@@ -12,7 +12,7 @@ export function addBuilding(scene, terrain) {
     }
 
     // Crear la geometría y material del cubo (edificio)
-    const geometry = new THREE.BoxGeometry(50, 60, 50); // Anchura, altura, profundidad
+    const geometry = new THREE.BoxGeometry(70, 60, 50); // Anchura, altura, profundidad
     const material = new THREE.MeshStandardMaterial({ color: 0x8B0000 });
     const building = new THREE.Mesh(geometry, material);
 
@@ -21,11 +21,11 @@ export function addBuilding(scene, terrain) {
     building.receiveShadow = true;
 
     // Posicionar el edificio en las coordenadas deseadas
-    const x = -310; // Coordenada X
-    const z = 90; // Coordenada Z
+    const x = -330; // Coordenada X
+    const z = 100; // Coordenada Z
     const terrainHeight = terrain.geometry.boundingBox
         ? terrain.geometry.boundingBox.max.y
-        : -20; // Altura del terreno en esa posición
+        : -30; // Altura del terreno en esa posición
 
     building.position.set(x, terrainHeight + 50, z); // Altura +50 para centrar el cubo
     scene.add(building);
