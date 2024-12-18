@@ -42,7 +42,7 @@ export function addBuilding(scene, terrain) {
     }
 
     // Rotar el grupo completo 2 grados en el eje Y
-    const rotationY = THREE.MathUtils.degToRad(2); // Convertir grados a radianes
+    const rotationY = THREE.MathUtils.degToRad(4); // Convertir grados a radianes
     buildingGroup.rotation.y = rotationY;
 
     // Añadir el grupo a la escena
