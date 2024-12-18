@@ -80,13 +80,13 @@ export function addBuildings(scene, terrain) {
     // **Edificio suelto con escala personalizada**
     const singleBuilding = new THREE.Mesh(
         new THREE.BoxGeometry(100, 60, 85), // Geometría
-        new THREE.MeshStandardMaterial({ color: 0x228B22 }) // Verde oscuro
+        new THREE.MeshStandardMaterial({ color: 0x000000 }) // negro
     );
     singleBuilding.castShadow = true;
     singleBuilding.receiveShadow = true;
 
     const x3 = -290; // Coordenada X
-    const z3 = 60; // Coordenada Z
+    const z3 = 100; // Coordenada Z
     const terrainHeight = terrain.geometry.boundingBox
         ? terrain.geometry.boundingBox.max.y
         : -30;
@@ -94,7 +94,7 @@ export function addBuildings(scene, terrain) {
     singleBuilding.position.set(x3, terrainHeight + 15, z3);
 
     // Escala personalizada para el edificio suelto
-    const customScale = new THREE.Vector3(1, 1, 6); // Escala en X, Y, Z
+    const customScale = new THREE.Vector3(1, 1, 8); // Escala en X, Y, Z
     singleBuilding.scale.copy(customScale);
 
     scene.add(singleBuilding);
