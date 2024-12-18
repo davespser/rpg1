@@ -21,9 +21,9 @@ export function addBuilding(scene, terrainMesh) {
 
     // Posicionar el cubo sobre el terreno
     building.position.set(
-        terrainPosition.x, // Coordenada X del terreno
+        terrainPosition.x = 250, // Coordenada X del terreno
         terrainPosition.y + 10, // Elevarlo sobre el terreno
-        terrainPosition.z  // Coordenada Z del terreno
+        terrainPosition.z = 250// Coordenada Z del terreno
     );
 
     building.castShadow = true; // Habilitar sombras
