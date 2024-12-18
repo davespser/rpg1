@@ -7,7 +7,7 @@ import { initPhysics, createTerrainRigidBody, stepPhysics } from './physics.js';
 import { loadTexture, createTerrain } from './createTerrain.js';
 import { createSky } from './sky.js';
 import { cargarModelo } from './objetos.js';
-import { addBuilding } from './entorno_f.js';
+import { addBuildings } from './entorno_f.js';
 // Declaración de variables globales
 let world, modelo, body, collider;
 let terrainMesh;
@@ -51,7 +51,7 @@ async function init() {
             console.log("Colisionador del terreno creado.");
         }
 
-        addBuilding(scene, terrainMesh);
+        addBuildings(scene, terrainMesh);
         // Cargar modelo con física
         const resultado = await cargarModelo(1, 1, 1, './negro.glb', world);
         modelo = resultado.modelo;
