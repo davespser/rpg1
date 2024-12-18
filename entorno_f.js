@@ -1,47 +1,24 @@
 import * as THREE from 'three';
-import RAPIER from '@dimforge/rapier3d-compat'; 
-export function crearEntornoFisico(scene, world) {
-    if (!world) {
-        console.error("Error: 'world' is undefined. Please provide a valid physics world.");
-        return; 
-    } // Crear un cuerpo físico cubo
-    const physicsWorld = scene.physicsWorld;
+import { cargarModelo } from './objetos.js'; // Si necesitas cargar un modelo 3D en lugar de un cubo
 
-    // Definir las dimensiones del cubo
-    const cubeSize = { x: 1, y: 1, z: 1 }; 
+export function addBuilding(scene, terrainMesh) {
+    // Obtener la posición del terreno para colocar el cubo encima
+    const terrainPosition = terrainMesh.position;
 
-    // Calcular la posición inicial del cubo sobre el terreno
-    const cubePosition = {
-        x: Math.random() * 10 - 5, 
-        y: terrainHeight + cubeSize.y / 2, 
-        z: Math.random() * 10 - 5 
-    };
+    // Crear un cubo (edificio)
+    const geometry = new THREE.BoxGeometry(50, 100, 50); // Tamaño del cubo (ancho, alto, profundidad)
+    const material = new THREE.MeshStandardMaterial({ color: 0x808080 }); // Material gris
+    const building = new THREE.Mesh(geometry, material);
 
-    // Crear un nuevo cuerpo rígido (rigid body)
-    const body = physicsWorld.createRigidBody({
-        // Tipo de cuerpo: dinámico (puede ser movido por fuerzas)
-        type: 'dynamic',
-        // Forma del cuerpo: caja (box)
-        shape: 'box',
-        // Coordenadas de posición
-        position: cubePosition,
-        // Escala del cuerpo
-        scale: cubeSize,
-        // Material del cuerpo (opcional, puedes ajustar la fricción, resaltamiento, etc.)
-        material: {
-            friction: 0.5,
-            restitution: 0.3
-        }
-    });
-       // Crear un mesh para visualizar el cubo
-    const cubeGeometry = new THREE.BoxGeometry(cubeSize.x, cubeSize.y, cubeSize.z);
-    const cubeMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    const cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
-    cubeMesh.position.copy(cubePosition); 
+    // Posicionar el cubo encima del terreno (ajustar la altura según sea necesario)
+    building.position.set(terrainPosition.x, terrainPosition.y + 50, terrainPosition.z); // Ajuste de altura (50)
 
-    // Asociar el mesh al cuerpo rígido
-    body.setCollider(cubeMesh);
+    // Habilitar las sombras del cubo
+    building.castShadow = true;
+    building.receiveShadow = true;
 
-    // Agregar el mesh a la escena
-    scene.add(cubeMesh);
+    // Añadir el cubo a la escena
+    scene.add(building);
+
+    console.log("Cubo (edificio) añadido a la escena en la posición:", building.position);
 }
