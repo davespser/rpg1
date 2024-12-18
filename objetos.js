@@ -26,14 +26,14 @@ export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro
                     .setTranslation(posX, posY + size.y / 4, posZ);
                 const body = world.createRigidBody(bodyDesc);
 
-                const colliderDesc = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2);
+                const colliderDesc = RAPIER.ColliderDesc.cuboid(size.x / 4, size.y / 4, size.z / 4);
                 const collider = world.createCollider(colliderDesc, body);
 
                 // Alinear visualmente el modelo a la posición del cuerpo cinemático
                 objeto.position.set(posX, posY + size.y / 2, posZ);
 
                 // Depurador visual
-                const colliderGeometry = new THREE.BoxGeometry(size.x/2, size.y/2, size.z/2);
+                const colliderGeometry = new THREE.BoxGeometry(size.x/4, size.y/4, size.z/4);
                 const colliderMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
                 const colliderMesh = new THREE.Mesh(colliderGeometry, colliderMaterial);
                 colliderMesh.position.set(0, 0, 0);
@@ -43,7 +43,7 @@ export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro
                 const updateColliderVisual = () => {
                     const translation = body.translation();
                     objeto.position.set(translation.x, translation.y, translation.z);
-                    objeto.scale.set(escala.x/6, escala.y/6, escala.z/6);
+                    objeto.scale.set(escala.x, escala.y, escala.z);
                 };
 
                 // Llamar a la función de actualización en cada frame
