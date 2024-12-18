@@ -51,6 +51,7 @@ async function init() {
             console.log("Colisionador del terreno creado.");
         }
 
+        addBuilding(scene, terrainMesh);
         // Cargar modelo con física
         const resultado = await cargarModelo(1, 1, 1, './negro.glb', world);
         modelo = resultado.modelo;
@@ -61,7 +62,7 @@ async function init() {
 
         console.log("Modelo y cuerpo físico añadidos a la escena.");
         console.log("Posición inicial del cuerpo físico:", body.translation());
-
+        
         // Configurar la cámara
         camera.position.set(250, 10, 300);
         camera.lookAt(modelo.position);
@@ -102,7 +103,7 @@ function cargarMapaDeAltura(path) {
         );
     });
 }
-addBuilding(scene, terrainMesh);
+
 /**
  * Función de animación principal.
  */
