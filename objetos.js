@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'GLTFLoader';
 import RAPIER from '@dimforge/rapier3d-compat';
+import Joystick from './Joystick.js'; // Asegúrate de que la ruta sea correcta
 
 export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro.glb', world) {
     return new Promise((resolve, reject) => {
@@ -46,7 +47,31 @@ export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro
                     objeto.scale.set(escala.x, escala.y, escala.z);
                 };
 
-                // Llamar a la función de actualización en cada frame
+                // Inicializar joystick personalizado
+                const joystick = new Joystick({
+                    container: document.body,
+                    radius: 100,
+                    innerRadius: 50,
+                    position: { x: 20, y: 20 }
+                });
+
+                const animate = () => {
+                    requestAnimationFrame(animate);
+
+                    const { x, y } = joystick.getPosition();
+
+                    if (x !== 0 || y !== 0) {
+                        const translation = body.translation();
+                        body.setNextKinematicTranslation({
+                            x: translation.x + x * 0.1,
+                            y: translation.y,
+                            z: translation.z + y * 0.1
+                        });
+                        updateColliderVisual();
+                    }
+                };
+                animate();
+
                 console.log("Posición inicial del cuerpo físico:", body.translation());
                 resolve({ modelo: objeto, body, collider, updateColliderVisual });
             },
