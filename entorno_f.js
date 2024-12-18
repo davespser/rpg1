@@ -1,7 +1,10 @@
 import * as THREE from 'three';
 import RAPIER from '@dimforge/rapier3d-compat'; 
-export function crearEntornoFisico(scene, world, terrainHeight) {
-    // Crear un cuerpo físico cubo
+export function crearEntornoFisico(scene, world) {
+    if (!world) {
+        console.error("Error: 'world' is undefined. Please provide a valid physics world.");
+        return; 
+    } // Crear un cuerpo físico cubo
     const physicsWorld = scene.physicsWorld;
 
     // Definir las dimensiones del cubo
