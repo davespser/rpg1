@@ -16,7 +16,7 @@ export function addBuilding(scene, terrain) {
     const material = new THREE.MeshStandardMaterial({ color: 0x8B0000 });
 
     // Posiciones iniciales
-    const x = -330; // Coordenada X
+    const x = -320; // Coordenada X
     const zStart = -155; // Coordenada Z inicial
     const zOffset = 95; // Distancia entre edificios en Z
     const numBuildings = 6; // Número total de edificios
@@ -30,7 +30,7 @@ export function addBuilding(scene, terrain) {
 
         // Posicionar cada edificio
         const z = zStart + i * zOffset; // Incrementar Z en cada iteración
-        const rotationY = THREE.MathUtils.degToRad(-8); //
+        const rotationY = THREE.MathUtils.degToRad(8); //
         const terrainHeight = terrain.geometry.boundingBox
             ? terrain.geometry.boundingBox.max.y
             : -30; // Altura del terreno
