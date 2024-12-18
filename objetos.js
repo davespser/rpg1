@@ -33,7 +33,7 @@ export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro
                 objeto.position.set(posX, posY + size.y / 2, posZ);
 
                 // Depurador visual
-                const colliderGeometry = new THREE.BoxGeometry(size.x/4, size.y/6, size.z/4);
+                const colliderGeometry = new THREE.BoxGeometry(size.x/6, size.y/8, size.z/6);
                 const colliderMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
                 const colliderMesh = new THREE.Mesh(colliderGeometry, colliderMaterial);
                 colliderMesh.position.set(0, 0, 0);
