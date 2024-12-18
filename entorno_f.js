@@ -1,34 +1,42 @@
 import * as THREE from 'three';
 
 /**
- * Añade un edificio (cubo) sobre el terreno.
- * @param {THREE.Scene} scene - La escena donde se añadirá el cubo.
- * @param {THREE.Mesh} terrainMesh - El terreno donde se posicionará el cubo.
+ * Añade varios edificios (cubos) consecutivos sobre el terreno.
+ * @param {THREE.Scene} scene - La escena donde se añadirán los cubos.
+ * @param {THREE.Mesh} terrainMesh - El terreno donde se posicionarán los cubos.
  */
 export function addBuilding(scene, terrain) {
     if (!terrain) {
-        console.error("El terreno no está definido. No se puede agregar el edificio.");
+        console.error("El terreno no está definido. No se pueden agregar los edificios.");
         return;
     }
 
     // Crear la geometría y material del cubo (edificio)
     const geometry = new THREE.BoxGeometry(50, 60, 70); // Anchura, altura, profundidad
     const material = new THREE.MeshStandardMaterial({ color: 0x8B0000 });
-    const building = new THREE.Mesh(geometry, material);
 
-    // Habilitar sombras para el edificio
-    building.castShadow = true;
-    building.receiveShadow = true;
-
-    // Posicionar el edificio en las coordenadas deseadas
+    // Posiciones iniciales
     const x = -340; // Coordenada X
-    const z = 120; // Coordenada Z
-    const terrainHeight = terrain.geometry.boundingBox
-        ? terrain.geometry.boundingBox.max.y
-        : -30; // Altura del terreno en esa posición
+    const zStart = 120; // Coordenada Z inicial
+    const zOffset = 150; // Distancia entre edificios en Z
+    const numBuildings = 6; // Número total de edificios
 
-    building.position.set(x, terrainHeight + 50, z); // Altura +50 para centrar el cubo
-    scene.add(building);
+    for (let i = 0; i < numBuildings; i++) {
+        const building = new THREE.Mesh(geometry, material);
 
-    console.log(`Edificio añadido en posición: x=${x}, y=${terrainHeight + 50}, z=${z}`);
+        // Habilitar sombras para cada edificio
+        building.castShadow = true;
+        building.receiveShadow = true;
+
+        // Posicionar cada edificio
+        const z = zStart + i * zOffset; // Incrementar Z en cada iteración
+        const terrainHeight = terrain.geometry.boundingBox
+            ? terrain.geometry.boundingBox.max.y
+            : -30; // Altura del terreno
+
+        building.position.set(x, terrainHeight + 50, z);
+        scene.add(building);
+
+        console.log(`Edificio ${i + 1} añadido en posición: x=${x}, y=${terrainHeight + 50}, z=${z}`);
+    }
 }
