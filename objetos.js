@@ -23,7 +23,7 @@ export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro
 
                 // Crear cuerpo cinemático alineado con la posición exacta
                 const bodyDesc = RAPIER.RigidBodyDesc.kinematicPositionBased()
-                    .setTranslation(posX, posY + size.y / 2, posZ);
+                    .setTranslation(posX, posY + size.y / 4, posZ);
                 const body = world.createRigidBody(bodyDesc);
 
                 const colliderDesc = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2);
