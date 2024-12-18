@@ -30,13 +30,14 @@ export function addBuilding(scene, terrain) {
 
         // Posicionar cada edificio
         const z = zStart + i * zOffset; // Incrementar Z en cada iteración
+        const rotationY = THREE.MathUtils.degToRad(4 * i); //
         const terrainHeight = terrain.geometry.boundingBox
             ? terrain.geometry.boundingBox.max.y
             : -30; // Altura del terreno
 
         building.position.set(x, terrainHeight + 50, z);
         scene.add(building);
-       const rotationY = THREE.MathUtils.degToRad(4); //
+       
         console.log(`Edificio ${i + 1} añadido en posición: x=${x}, y=${terrainHeight + 50}, z=${z}`);
     }
 }
