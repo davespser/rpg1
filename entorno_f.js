@@ -21,11 +21,11 @@ export function addBuilding(scene, terrain) {
     building.receiveShadow = true;
 
     // Posicionar el edificio en las coordenadas deseadas
-    const x = -270; // Coordenada X
-    const z = 70; // Coordenada Z
+    const x = -310; // Coordenada X
+    const z = 90; // Coordenada Z
     const terrainHeight = terrain.geometry.boundingBox
         ? terrain.geometry.boundingBox.max.y
-        : -10; // Altura del terreno en esa posición
+        : -20; // Altura del terreno en esa posición
 
     building.position.set(x, terrainHeight + 50, z); // Altura +50 para centrar el cubo
     scene.add(building);
