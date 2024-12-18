@@ -13,20 +13,26 @@ export function addBuildings(scene, terrain) {
 
     // Crear geometría y material base
     const geometry = new THREE.BoxGeometry(100, 60, 85); // Anchura, altura, profundidad
-    const material = new THREE.MeshStandardMaterial({ color: 0x8B0000 });
-
+    
     // **Primer grupo de 6 edificios consecutivos**
     const group1 = new THREE.Group();
     const x1 = -340; // Coordenada X
     const zStart1 = -40; // Coordenada Z inicial
     const zOffset1 = 91; // Distancia entre edificios en Z
 
+    // Material específico para el primer grupo
+    const materialGroup1 = new THREE.MeshStandardMaterial({ color: 0x8B0000 }); // Rojo oscuro
+
     for (let i = 0; i < 6; i++) {
-        const building = new THREE.Mesh(geometry, material);
+        const building = new THREE.Mesh(
+            new THREE.BoxGeometry(100, 60, 85), // Geometría
+            materialGroup1
+        );
         building.castShadow = true;
         building.receiveShadow = true;
-
-        const z = zStart1 + i * zOffset1;
+    // **Segundo grupo de 2 edificios**
+    const group2 = new THREE.Group();
+    const z = zStart1 + i * zOffset1;
         const terrainHeight = terrain.geometry.boundingBox
             ? terrain.geometry.boundingBox.max.y
             : -30;
@@ -46,8 +52,14 @@ export function addBuildings(scene, terrain) {
     const zStart2 = 10; // Coordenada Z inicial
     const zOffset2 = 80; // Distancia entre edificios en Z
 
+    // Material específico para el segundo grupo
+    const materialGroup2 = new THREE.MeshStandardMaterial({ color: 0x00008B }); // Azul oscuro
+
     for (let i = 0; i < 2; i++) {
-        const building = new THREE.Mesh(geometry, material);
+        const building = new THREE.Mesh(
+            new THREE.BoxGeometry(100, 60, 85), // Geometría
+            materialGroup2
+        );
         building.castShadow = true;
         building.receiveShadow = true;
 
@@ -64,14 +76,17 @@ export function addBuildings(scene, terrain) {
     scene.add(group2);
 
     console.log("Segundo grupo de edificios añadido.");
-
     // **Edificio suelto con escala personalizada**
-    const singleBuilding = new THREE.Mesh(geometry, material);
+    // **Edificio suelto con escala personalizada**
+    const singleBuilding = new THREE.Mesh(
+        new THREE.BoxGeometry(100, 60, 85), // Geometría
+        new THREE.MeshStandardMaterial({ color: 0x228B22 }) // Verde oscuro
+    );
     singleBuilding.castShadow = true;
     singleBuilding.receiveShadow = true;
 
     const x3 = -290; // Coordenada X
-    const z3 = 40; // Coordenada Z
+    const z3 = 60; // Coordenada Z
     const terrainHeight = terrain.geometry.boundingBox
         ? terrain.geometry.boundingBox.max.y
         : -30;
@@ -79,7 +94,7 @@ export function addBuildings(scene, terrain) {
     singleBuilding.position.set(x3, terrainHeight + 15, z3);
 
     // Escala personalizada para el edificio suelto
-    const customScale = new THREE.Vector3(1, 1, 5); // Escala en X, Y, Z
+    const customScale = new THREE.Vector3(1, 1, 6); // Escala en X, Y, Z
     singleBuilding.scale.copy(customScale);
 
     scene.add(singleBuilding);
