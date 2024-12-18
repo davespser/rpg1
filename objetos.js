@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { GLTFLoader } from 'GLTFLoader';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import RAPIER from '@dimforge/rapier3d-compat';
 import Joystick from './joystick.js';
 
@@ -14,7 +14,7 @@ import Joystick from './joystick.js';
  * @param {boolean} debug - Habilitar colisionador visual para depuración.
  * @returns {Promise<object>} Promesa que resuelve con el modelo, cuerpo físico y funciones adicionales.
  */
-export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro.glb', world, scene) {
+export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro.glb', world, scene, debug = false) {
     if (!scene) {
         console.error("La escena no está definida. Asegúrate de pasar 'scene' como parámetro.");
         return;
@@ -31,52 +31,39 @@ export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro
                 // Escalar y posicionar el modelo
                 const escala = { x: 5, y: 5, z: 5 };
                 objeto.scale.set(escala.x, escala.y, escala.z);
-                objeto.position.set(0, 20, 0);
+                objeto.position.set(posX, posY, posZ);
 
-                // Calcular Bounding Box
+                // Calcular Bounding Box para obtener el tamaño del modelo
                 const boundingBox = new THREE.Box3().setFromObject(objeto);
                 const size = new THREE.Vector3();
                 boundingBox.getSize(size);
 
-                // Crear cuerpo cinemático
-                const bodyDesc = RAPIER.RigidBodyDesc.kinematicPositionBased()
-                    .setTranslation(posX, posY + size.y / 4, posZ);
-                const body = world.createRigidBody(bodyDesc);
+                // Configurar el colisionador como cápsula
+                const alturaCapsula = size.y / 2; // La mitad de la altura de la cápsula
+                const radioCapsula = Math.min(size.x, size.z) / 4; // Radio basado en la anchura mínima
 
-                const colliderDesc = RAPIER.ColliderDesc.cuboid(size.x /2, size.y / 2, size.z / 2);
+                const bodyDesc = RAPIER.RigidBodyDesc.kinematicPositionBased()
+                    .setTranslation(posX, posY + alturaCapsula, posZ); // Ajustar altura inicial
+                const body = world.createRigidBody(bodyDesc);
+                const colliderDesc = RAPIER.ColliderDesc.capsule(alturaCapsula, radioCapsula);
                 const collider = world.createCollider(colliderDesc, body);
 
-                // Alinear visualmente el modelo
-                objeto.position.set(posX, posY + size.y / 2, posZ);
+                // Alinear visualmente el modelo con el colisionador
+                objeto.position.set(posX, posY + alturaCapsula, posZ);
 
-                // Depurador visual (opcional)
-                const colliderGeometry = new THREE.BoxGeometry(size.x/2, size.y/2, size.z/2);
-                const colliderMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
-                const colliderMesh = new THREE.Mesh(colliderGeometry, colliderMaterial);
-                colliderMesh.position.set(0, 0, 0);
-                objeto.add(colliderMesh);
+                // Opcional: Visualizar el colisionador para depuración
+                if (debug) {
+                    const colliderGeometry = new THREE.CapsuleGeometry(radioCapsula, alturaCapsula * 2);
+                    const colliderMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
+                    const colliderMesh = new THREE.Mesh(colliderGeometry, colliderMaterial);
+                    colliderMesh.position.set(0, alturaCapsula, 0);
+                    objeto.add(colliderMesh);
+                }
 
-                // Añadir a la escena
-                scene.add(objeto); // Asegúrate de pasar 'scene' desde main.js
+                // Añadir modelo a la escena
+                scene.add(objeto);
 
-                // Actualización de posición según el terreno (opcional)
-                const raycaster = new THREE.Raycaster();
-                const updateColliderVisual = () => {
-                    const translation = body.translation();
-                    const currentPosition = new THREE.Vector3(translation.x, translation.y, translation.z);
-
-                    // Ajustar la posición según el terreno
-                    raycaster.set(currentPosition, new THREE.Vector3(0, -1, 0));
-                    const intersects = raycaster.intersectObjects(scene.children, true);
-                    if (intersects.length > 0) {
-                        currentPosition.y = intersects[0].point.y + size.y / 2;
-                    }
-
-                    objeto.position.set(currentPosition.x, currentPosition.y, currentPosition.z);
-                    objeto.scale.set(escala.x, escala.y, escala.z);
-                };
-
-                // Configurar animación y joystick
+                // Configuración del joystick
                 const joystick = new Joystick({
                     container: document.body,
                     radius: 100,
@@ -84,11 +71,11 @@ export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro
                     position: { x: 20, y: 20 }
                 });
 
+                // Animación y movimiento del cuerpo físico
                 const animate = () => {
                     requestAnimationFrame(animate);
 
                     const { x, y } = joystick.getPosition();
-
                     if (x !== 0 || y !== 0) {
                         const translation = body.translation();
                         body.setNextKinematicTranslation({
@@ -96,13 +83,13 @@ export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro
                             y: translation.y,
                             z: translation.z + y * 0.1
                         });
-                        updateColliderVisual();
+                        objeto.position.set(body.translation().x, body.translation().y - alturaCapsula, body.translation().z);
                     }
                 };
                 animate();
 
                 console.log("Posición inicial del cuerpo físico:", body.translation());
-                resolve({ modelo: objeto, body, collider, updateColliderVisual });
+                resolve({ modelo: objeto, body, collider });
             },
             undefined,
             (error) => {
