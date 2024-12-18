@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { OrbitControls } from 'OrbitControls';
 import RAPIER from '@dimforge/rapier3d-compat';
 import { initScene } from './scene.js';
 import { crearMenuEstadisticas } from './menu.js';
@@ -7,11 +6,11 @@ import { Stats } from './stats.js';
 import { initPhysics, createTerrainRigidBody, stepPhysics } from './physics.js';
 import { loadTexture, createTerrain } from './createTerrain.js';
 import { createSky } from './sky.js';
-import { cargarModelo } from './objetos.js'; // Importar la función para cargar el modelo
+import { cargarModelo } from './objetos.js';
 
 // Declaración de variables globales
 let world, modelo, body, collider;
-let terrainMesh; // Guardar el terreno cargado
+let terrainMesh;
 
 // Inicialización de la escena y estadísticas
 const { scene, camera, renderer, controls } = initScene();
@@ -23,7 +22,9 @@ createSky(scene);
 const texturePath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa_t.jpg';
 const heightMapPath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa.png';
 
-// Función principal de inicialización
+/**
+ * Función principal de inicialización
+ */
 async function init() {
     try {
         // Inicializar física
@@ -31,27 +32,26 @@ async function init() {
         console.log('Mundo de física inicializado:', world);
 
         // Cargar terreno y texturas
-        // Cargar terreno y texturas
-const [terrainTexture, imageData] = await Promise.all([
-    loadTexture(texturePath),
-    cargarMapaDeAltura(heightMapPath),
-]);
+        const [terrainTexture, imageData] = await Promise.all([
+            loadTexture(texturePath),
+            cargarMapaDeAltura(heightMapPath),
+        ]);
 
-// Crear terreno
-terrainMesh = createTerrain(imageData, terrainTexture);
-terrainMesh.scale.set(1, 1, 1);
-terrainMesh.position.set(0, -20, 0); // Ajusta la posición del terreno si es necesario
-scene.add(terrainMesh);
-console.log("Terreno añadido a la escena:", terrainMesh);
+        // Crear terreno y añadirlo a la escena
+        terrainMesh = createTerrain(imageData, terrainTexture);
+        terrainMesh.scale.set(1, 1, 1);
+        terrainMesh.position.set(0, -20, 0); // Ajustar la posición del terreno
+        scene.add(terrainMesh);
+        console.log("Terreno añadido a la escena:", terrainMesh);
 
-// Crear colisionador para el terreno
-if (terrainMesh.geometry) {
-    createTerrainRigidBody(terrainMesh, world);
-    console.log("Colisionador del terreno creado.");
-}
+        // Crear colisionador para el terreno
+        if (terrainMesh.geometry) {
+            createTerrainRigidBody(terrainMesh, world);
+            console.log("Colisionador del terreno creado.");
+        }
 
         // Cargar modelo con física
-        const resultado = await cargarModelo(1,1, 1, './negro.glb', world);
+        const resultado = await cargarModelo(1, 1, 1, './negro.glb', world);
         modelo = resultado.modelo;
         modelo.scale.set(10, 10, 10);
         body = resultado.body;
@@ -61,22 +61,26 @@ if (terrainMesh.geometry) {
         console.log("Modelo y cuerpo físico añadidos a la escena.");
         console.log("Posición inicial del cuerpo físico:", body.translation());
 
-        // Apuntar la cámara al modelo
-        camera.position.set(250, 10, 300); // Configura la posición de la cámara
+        // Configurar la cámara
+        camera.position.set(250, 10, 300);
         camera.lookAt(modelo.position);
 
-        // Actualizar los controles de la cámara
+        // Actualizar controles de la cámara
         controls.target.copy(modelo.position);
         controls.update();
 
-        // Iniciar la animación
+        // Iniciar animación
         animate();
     } catch (error) {
         console.error('Error durante la inicialización:', error);
     }
 }
 
-// Función para cargar el mapa de altura
+/**
+ * Cargar el mapa de altura y devolver sus datos de imagen.
+ * @param {string} path - Ruta del mapa de altura.
+ * @returns {Promise<ImageData>} Promesa que resuelve con los datos del mapa de altura.
+ */
 function cargarMapaDeAltura(path) {
     return new Promise((resolve, reject) => {
         new THREE.TextureLoader().load(
@@ -98,29 +102,30 @@ function cargarMapaDeAltura(path) {
     });
 }
 
-// Función de animación
+/**
+ * Función de animación principal.
+ */
 function animate() {
     requestAnimationFrame(animate);
 
-    stepPhysics(); // Actualizar la física
-    controls.update();
-    renderer.render(scene, camera);
+    // Actualizar física
+    stepPhysics();
 
+    // Sincronizar modelo con cuerpo físico
     if (body && modelo) {
         const translation = body.translation();
         const rotation = body.rotation();
-
         modelo.position.set(translation.x, translation.y, translation.z);
         modelo.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
-
-        // Sincronizar el colisionador visual
-        
-        }
     }
 
-    // Actualizar estadísticas
-    // stats.update(); // Descomentarlo si lo necesitas
+    // Renderizar la escena
+    controls.update();
+    renderer.render(scene, camera);
 
+    // Actualizar estadísticas (si es necesario)
+    // stats.update();
+}
 
 // Ejecutar la función principal
 init();
