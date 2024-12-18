@@ -53,6 +53,7 @@ if (terrainMesh.geometry) {
         // Cargar modelo con física
         const resultado = await cargarModelo(1,1, 1, './negro.glb', world);
         modelo = resultado.modelo;
+        modelo.scale.set(2, 2, 2);
         body = resultado.body;
         collider = resultado.collider;
         scene.add(modelo);
