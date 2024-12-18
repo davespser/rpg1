@@ -37,7 +37,7 @@ export function createTerrainRigidBody(terrainMesh, world) {
 
     // Configurar el cuerpo rígido fijo (estático)
     const rigidBodyDesc = RAPIER.RigidBodyDesc.fixed().setTranslation(
-        terrainMesh.position.x, terrainMesh.position.y, terrainMesh.position.z
+        terrainMesh.position.x, terrainMesh.position.y +10, terrainMesh.position.z
     );
 
     // Crear el cuerpo físico y colisionador
