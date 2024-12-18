@@ -7,7 +7,7 @@ import { initPhysics, createTerrainRigidBody, stepPhysics } from './physics.js';
 import { loadTexture, createTerrain } from './createTerrain.js';
 import { createSky } from './sky.js';
 import { cargarModelo } from './objetos.js';
-
+import { crearEntornoFisico } from './entorno_f';
 // Declaración de variables globales
 let world, modelo, body, collider;
 let terrainMesh;
@@ -17,6 +17,7 @@ const { scene, camera, renderer, controls } = initScene();
 const stats = new Stats();
 crearMenuEstadisticas();
 createSky(scene);
+
 
 // Rutas de las texturas y mapas
 const texturePath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa_t.jpg';
@@ -101,7 +102,7 @@ function cargarMapaDeAltura(path) {
         );
     });
 }
-
+crearEntornoFisico(scene, world);
 /**
  * Función de animación principal.
  */
