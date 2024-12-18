@@ -14,7 +14,7 @@ export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro
                 // Escalar y posicionar el modelo
                 const escala = { x: 5, y: 5, z: 5 };
                 objeto.scale.set(escala.x, escala.y, escala.z);
-                objeto.position.set(0, 0, 0); // Inicialmente en el origen
+                objeto.position.set(0, 6, 0); // Inicialmente en el origen
 
                 // Calcular Bounding Box
                 const boundingBox = new THREE.Box3().setFromObject(objeto);
@@ -23,7 +23,7 @@ export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro
 
                 // Crear cuerpo físico alineado con la posición exacta
                 const bodyDesc = RAPIER.RigidBodyDesc.dynamic()
-                    .setTranslation(posX, posY.-35 + size.y / 2, posZ);
+                    .setTranslation(posX, posY, + size.y / 2, posZ);
                 const body = world.createRigidBody(bodyDesc);
 
                 const colliderDesc = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2);
