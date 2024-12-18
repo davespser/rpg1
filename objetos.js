@@ -27,14 +27,14 @@ export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro
                     .setTranslation(posX, posY + size.y / 4, posZ);
                 const body = world.createRigidBody(bodyDesc);
 
-                const colliderDesc = RAPIER.ColliderDesc.cuboid(size.x / 4, size.y / 6, size.z / 4);
+                const colliderDesc = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2);
                 const collider = world.createCollider(colliderDesc, body);
 
                 // Alinear visualmente el modelo a la posición del cuerpo cinemático
                 objeto.position.set(posX, posY + size.y / 2, posZ);
 
-                // Depurador visual
-                const colliderGeometry = new THREE.BoxGeometry(size.x / 6, size.y / 8, size.z / 6);
+                // Depurador visual - asegurando que las dimensiones coincidan
+                const colliderGeometry = new THREE.BoxGeometry(size.x, size.y, size.z);
                 const colliderMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
                 const colliderMesh = new THREE.Mesh(colliderGeometry, colliderMaterial);
                 colliderMesh.position.set(0, 0, 0);
