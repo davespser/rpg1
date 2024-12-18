@@ -40,7 +40,7 @@ const [terrainTexture, imageData] = await Promise.all([
 // Crear terreno
 terrainMesh = createTerrain(imageData, terrainTexture);
 terrainMesh.scale.set(1, 1, 1);
-terrainMesh.position.set(0, 0, 0); // Ajusta la posición del terreno si es necesario
+terrainMesh.position.set(0, -20, 0); // Ajusta la posición del terreno si es necesario
 scene.add(terrainMesh);
 console.log("Terreno añadido a la escena:", terrainMesh);
 
@@ -51,7 +51,7 @@ if (terrainMesh.geometry) {
 }
 
         // Cargar modelo con física
-        const resultado = await cargarModelo(1,-35, 1, './negro.glb', world);
+        const resultado = await cargarModelo(1,1, 1, './negro.glb', world);
         modelo = resultado.modelo;
         body = resultado.body;
         collider = resultado.collider;
