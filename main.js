@@ -7,7 +7,7 @@ import { initPhysics, createTerrainRigidBody, stepPhysics } from './physics.js';
 import { loadTexture, createTerrain } from './createTerrain.js';
 import { createSky } from './sky.js';
 import { cargarModelo } from './objetos.js';
-import { crearEntornoFisico } from './entorno_f';
+import { crearEntornoFisico } from './entorno_f.js';
 // Declaración de variables globales
 let world, modelo, body, collider;
 let terrainMesh;
