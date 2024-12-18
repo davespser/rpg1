@@ -11,7 +11,6 @@ export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro
                 const objeto = gltf.scene;
                 const escala = { x: 5, y: 5, z: 5 }; // Aumentar la escala
                 objeto.scale.set(escala.x, escala.y, escala.z);
-                objeto.position.set(posX, posY, posZ);
 
                 // Calcular Bounding Box
                 const boundingBox = new THREE.Box3().setFromObject(objeto);
@@ -30,14 +29,29 @@ export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro
                 const collider = world.createCollider(colliderDesc, body);
 
                 // Sincronizar colisionador visual para depuración
-                const colliderGeometry = new THREE.BoxGeometry(size.x / 2, size.y / 2, size.z / 2);
+                const colliderGeometry = new THREE.BoxGeometry(size.x, size.y, size.z); // Tamaño completo
                 const colliderMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
                 const colliderMesh = new THREE.Mesh(colliderGeometry, colliderMaterial);
-                colliderMesh.position.set(0, 0, 0);
+
+                // Agregar el colisionador visual al objeto principal
                 objeto.add(colliderMesh);
 
+                // Actualizar posición del colisionador visual para alinearlo con el cuerpo físico
+                const updateColliderVisual = () => {
+                    const translation = body.translation(); // Obtener posición del cuerpo físico
+                    colliderMesh.position.set(
+                        translation.x - posX, // Ajustar según la posición inicial
+                        translation.y - posY - size.y / 2,
+                        translation.z - posZ
+                    );
+                };
+
+                // Llamar a la función de actualización en cada frame
+                world.step(); // Asegurarse de que el mundo esté actualizado
+                updateColliderVisual();
+
                 console.log("Modelo y colisionador alineados.");
-                resolve({ modelo: objeto, body, collider });
+                resolve({ modelo: objeto, body, collider, updateColliderVisual });
             },
             undefined,
             (error) => {
