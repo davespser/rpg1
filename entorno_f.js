@@ -43,7 +43,7 @@ export function addBuildings(scene, terrain) {
     // **Segundo grupo de 2 edificios**
     const group2 = new THREE.Group();
     const x2 = -340; // Coordenada X
-    const zStart2 = 240; // Coordenada Z inicial
+    const zStart2 = 140; // Coordenada Z inicial
     const zOffset2 = 90; // Distancia entre edificios en Z
 
     for (let i = 0; i < 2; i++) {
@@ -79,7 +79,7 @@ export function addBuildings(scene, terrain) {
     singleBuilding.position.set(x3, terrainHeight + 15, z3);
 
     // Escala personalizada para el edificio suelto
-    const customScale = new THREE.Vector3(2, 3, 1.5); // Escala en X, Y, Z
+    const customScale = new THREE.Vector3(1, 1, 180); // Escala en X, Y, Z
     singleBuilding.scale.copy(customScale);
 
     scene.add(singleBuilding);
