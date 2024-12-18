@@ -53,7 +53,7 @@ async function init() {
 
         addBuildings(scene, terrainMesh);
         // Cargar modelo con física
-        const resultado = await cargarModelo(1, 1, 1, './negro.glb', world, scene);
+        const resultado = await cargarModelo(1, 1, 1, './negro.glb', world, scene, true);
         modelo = resultado.modelo;
         modelo.scale.set(10, 10, 10);
         body = resultado.body;
