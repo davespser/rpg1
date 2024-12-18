@@ -25,8 +25,8 @@ export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro
 
                 // Crear colisionador con propiedades de fricción y restitución
                 const colliderDesc = RAPIER.ColliderDesc.cuboid(size.x / 2, size.y / 2, size.z / 2)
-                    .setFriction(0.5) // Ajustar la fricción
-                    .setRestitution(0.3); // Ajustar la restitución
+                    .setFriction(1) // Ajustar la fricción
+                    .setRestitution(0.1); // Ajustar la restitución
                 const collider = world.createCollider(colliderDesc, body);
 
                 // Sincronizar colisionador visual para depuración
