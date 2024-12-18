@@ -1,24 +1,36 @@
 import * as THREE from 'three';
-import { cargarModelo } from './objetos.js'; // Si necesitas cargar un modelo 3D en lugar de un cubo
 
+/**
+ * Añade un edificio (cubo) sobre el terreno.
+ * @param {THREE.Scene} scene - La escena donde se añadirá el cubo.
+ * @param {THREE.Mesh} terrainMesh - El terreno donde se posicionará el cubo.
+ */
 export function addBuilding(scene, terrainMesh) {
-    // Obtener la posición del terreno para colocar el cubo encima
+    if (!terrainMesh || !terrainMesh.position) {
+        console.error("El terreno no está inicializado correctamente.");
+        return;
+    }
+
+    // Obtener la posición del terreno
     const terrainPosition = terrainMesh.position;
 
-    // Crear un cubo (edificio)
-    const geometry = new THREE.BoxGeometry(50, 100, 50); // Tamaño del cubo (ancho, alto, profundidad)
-    const material = new THREE.MeshStandardMaterial({ color: 0x808080 }); // Material gris
-    const building = new THREE.Mesh(geometry, material);
+    // Crear un cubo para representar el edificio
+    const buildingGeometry = new THREE.BoxGeometry(10, 20, 10);
+    const buildingMaterial = new THREE.MeshStandardMaterial({ color: 0x8b0000 });
+    const building = new THREE.Mesh(buildingGeometry, buildingMaterial);
 
-    // Posicionar el cubo encima del terreno (ajustar la altura según sea necesario)
-    building.position.set(terrainPosition.x, terrainPosition.y + 50, terrainPosition.z); // Ajuste de altura (50)
+    // Posicionar el cubo sobre el terreno
+    building.position.set(
+        terrainPosition.x, // Coordenada X del terreno
+        terrainPosition.y + 10, // Elevarlo sobre el terreno
+        terrainPosition.z  // Coordenada Z del terreno
+    );
 
-    // Habilitar las sombras del cubo
-    building.castShadow = true;
+    building.castShadow = true; // Habilitar sombras
     building.receiveShadow = true;
 
     // Añadir el cubo a la escena
     scene.add(building);
 
-    console.log("Cubo (edificio) añadido a la escena en la posición:", building.position);
+    console.log("Edificio añadido en la posición:", building.position);
 }
