@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'GLTFLoader';
 import RAPIER from '@dimforge/rapier3d-compat';
-import Joystick from './Joystick.js'; // Asegúrate de que la ruta sea correcta
+import Joystick from './joystick.js'; // Asegúrate de que la ruta sea correcta
 
 export function cargarModelo(posX = 1, posY = 1, posZ = 1, rutaModelo = './negro.glb', world) {
     return new Promise((resolve, reject) => {
