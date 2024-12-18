@@ -102,7 +102,7 @@ function cargarMapaDeAltura(path) {
         );
     });
 }
-crearEntornoFisico(scene, terrainMesh);
+addBuilding(scene, terrainMesh);
 /**
  * Función de animación principal.
  */
