@@ -42,9 +42,9 @@ export function addBuilding(scene, terrain) {
 
     // **Segundo grupo de 2 edificios**
     const group2 = new THREE.Group();
-    const x2 = 130; // Coordenada X
-    const zStart2 = 340; // Coordenada Z inicial
-    const zOffset2 = 120; // Distancia entre edificios en Z
+    const x2 = 330; // Coordenada X
+    const zStart2 = 140; // Coordenada Z inicial
+    const zOffset2 = 80; // Distancia entre edificios en Z
 
     for (let i = 0; i < 2; i++) {
         const building = new THREE.Mesh(geometry, material);
@@ -70,13 +70,13 @@ export function addBuilding(scene, terrain) {
     singleBuilding.castShadow = true;
     singleBuilding.receiveShadow = true;
 
-    const x3 = 200; // Coordenada X
-    const z3 = -300; // Coordenada Z
+    const x3 = -300; // Coordenada X
+    const z3 = -100; // Coordenada Z
     const terrainHeight = terrain.geometry.boundingBox
         ? terrain.geometry.boundingBox.max.y
         : -30;
 
-    singleBuilding.position.set(x3, terrainHeight + 50, z3);
+    singleBuilding.position.set(x3, terrainHeight + 20, z3);
     scene.add(singleBuilding);
 
     console.log("Edificio suelto añadido.");
