@@ -46,7 +46,7 @@ export function cargarModelo(
                 const radioCapsula = 0.5;  // Radio de la cápsula
 
                 // Crear cuerpo físico con Rapier
-                const bodyDesc = RAPIER.RigidBodyDesc.kinematicPositionBased()
+                const bodyDesc = RAPIER.RigidBodyDesc.dinamic()
                     .setTranslation(posX, posY + alturaCapsula, posZ); // Altura inicial
                 const body = world.createRigidBody(bodyDesc);
                 const colliderDesc = RAPIER.ColliderDesc.capsule(alturaCapsula, radioCapsula);
