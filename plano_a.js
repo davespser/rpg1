@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { Noise } from 'math.gl/noise';
 
 /**
  * Crear un plano dinámico cuya geometría cambia según el día
@@ -71,14 +70,15 @@ export function createPlane(position = { x: 0, y: 0, z: 0 }, rotation = { x: 0, 
  */
 function createNoiseGeometry(size, widthSegments, heightSegments, noiseScale) {
   const geometry = new THREE.PlaneGeometry(size, size, widthSegments, heightSegments);
-  const noise = new Noise();
   const position = geometry.attributes.position;
 
   for (let i = 0; i < position.count; i++) {
     const x = position.getX(i);
     const y = position.getY(i);
-    const z = noise.perlin(x * noiseScale, y * noiseScale) * size * 0.1;
-    position.setZ(i, z);
+
+    // Generar ruido basado en funciones matemáticas (Math.sin y Math.random)
+    const noise = (Math.sin(x * noiseScale) + Math.cos(y * noiseScale) + Math.random()) * size * 0.1;
+    position.setZ(i, noise);
   }
 
   position.needsUpdate = true;
@@ -97,20 +97,19 @@ function createNoiseGeometry(size, widthSegments, heightSegments, noiseScale) {
  */
 function createFractalGeometry(size, widthSegments, heightSegments, fractalScale) {
   const geometry = new THREE.PlaneGeometry(size, size, widthSegments, heightSegments);
-  const noise = new Noise();
   const position = geometry.attributes.position;
 
   for (let i = 0; i < position.count; i++) {
     const x = position.getX(i);
     const y = position.getY(i);
 
-    // Fractal noise basado en múltiplos de Perlin
+    // Fractal simple utilizando funciones trigonométricas
     let fractalZ = 0;
     let amplitude = 1;
     let frequency = fractalScale;
 
-    for (let j = 0; j < 4; j++) { // 4 octavas
-      fractalZ += amplitude * noise.perlin(x * frequency, y * frequency);
+    for (let j = 0; j < 4; j++) { // 4 octavas de fractal
+      fractalZ += amplitude * Math.sin(x * frequency) * Math.cos(y * frequency);
       amplitude *= 0.5;
       frequency *= 2;
     }
