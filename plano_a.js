@@ -3,7 +3,7 @@ import * as THREE from 'three';
 // Función para crear el plano con material y geometría según el día
 export function createPlane(position = { x: 0, y: 0, z: 0 }, 
                            rotation = { x: 0, y: 0, z: 0 }, 
-                           size = { x: 1, y: 1, z: 10 }) {
+                           size = { x: 10, y: 10, z: 10 }) {
   const today = new Date();
   const dayOfWeek = today.getDay(); // 0 - Domingo, 1 - Lunes, ..., 6 - Sábado
 
@@ -15,11 +15,11 @@ export function createPlane(position = { x: 0, y: 0, z: 0 },
       material = new THREE.MeshStandardMaterial({ color: 0x8B4513, roughness: 1 });
       geometry = createStoneGeometry(size);
       break;
-    case 2: // Martes: Hielo (ParametricGeometry + ruido suave)
+    case 2: // Martes: Hielo (ParametricBufferGeometry + ruido suave)
       material = new THREE.MeshStandardMaterial({ color: 0xADD8E6, roughness: 0.3, metalness: 0.8 });
       geometry = createIceGeometry(size);
       break;
-    case 3: // Miércoles: Metal (ParametricGeometry sin ruido)
+    case 3: // Miércoles: Metal (ParametricBufferGeometry sin ruido)
       material = new THREE.MeshStandardMaterial({ color: 0xB0C4DE, roughness: 0.5, metalness: 1 });
       geometry = createMetalGeometry(size);
       break;
@@ -70,7 +70,7 @@ function createStoneGeometry(size) {
 
 // Función para crear geometría de hielo (suave y orgánica)
 function createIceGeometry(size) {
-  const geometry = new THREE.ParametricGeometry((u, v, target) => {
+  const geometry = new THREE.ParametricBufferGeometry((u, v, target) => {
     const noiseFactor = 0.1;
 
     // Usar una función paramétrica suave
@@ -91,7 +91,7 @@ function createIceGeometry(size) {
 
 // Función para crear geometría de metal (suave sin ruido)
 function createMetalGeometry(size) {
-  const geometry = new THREE.ParametricGeometry((u, v, target) => {
+  const geometry = new THREE.ParametricBufferGeometry((u, v, target) => {
     const x = (u - 0.5) * size.x;
     const y = (v - 0.5) * size.y;
     const z = Math.sin(u * Math.PI) * Math.cos(v * Math.PI) * size.z;
@@ -122,7 +122,7 @@ function createWoodGeometry(size) {
 
 // Función para crear geometría de agua (con ruido fractal)
 function createWaterGeometry(size) {
-  const geometry = new THREE.ParametricGeometry((u, v, target) => {
+  const geometry = new THREE.ParametricBufferGeometry((u, v, target) => {
     const sizeFactor = 5;
     const x = (u - 0.5) * size.x;
     const y = (v - 0.5) * size.y;
