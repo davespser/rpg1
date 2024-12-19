@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import RAPIER from '@dimforge/rapier3d-compat';
 import { initScene } from './scene.js';
-import { crearMenuEstadisticas } from './menu.js';
+import { crearMenuRadial } from './menu.js';
 import { Stats } from './stats.js';
 import { initPhysics, createTerrainRigidBody, stepPhysics } from './physics.js';
 import { loadTexture, createTerrain } from './createTerrain.js';
@@ -15,7 +15,7 @@ let terrainMesh;
 // Inicialización de la escena y estadísticas
 const { scene, camera, renderer, controls } = initScene();
 const stats = new Stats();
-crearMenuEstadisticas();
+crearMenuRadial();
 createSky(scene);
 
 
