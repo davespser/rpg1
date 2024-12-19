@@ -58,7 +58,7 @@ function createStoneGeometry(size) {
   const width = size.x;
   const height = size.y;
   const segments = 100;
-  
+
   for (let x = 0; x <= segments; x++) {
     for (let y = 0; y <= segments; y++) {
       const vertexX = (x / segments) * width - width / 2;
@@ -165,20 +165,20 @@ function createMetalGeometry(size) {
   return geometry;
 }
 
-// Función para crear geometría de agua (BufferGeometry + ruido fractal)
+// Función para crear geometría de agua con ruido fractal
 function createWaterGeometry(size) {
   const geometry = new THREE.BufferGeometry();
 
   const vertices = [];
   const width = size.x;
   const height = size.y;
-  const segments = 30;
+  const segments = 20;
 
   for (let x = 0; x <= segments; x++) {
     for (let y = 0; y <= segments; y++) {
       const vertexX = (x / segments) * width - width / 2;
       const vertexY = (y / segments) * height - height / 2;
-      const vertexZ = Math.sin(x * Math.PI / segments) * Math.cos(y * Math.PI / segments) * 0.5;
+      const vertexZ = Math.sin(x * Math.PI / segments) * Math.cos(y * Math.PI / segments) * 0.1;
 
       vertices.push(vertexX, vertexY, vertexZ);
     }
@@ -191,4 +191,81 @@ function createWaterGeometry(size) {
     for (let y = 0; y < segments; y++) {
       const i1 = x * (segments + 1) + y;
       const i2 = (x + 1) * (segments + 1) + y;
-      const i3 = (x + 1) * (segments + 1) +
+      const i3 = (x + 1) * (segments + 1) + (y + 1);
+      const i4 = x * (indices.push(i1, i2, i3);
+      indices.push(i1, i3, i4);
+    }
+  }
+  geometry.setIndex(indices);
+
+  return geometry;
+}
+
+// Función para crear geometría de césped con ruido suave
+function createGrassGeometry(size) {
+  const geometry = new THREE.BufferGeometry();
+
+  const vertices = [];
+  const width = size.x;
+  const height = size.y;
+  const segments = 30;
+
+  for (let x = 0; x <= segments; x++) {
+    for (let y = 0; y <= segments; y++) {
+      const vertexX = (x / segments) * width - width / 2;
+      const vertexY = (y / segments) * height - height / 2;
+      const vertexZ = Math.random() * 0.3;  // Ruido suave para crear un efecto de césped
+
+      vertices.push(vertexX, vertexY, vertexZ);
+    }
+  }
+
+  geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(vertices), 3));
+
+  const indices = [];
+  for (let x = 0; x < segments; x++) {
+    for (let y = 0; y < segments; y++) {
+      const i1 = x * (segments + 1) + y;
+      const i2 = (x + 1) * (segments + 1) + y;
+      const i3 = (x + 1) * (segments + 1) + (y + 1);
+      const i4 = x * (segments + 1) + (y + 1);
+
+      indices.push(i1, i2, i3);
+      indices.push(i1, i3, i4);
+    }
+  }
+  geometry.setIndex(indices);
+
+  return geometry;
+}
+
+// Esta función es llamada en el `init` para inicializar la escena, cámara y renderizado
+function init() {
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+  const renderer = new THREE.WebGLRenderer();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.body.appendChild(renderer.domElement);
+
+  // Crear el plano usando la función `createPlane`
+  const plane = createPlane({ x: 0, y: 0, z: 0 }, { x: 0, y: Math.PI / 2, z: 0 }, { x: 10, y: 10, z: 10 });
+  scene.add(plane);
+
+  // Establecer la posición de la cámara
+  camera.position.z = 15;
+
+  // Animación
+  function animate() {
+    requestAnimationFrame(animate);
+
+    // Animar el plano (puedes agregar efectos aquí)
+    plane.rotation.x += 0.01;
+    plane.rotation.y += 0.01;
+
+    renderer.render(scene, camera);
+  }
+
+  animate();
+}
+
+init();
