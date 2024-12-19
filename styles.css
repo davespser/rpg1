@@ -39,7 +39,7 @@
 }
 
 /* Posicionar los botones en los lados del hexágono */
-.trapezoid-button:nth-child(1) { transform: translate(-50%, -100%) rotate(-20deg); } /* Lado superior */
+.trapezoid-button:nth-child(1) { transform: translate(-50%, -100%) rotate(-35deg); } /* Lado superior */
 .trapezoid-button:nth-child(2) { transform: translate(50%, -50%) rotate(60deg); } /* Superior derecho */
 .trapezoid-button:nth-child(3) { transform: translate(50%, 50%) rotate(120deg); } /* Inferior derecho */
 .trapezoid-button:nth-child(4) { transform: translate(-50%, 100%) rotate(180deg); } /* Lado inferior */
