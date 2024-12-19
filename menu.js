@@ -1,8 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
-    crearMenuRadial();
-});
-
-function crearMenuRadial() {
+export function crearMenuRadial() {
     const menuItems = [
         { id: 'vida', label: 'Vida' },
         { id: 'energia', label: 'Energía' },
