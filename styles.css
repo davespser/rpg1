@@ -22,11 +22,11 @@
 }
 
 .trapezoid-button {
-    width: 60px;
-    height: 40px;
+    width: 100px;
+    height: 50px;
     background-color: #007BFF;
     border: 2px solid white;
-    clip-path: polygon(25% 0%, 75% 0%, 100% 100%, 0% 100%);
+    clip-path: polygon(30% 0%, 70% 0%, 100% 100%, 0% 100%);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -37,39 +37,40 @@
     transition: transform 0.3s ease;
 }
 
+/* Posicionando y rotando los trapezoides en los lados del hexágono */
 .trapezoid-button:nth-child(1) {
-    top: 0;
+    top: -25px;
     left: 50%;
     transform: translateX(-50%) rotate(0deg);
 }
 
 .trapezoid-button:nth-child(2) {
     top: 25%;
-    right: 0;
+    right: -25px;
     transform: translateY(-50%) rotate(60deg);
 }
 
 .trapezoid-button:nth-child(3) {
     bottom: 25%;
-    right: 0;
+    right: -25px;
     transform: translateY(50%) rotate(120deg);
 }
 
 .trapezoid-button:nth-child(4) {
-    bottom: 0;
+    bottom: -25px;
     left: 50%;
     transform: translateX(-50%) rotate(180deg);
 }
 
 .trapezoid-button:nth-child(5) {
     bottom: 25%;
-    left: 0;
+    left: -25px;
     transform: translateY(50%) rotate(240deg);
 }
 
 .trapezoid-button:nth-child(6) {
     top: 25%;
-    left: 0;
+    left: -25px;
     transform: translateY(-50%) rotate(300deg);
 }
 
