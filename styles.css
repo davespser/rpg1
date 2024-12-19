@@ -10,12 +10,14 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: opacity 0.3s ease;
+    opacity: 1;
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .radial-menu.hidden {
     opacity: 0;
     pointer-events: none;
+    transform: translate(-50%, -50%) scale(0.5);
 }
 
 .radial-item {
@@ -38,10 +40,5 @@
     background-color: #007BFF;
     color: white;
     border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-#toggleMenu:hover {
-    background-color: #0056b3;
-}
+    border-radius: 50%;
+    cursor: pointer
