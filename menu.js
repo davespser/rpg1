@@ -8,6 +8,7 @@ export function crearMenuRadial() {
         { id: 'magia', label: 'Magia' }
     ];
 
+    // Crear HTML del menú radial
     const menuHTML = `
         <div id="menuRadial" class="radial-menu hidden">
             ${menuItems.map((item, index) => `
@@ -20,16 +21,23 @@ export function crearMenuRadial() {
     `;
     document.body.insertAdjacentHTML('beforeend', menuHTML);
 
+    // Obtener referencias a los elementos
     const toggleMenu = document.getElementById('toggleMenu');
     const menuRadial = document.getElementById('menuRadial');
     const buttons = document.querySelectorAll('.trapezoid-button');
 
+    // Verificación inicial de los elementos en el DOM
+    console.log("Menú radial:", menuRadial);
+    console.log("Botones:", buttons);
+    console.log("Botón de alternar menú:", toggleMenu);
+
     // Mostrar/ocultar menú radial
     toggleMenu.addEventListener('click', () => {
         menuRadial.classList.toggle('hidden');
+        console.log("Estado del menú radial:", menuRadial.classList.contains('hidden') ? "Oculto" : "Visible");
     });
 
-    // Añadir funcionalidad a cada botón para desplazarse fuera del hexágono
+    // Añadir funcionalidad a los botones
     buttons.forEach((button, index) => {
         button.addEventListener('click', () => {
             button.classList.add('expand');
@@ -40,4 +48,6 @@ export function crearMenuRadial() {
             console.log(`Botón ${menuItems[index].label} clickeado`);
         });
     });
+
+    console.log("Menú radial creado y funcionalidad inicializada.");
 }
