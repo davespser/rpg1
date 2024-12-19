@@ -57,7 +57,8 @@ async function init() {
 // Puedes pasar las coordenadas y rotación como objetos
         const plane = createPlane(
         { x: -280, y: 0, z: 40 },  // Posición del plano
-        { x: 0, y: Math.PI / 4, z: 90} // Rotación del plano
+        { x: 0, y: Math.PI / 4, z: 90},// rotacion del plano
+        { x: 1, y: 1, z: 10}
       );
           scene.add(plane);
         // Cargar modelo con física
