@@ -40,7 +40,6 @@
 
 /* Posicionar los botones en los lados del hexágono */
 .trapezoid-button:nth-child(1) { 
-.trapezoid-button:nth-child(1) { 
     transform: translate(-50%, -100%) rotate(-30deg); /* Lado superior */
 }
 .trapezoid-button:nth-child(2) { 
