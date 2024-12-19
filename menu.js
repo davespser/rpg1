@@ -1,14 +1,21 @@
 export function crearMenuEstadisticas() {
+    const menuItems = [
+        { id: 'vida', label: 'Vida', value: 100 },
+        { id: 'energia', label: 'Energía', value: 100 }
+    ];
+
     const menuHTML = `
-        <div id="menu" class="hidden">
-            <h3>Estadísticas</h3>
-            <div class="stat">Vida: <span id="vida">100</span></div>
-            <div class="stat">Energía: <span id="energia">100</span></div>
+        <div id="menuRadial" class="radial-menu hidden">
+            ${menuItems.map((item, index) => `
+                <div class="radial-item" style="--i: ${index}">
+                    ${item.label}: <span id="${item.id}">${item.value}</span>
+                </div>
+            `).join('')}
         </div>
     `;
     document.body.insertAdjacentHTML('beforeend', menuHTML);
 
     document.getElementById('toggleMenu').addEventListener('click', () => {
-        document.getElementById('menu').classList.toggle('hidden');
+        document.getElementById('menuRadial').classList.toggle('hidden');
     });
 }
