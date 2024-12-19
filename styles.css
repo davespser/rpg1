@@ -7,7 +7,7 @@
     height: 200px;
     background-color: rgba(0, 0, 0, 0.8); /* Hexágono negro */
     clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%); /* Forma de hexágono */
-    border: 2px solid white borde */
+    border: 2px solid white; /* Línea en el borde */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -22,8 +22,8 @@
 }
 
 .radial-item {
-    width: 60px;
-    height: 60px;
+    width: 40px;
+    height: 40px;
     background-color: #007BFF;
     border: 2px solid white;
     border-radius: 50%;
@@ -34,40 +34,46 @@
     font-weight: bold;
     cursor: pointer;
     position: absolute;
-    transform: translate(-50%, -50%);
+    transition: transform 0.3s ease;
+}
+
+.radial-item:hover {
+    transform: scale(1.2);
 }
 
 .radial-item:nth-child(1) {
     top: 0;
     left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .radial-item:nth-child(2) {
-    top: 25%;
-    right: 0;
+    top: 14.6%;
+    right: 14.6%;
     transform: translate(50%, -50%);
 }
 
 .radial-item:nth-child(3) {
-    bottom: 25%;
-    right: 0;
+    bottom: 14.6%;
+    right: 14.6%;
     transform: translate(50%, 50%);
 }
 
 .radial-item:nth-child(4) {
     bottom: 0;
     left: 50%;
+    transform: translate(-50%, 50%);
 }
 
 .radial-item:nth-child(5) {
-    bottom: 25%;
-    left: 0;
+    bottom: 14.6%;
+    left: 14.6%;
     transform: translate(-50%, 50%);
 }
 
 .radial-item:nth-child(6) {
-    top: 25%;
-    left: 0;
+    top: 14.6%;
+    left: 14.6%;
     transform: translate(-50%, -50%);
 }
 
