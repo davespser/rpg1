@@ -41,22 +41,47 @@
 /* Posicionar los botones en los lados del hexágono */
 .trapezoid-button:nth-child(1) { 
     transform: translate(-33%, -184%) rotate(-30deg); /* Lado superior */
+    --x: -33%;
+    --y: -300%;
+    --rotate: -30deg;
 }
 .trapezoid-button:nth-child(2) { 
     transform: translate(36%, -180%) rotate(30deg); /* Superior derecho */
+    --x: 70%;
+    --y: -250%;
+    --rotate: 30deg;
 }
 .trapezoid-button:nth-child(3) { 
     transform: translate(68%, 0%) rotate(90deg); /* Inferior derecho */
+    --x: 150%;
+    --y: 50%;
+    --rotate: 90deg;
 }
 .trapezoid-button:nth-child(4) { 
     transform: translate(33%, 184%) rotate(150deg); /* Lado inferior */
+    --x: 70%;
+    --y: 300%;
+    --rotate: 150deg;
 }
 .trapezoid-button:nth-child(5) { 
     transform: translate(-36%, 180%) rotate(210deg); /* Inferior izquierdo */
+    --x: -70%;
+    --y: 250%;
+    --rotate: 210deg;
 }
 .trapezoid-button:nth-child(6) { 
     transform: translate(-68%, 0%) rotate(270deg); /* Superior izquierdo */
+    --x: -150%;
+    --y: 50%;
+    --rotate: 270deg;
 }
+
+/* Añadir clase expand para mover botones fuera del hexágono */
+.trapezoid-button.expand {
+    transform: translate(var(--x), var(--y)) rotate(var(--rotate));
+    transition: transform 0.5s ease-out;
+}
+
 #toggleMenu {
     position: absolute;
     bottom: 10px;
