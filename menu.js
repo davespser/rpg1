@@ -10,7 +10,7 @@ export function crearMenuEstadisticas() {
         <div id="menuRadial" class="radial-menu hidden" style="--total: ${totalItems}">
             ${menuItems.map((item, index) => `
                 <div class="radial-item" style="--i: ${index}">
-                    ${item.label}: <span id="${item.id}">${item.value}</span>
+                    ${item.label}
                 </div>
             `).join('')}
         </div>
