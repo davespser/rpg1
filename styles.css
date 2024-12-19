@@ -26,7 +26,7 @@
     height: 30px;
     background-color: #007BFF;
     border: 2px solid white;
-    clip-path: polygon(0% 0%, 100% 0%, 80% 100%, 20% 100%);
+    clip-path: polygon(0% 0%, 100% 0%, 70% 100%, 20% 100%);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -43,7 +43,7 @@
     transform: translate(-40%, -190%) rotate(-30deg); /* Lado superior */
 }
 .trapezoid-button:nth-child(2) { 
-    transform: translate(20%, -190%) rotate(30deg); /* Superior derecho */
+    transform: translate(30%, -190%) rotate(30deg); /* Superior derecho */
 }
 .trapezoid-button:nth-child(3) { 
     transform: translate(50%, 50%) rotate(90deg); /* Inferior derecho */
