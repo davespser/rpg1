@@ -8,7 +8,7 @@ import { loadTexture, createTerrain } from './createTerrain.js';
 import { createSky } from './sky.js';
 import { cargarModelo } from './objetos.js';
 import { addBuildings } from './entorno_f.js';
-import { createPlane } from 
+import { createPlane } from  './plano_a.js;
 // Declaración de variables globales
 let world, modelo, body, collider;
 let terrainMesh;
@@ -53,6 +53,13 @@ async function init() {
         }
 
         addBuildings(scene, terrainMesh);
+        // Crear el plano con material y geometría según el día
+// Puedes pasar las coordenadas y rotación como objetos
+        const plane = createPlane(
+        { x: 0, y: 0, z: 0 },  // Posición del plano
+        { x: Math.PI / 4, y: Math.PI / 4, z: 0 } // Rotación del plano
+      );
+          scene.add(plane);
         // Cargar modelo con física
         const resultado = await cargarModelo(1, 1, 1, './negro.glb', world, scene, true);
         modelo = resultado.modelo;
