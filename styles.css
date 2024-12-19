@@ -7,7 +7,7 @@
     height: 200px;
     background-color: rgba(0, 0, 0, 0.8); /* Hexágono negro */
     clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%); /* Forma de hexágono */
-    border: 2px solid white; /* Línea en el borde */
+    border: 2px solid white;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -34,44 +34,15 @@
     font-weight: bold;
     cursor: pointer;
     position: absolute;
+    transform-origin: center center;
     transition: transform 0.3s ease;
 }
 
-/* Posicionando y rotando los trapezoides en los lados del hexágono */
-.trapezoid-button:nth-child(1) {
-    top: -25px;
-    left: 50%;
-    transform: translateX(-50%) rotate(0deg);
-}
-
-.trapezoid-button:nth-child(2) {
-    top: 25%;
-    right: -50px;
-    transform: translateY(-50%) rotate(60deg);
-}
-
-.trapezoid-button:nth-child(3) {
-    bottom: 25%;
-    right: -50px;
-    transform: translateY(50%) rotate(120deg);
-}
-
-.trapezoid-button:nth-child(4) {
-    bottom: -25px;
-    left: 50%;
-    transform: translateX(-50%) rotate(180deg);
-}
-
-.trapezoid-button:nth-child(5) {
-    bottom: 25%;
-    left: -50px;
-    transform: translateY(50%) rotate(240deg);
-}
-
-.trapezoid-button:nth-child(6) {
-    top: 25%;
-    left: -50px;
-    transform: translateY(-50%) rotate(300deg);
+/* Posicionar cada trapezoide */
+.trapezoid-button {
+    transform: rotate(calc(var(--i) * 360deg / var(--total))) 
+                translate(0, -120px) 
+                rotate(calc(-1 * var(--i) * 360deg / var(--total)));
 }
 
 #toggleMenu {
