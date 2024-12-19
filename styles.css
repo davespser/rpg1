@@ -1,4 +1,3 @@
-/* Estilo del menú radial */
 .radial-menu {
     position: absolute;
     top: 50%;
@@ -22,9 +21,8 @@
     transform: translate(-50%, -50%) scale(0.5);
 }
 
-/* Botones trapezoidales */
 .trapezoid-button {
-    width: 100px;
+    width: 100px; /* Ajusta el tamaño según sea necesario */
     height: 30px;
     background-color: #007BFF;
     border: 2px solid white;
@@ -40,39 +38,25 @@
     transition: transform 0.3s ease;
 }
 
-/* Posicionamiento de los botones en los lados del hexágono */
-.trapezoid-button:nth-child(1) {
-    --x: -33%; --y: -300%; --rotate: -30deg;
-    transform: translate(-33%, -184%) rotate(-30deg);
+/* Posicionar los botones en los lados del hexágono */
+.trapezoid-button:nth-child(1) { 
+    transform: translate(-33%, -184%) rotate(-30deg); /* Lado superior */
 }
-.trapezoid-button:nth-child(2) {
-    --x: 60%; --y: -220%; --rotate: 30deg;
-    transform: translate(36%, -180%) rotate(30deg);
+.trapezoid-button:nth-child(2) { 
+    transform: translate(36%, -180%) rotate(30deg); /* Superior derecho */
 }
-.trapezoid-button:nth-child(3) {
-    --x: 200%; --y: 10%; --rotate: 90deg;
-    transform: translate(68%, 0%) rotate(90deg);
+.trapezoid-button:nth-child(3) { 
+    transform: translate(68%, 0%) rotate(90deg); /* Inferior derecho */
 }
-.trapezoid-button:nth-child(4) {
-    --x: 60%; --y: 250%; --rotate: 150deg;
-    transform: translate(33%, 184%) rotate(150deg);
+.trapezoid-button:nth-child(4) { 
+    transform: translate(33%, 184%) rotate(150deg); /* Lado inferior */
 }
-.trapezoid-button:nth-child(5) {
-    --x: -60%; --y: 250%; --rotate: 210deg;
-    transform: translate(-36%, 180%) rotate(210deg);
+.trapezoid-button:nth-child(5) { 
+    transform: translate(-36%, 180%) rotate(210deg); /* Inferior izquierdo */
 }
-.trapezoid-button:nth-child(6) {
-    --x: -200%; --y: 10%; --rotate: 270deg;
-    transform: translate(-68%, 0%) rotate(270deg);
+.trapezoid-button:nth-child(6) { 
+    transform: translate(-68%, 0%) rotate(270deg); /* Superior izquierdo */
 }
-
-/* Animación al hacer clic (desplazamiento dinámico) */
-.trapezoid-button.expand {
-    transform: translate(var(--x), var(--y)) rotate(var(--rotate));
-    transition: transform 0.5s ease-out;
-}
-
-/* Estilo del botón para alternar el menú */
 #toggleMenu {
     position: absolute;
     bottom: 10px;
