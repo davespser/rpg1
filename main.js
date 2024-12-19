@@ -8,6 +8,7 @@ import { loadTexture, createTerrain } from './createTerrain.js';
 import { createSky } from './sky.js';
 import { cargarModelo } from './objetos.js';
 import { addBuildings } from './entorno_f.js';
+import { createPlane } from 
 // Declaración de variables globales
 let world, modelo, body, collider;
 let terrainMesh;
