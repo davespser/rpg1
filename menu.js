@@ -1,27 +1,32 @@
-export function crearMenuEstadisticas() {
+document.addEventListener('DOMContentLoaded', () => {
+    crearMenuRadial();
+});
+
+function crearMenuRadial() {
     const menuItems = [
-        { id: 'vida', label: 'Vida', value: 100 },
-        { id: 'energia', label: 'Energía', value: 100 }
+        { id: 'vida', label: 'Vida' },
+        { id: 'energia', label: 'Energía' },
+        { id: 'ataque', label: 'Ataque' },
+        { id: 'defensa', label: 'Defensa' },
+        { id: 'velocidad', label: 'Velocidad' },
+        { id: 'magia', label: 'Magia' }
     ];
 
-    const totalItems = 6; // Seis trapezoides en total
-
     const menuHTML = `
-        <div id="menuRadial" class="radial-menu hidden" style="--total: ${totalItems}">
+        <div id="menuRadial" class="radial-menu hidden">
             ${menuItems.map((item, index) => `
                 <div class="trapezoid-button" style="--i: ${index}">
                     ${item.label}
                 </div>
             `).join('')}
-            <!-- Rellenar con botones vacíos si hay menos de seis elementos -->
-            ${Array.from({ length: totalItems - menuItems.length }, (_, index) => `
-                <div class="trapezoid-button" style="--i: ${menuItems.length + index}"></div>
-            `).join('')}
         </div>
     `;
     document.body.insertAdjacentHTML('beforeend', menuHTML);
 
-    document.getElementById('toggleMenu').addEventListener('click', () => {
-        document.getElementById('menuRadial').classList.toggle('hidden');
+    const toggleMenu = document.getElementById('toggleMenu');
+    const menuRadial = document.getElementById('menuRadial');
+
+    toggleMenu.addEventListener('click', () => {
+        menuRadial.classList.toggle('hidden');
     });
 }
