@@ -1,123 +1,153 @@
 import * as THREE from 'three';
 
-/**
- * Crear un plano dinámico cuya geometría cambia según el día
- * @param {Object} position - Coordenadas de la posición {x, y, z}.
- * @param {Object} rotation - Ángulos de rotación {x, y, z}.
- * @returns {THREE.Mesh} - El plano generado.
- */
-export function createPlane(position = { x: 0, y: 0, z: 0 }, rotation = { x: 0, y: 0, z: 0 }, scale = { x: 0,y: 0, z: 0}) {
+// Función para crear el plano con material y geometría según el día
+export function createPlane(position = { x: 0, y: 0, z: 0 }, 
+                           rotation = { x: 0, y: 0, z: 0 }, 
+                           size = { x: 1, y: 1, z: 10 }) {
   const today = new Date();
   const dayOfWeek = today.getDay(); // 0 - Domingo, 1 - Lunes, ..., 6 - Sábado
 
   let geometry, material;
 
+  // Obtener material y geometría según el día
   switch (dayOfWeek) {
-    case 0: // Domingo: Arena con fractales suaves
-      geometry = createFractalGeometry(5, 200, 200, 0.5);
-      material = new THREE.MeshStandardMaterial({ color: 0xF4A460, roughness: 1 });
-      break;
-
-    case 1: // Lunes: Piedra (Noise rugoso)
-      geometry = createNoiseGeometry(5, 200, 200, 1);
+    case 1: // Lunes: Piedra (PlaneGeometry + ruido)
       material = new THREE.MeshStandardMaterial({ color: 0x8B4513, roughness: 1 });
+      geometry = createStoneGeometry(size);
       break;
-
-    case 2: // Martes: Hielo (Fractales suaves)
-      geometry = createFractalGeometry(5, 200, 200, 0.2);
+    case 2: // Martes: Hielo (ParametricGeometry + ruido suave)
       material = new THREE.MeshStandardMaterial({ color: 0xADD8E6, roughness: 0.3, metalness: 0.8 });
+      geometry = createIceGeometry(size);
       break;
-
-    case 3: // Miércoles: Metal (Fractales geométricos)
-      geometry = createFractalGeometry(5, 200, 200, 0.05);
+    case 3: // Miércoles: Metal (ParametricGeometry sin ruido)
       material = new THREE.MeshStandardMaterial({ color: 0xB0C4DE, roughness: 0.5, metalness: 1 });
+      geometry = createMetalGeometry(size);
       break;
-
-    case 4: // Jueves: Madera (Noise orgánico)
-      geometry = createNoiseGeometry(5, 200, 200, 0.5);
+    case 4: // Jueves: Madera (Noise + forma simple)
       material = new THREE.MeshStandardMaterial({ color: 0x8B4513, roughness: 0.7 });
+      geometry = createWoodGeometry(size);
       break;
-
-    case 5: // Viernes: Agua (Ondas dinámicas)
-      geometry = createNoiseGeometry(5, 200, 200, 0.3);
-      material = new THREE.MeshPhysicalMaterial({ color: 0x1E90FF, roughness: 0, metalness: 0.2, clearcoat: 0.9 });
+    case 5: // Viernes: Agua (Forma fractal con ruido)
+      material = new THREE.MeshStandardMaterial({ color: 0x1E90FF, roughness: 0.1, metalness: 0.5 });
+      geometry = createWaterGeometry(size);
       break;
-
-    case 6: // Sábado: Lava (Fractales intensos)
-      geometry = createFractalGeometry(5, 200, 200, 1);
-      material = new THREE.MeshStandardMaterial({ color: 0xFF4500, emissive: 0xFF6347 });
+    case 6: // Sábado: Hierba (Ruido y textura de césped)
+      material = new THREE.MeshStandardMaterial({ color: 0x228B22, roughness: 0.6 });
+      geometry = createGrassGeometry(size);
       break;
-
-    default: // Por defecto, un plano simple
-      geometry = new THREE.PlaneGeometry(10, 10, 200, 200);
+    default: // Domingo: Forma simple (PlaneGeometry)
       material = new THREE.MeshStandardMaterial({ color: 0xFFFFFF });
+      geometry = new THREE.PlaneGeometry(size.x, size.y, 200, 200);
   }
 
+  // Crear el mesh del plano
   const plane = new THREE.Mesh(geometry, material);
+
+  // Establecer la posición y rotación del plano
   plane.position.set(position.x, position.y, position.z);
   plane.rotation.set(rotation.x, rotation.y, rotation.z);
 
   return plane;
 }
 
-/**
- * Crear una geometría basada en ruido (Noise)
- * @param {number} size - Tamaño del plano.
- * @param {number} widthSegments - Segmentos en el ancho.
- * @param {number} heightSegments - Segmentos en el alto.
- * @param {number} noiseScale - Escala del ruido.
- * @returns {THREE.PlaneGeometry} - Geometría del plano con ruido.
- */
-function createNoiseGeometry(size, widthSegments, heightSegments, noiseScale) {
-  const geometry = new THREE.PlaneGeometry(size, size, widthSegments, heightSegments);
-  const position = geometry.attributes.position;
+// Función para crear geometría de piedra (con ruido)
+function createStoneGeometry(size) {
+  const geometry = new THREE.PlaneGeometry(size.x, size.y, 200, 200);
 
-  for (let i = 0; i < position.count; i++) {
-    const x = position.getX(i);
-    const y = position.getY(i);
+  // Aplicar ruido a los vértices para dar una forma más irregular
+  geometry.vertices.forEach(vertex => {
+    const noise = Math.random() * 1; // Ruido aleatorio
+    vertex.x += noise;
+    vertex.y += noise;
+    vertex.z += noise;
+  });
 
-    // Generar ruido basado en funciones matemáticas (Math.sin y Math.random)
-    const noise = (Math.sin(x * noiseScale) + Math.cos(y * noiseScale) + Math.random()) * size * 0.1;
-    position.setZ(i, noise);
-  }
-
-  position.needsUpdate = true;
+  // Recalcular normales
   geometry.computeVertexNormals();
 
   return geometry;
 }
 
-/**
- * Crear una geometría fractal
- * @param {number} size - Tamaño del plano.
- * @param {number} widthSegments - Segmentos en el ancho.
- * @param {number} heightSegments - Segmentos en el alto.
- * @param {number} fractalScale - Escala del fractal.
- * @returns {THREE.PlaneGeometry} - Geometría del plano con fractales.
- */
-function createFractalGeometry(size, widthSegments, heightSegments, fractalScale) {
-  const geometry = new THREE.PlaneGeometry(size, size, widthSegments, heightSegments);
-  const position = geometry.attributes.position;
+// Función para crear geometría de hielo (suave y orgánica)
+function createIceGeometry(size) {
+  const geometry = new THREE.ParametricGeometry((u, v, target) => {
+    const noiseFactor = 0.1;
 
-  for (let i = 0; i < position.count; i++) {
-    const x = position.getX(i);
-    const y = position.getY(i);
+    // Usar una función paramétrica suave
+    const x = (u - 0.5) * size.x;
+    const y = (v - 0.5) * size.y;
+    const z = Math.sin(u * Math.PI) * Math.cos(v * Math.PI) * size.z;
 
-    // Fractal simple utilizando funciones trigonométricas
-    let fractalZ = 0;
-    let amplitude = 1;
-    let frequency = fractalScale;
+    // Aplicar ruido suave
+    target.set(
+      x + Math.random() * noiseFactor,
+      y + Math.random() * noiseFactor,
+      z + Math.random() * noiseFactor
+    );
+  }, 20, 20); // Subdivisiones
 
-    for (let j = 0; j < 4; j++) { // 4 octavas de fractal
-      fractalZ += amplitude * Math.sin(x * frequency) * Math.cos(y * frequency);
-      amplitude *= 0.5;
-      frequency *= 2;
-    }
+  return geometry;
+}
 
-    position.setZ(i, fractalZ * size * 0.1);
-  }
+// Función para crear geometría de metal (suave sin ruido)
+function createMetalGeometry(size) {
+  const geometry = new THREE.ParametricGeometry((u, v, target) => {
+    const x = (u - 0.5) * size.x;
+    const y = (v - 0.5) * size.y;
+    const z = Math.sin(u * Math.PI) * Math.cos(v * Math.PI) * size.z;
 
-  position.needsUpdate = true;
+    target.set(x, y, z);
+  }, 20, 20); // Subdivisiones
+
+  return geometry;
+}
+
+// Función para crear geometría de madera (con ruido)
+function createWoodGeometry(size) {
+  const geometry = new THREE.PlaneGeometry(size.x, size.y, 200, 200);
+
+  // Aplicar ruido para simular la textura de la madera
+  geometry.vertices.forEach(vertex => {
+    const noise = Math.random() * 0.5; // Ruido más suave para madera
+    vertex.x += noise;
+    vertex.y += noise;
+    vertex.z += noise;
+  });
+
+  // Recalcular normales
+  geometry.computeVertexNormals();
+
+  return geometry;
+}
+
+// Función para crear geometría de agua (con ruido fractal)
+function createWaterGeometry(size) {
+  const geometry = new THREE.ParametricGeometry((u, v, target) => {
+    const sizeFactor = 5;
+    const x = (u - 0.5) * size.x;
+    const y = (v - 0.5) * size.y;
+    const z = Math.sin(u * Math.PI * sizeFactor) * Math.cos(v * Math.PI * sizeFactor);
+
+    // Aplicar ruido fractal
+    target.set(x, y, z);
+  }, 30, 30); // Más subdivisiones para mayor suavidad
+
+  return geometry;
+}
+
+// Función para crear geometría de hierba (con ruido suave)
+function createGrassGeometry(size) {
+  const geometry = new THREE.PlaneGeometry(size.x, size.y, 200, 200);
+
+  // Aplicar ruido suave para simular hierba
+  geometry.vertices.forEach(vertex => {
+    const noise = Math.random() * 0.2; // Ruido más suave para hierba
+    vertex.x += noise;
+    vertex.y += noise;
+    vertex.z += noise;
+  });
+
+  // Recalcular normales
   geometry.computeVertexNormals();
 
   return geometry;
