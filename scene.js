@@ -9,7 +9,7 @@ export function initScene() {
     // Crear la escena
     const scene = new THREE.Scene();
 
-    scene.fog = new THREE.FogExp2(0x000000, 0.01);
+    scene.fog = new THREE.Fog(0x000000, 0.01);
     // Configurar la cámara
     const camera = new THREE.PerspectiveCamera(
         75, 
