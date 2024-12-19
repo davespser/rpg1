@@ -37,13 +37,15 @@
     transform-origin: center center;
     transition: transform 0.3s ease;
 }
-
-/* Posicionar cada trapezoide */
 .trapezoid-button {
-    transform: rotate(calc(var(--i) * 360deg / var(--total))) 
-                translate(0, -120px) 
+    transform: rotate(calc(var(--i) * 360deg / var(--total)))
+                translate(0, -85px) /* Ajusta la distancia */
                 rotate(calc(-1 * var(--i) * 360deg / var(--total)));
+    width: 80px; /* Ajusta el tamaño del trapezoide */
+    height: 40px; /* Ajusta la altura */
 }
+/* Posicionar cada trapezoide */
+
 
 #toggleMenu {
     position: absolute;
