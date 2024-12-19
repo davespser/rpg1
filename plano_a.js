@@ -9,6 +9,10 @@ export function createPlane(position = { x: 0, y: 0, z: 0 }, rotation = { x: 0, 
 
   // Obtener material y geometría según el día
   switch (dayOfWeek) {
+    case 0: // Domingo: Arena
+      material = new THREE.MeshStandardMaterial({ color: 0xC2B280, roughness: 0.8 });
+      geometry = createSandGeometry();
+      break;
     case 1: // Lunes: Piedra (PlaneGeometry + ruido)
       material = new THREE.MeshStandardMaterial({ color: 0x8B4513, roughness: 1 });
       geometry = createStoneGeometry();
@@ -21,7 +25,19 @@ export function createPlane(position = { x: 0, y: 0, z: 0 }, rotation = { x: 0, 
       material = new THREE.MeshStandardMaterial({ color: 0xB0C4DE, roughness: 0.5, metalness: 1 });
       geometry = createMetalGeometry();
       break;
-    default: // Otros días: Forma simple
+    case 4: // Jueves: Madera (PlaneGeometry con textura)
+      material = new THREE.MeshStandardMaterial({ color: 0x8B4513, roughness: 0.7 });
+      geometry = new THREE.PlaneGeometry(10, 20, 200, 200);
+      break;
+    case 5: // Viernes: Agua (forma ondulada)
+      material = new THREE.MeshStandardMaterial({ color: 0x1E90FF, roughness: 0.1, metalness: 0.3 });
+      geometry = createWaterGeometry();
+      break;
+    case 6: // Sábado: Lava (forma irregular y color cálido)
+      material = new THREE.MeshStandardMaterial({ color: 0xFF4500, roughness: 0.6 });
+      geometry = createLavaGeometry();
+      break;
+    default: // Días no especificados (nunca debería ocurrir)
       material = new THREE.MeshStandardMaterial({ color: 0xFFFFFF });
       geometry = new THREE.PlaneGeometry(10, 10, 200, 200);
   }
@@ -41,11 +57,8 @@ function createStoneGeometry() {
   const geometry = new THREE.PlaneGeometry(10, 10, 200, 200);
 
   // Aplicar ruido a los vértices para dar una forma más irregular
-  geometry.vertices.forEach(vertex => {
-    const noise = Math.random() * 1; // Ruido aleatorio
-    vertex.x += noise;
-    vertex.y += noise;
-    vertex.z += noise;
+  geometry.attributes.position.array.forEach((value, index) => {
+    geometry.attributes.position.array[index] += (Math.random() - 0.5) * 1.5;
   });
 
   // Recalcular normales
@@ -56,7 +69,7 @@ function createStoneGeometry() {
 
 // Función para crear geometría de hielo (suave y orgánica)
 function createIceGeometry() {
-  const geometry = new THREE.ParametricGeometry((u, v, target) => {
+  return new THREE.ParametricGeometry((u, v, target) => {
     const size = 5;
     const noiseFactor = 0.1;
 
@@ -72,13 +85,11 @@ function createIceGeometry() {
       z + Math.random() * noiseFactor
     );
   }, 20, 20); // Subdivisiones
-
-  return geometry;
 }
 
 // Función para crear geometría de metal (suave sin ruido)
 function createMetalGeometry() {
-  const geometry = new THREE.ParametricGeometry((u, v, target) => {
+  return new THREE.ParametricGeometry((u, v, target) => {
     const size = 5;
 
     // Crear una forma paramétrica más suave
@@ -88,6 +99,51 @@ function createMetalGeometry() {
 
     target.set(x, y, z);
   }, 20, 20); // Subdivisiones
+}
+
+// Función para crear geometría de agua (forma ondulada)
+function createWaterGeometry() {
+  const geometry = new THREE.PlaneGeometry(10, 10, 200, 200);
+
+  // Aplicar ruido ondulado
+  geometry.attributes.position.array.forEach((value, index) => {
+    if (index % 3 === 2) {
+      geometry.attributes.position.array[index] = Math.sin(value * Math.PI) * 0.5;
+    }
+  });
+
+  // Recalcular normales
+  geometry.computeVertexNormals();
+
+  return geometry;
+}
+
+// Función para crear geometría de lava (irregular)
+function createLavaGeometry() {
+  const geometry = new THREE.PlaneGeometry(10, 10, 200, 200);
+
+  // Aplicar ruido irregular
+  geometry.attributes.position.array.forEach((value, index) => {
+    geometry.attributes.position.array[index] += (Math.random() - 0.5) * 2;
+  });
+
+  // Recalcular normales
+  geometry.computeVertexNormals();
+
+  return geometry;
+}
+
+// Función para crear geometría de arena (lisa con ruido leve)
+function createSandGeometry() {
+  const geometry = new THREE.PlaneGeometry(10, 10, 200, 200);
+
+  // Aplicar ruido leve
+  geometry.attributes.position.array.forEach((value, index) => {
+    geometry.attributes.position.array[index] += (Math.random() - 0.5) * 0.2;
+  });
+
+  // Recalcular normales
+  geometry.computeVertexNormals();
 
   return geometry;
 }
