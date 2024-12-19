@@ -55,7 +55,7 @@ async function init() {
         // Cargar modelo con física
         const resultado = await cargarModelo(1, 1, 1, './negro.glb', world, scene, true);
         modelo = resultado.modelo;
-        modelo.scale.set(0.5, 0.5, 0.5);
+        modelo.scale.set(1, 1, 1);
         body = resultado.body;
         collider = resultado.collider;
         scene.add(modelo);
