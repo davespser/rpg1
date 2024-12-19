@@ -26,7 +26,7 @@
     height: 30px;
     background-color: #007BFF;
     border: 2px solid white;
-    clip-path: polygon(0% 0%, 100% 0%, 75% 100%, 20% 100%);
+    clip-path: polygon(0% 0%, 100% 0%, 76% 100%, 20% 100%);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -43,13 +43,13 @@
     transform: translate(-40%, -190%) rotate(-30deg); /* Lado superior */
 }
 .trapezoid-button:nth-child(2) { 
-    transform: translate(40%, -180%) rotate(30deg); /* Superior derecho */
+    transform: translate(35%, -175%) rotate(30deg); /* Superior derecho */
 }
 .trapezoid-button:nth-child(3) { 
     transform: translate(50%, 50%) rotate(90deg); /* Inferior derecho */
 }
 .trapezoid-button:nth-child(4) { 
-    transform: translate(-50%, 100%) rotate(150deg); /* Lado inferior */
+    transform: translate(-35%, 175%) rotate(150deg); /* Lado inferior */
 }
 .trapezoid-button:nth-child(5) { 
     transform: translate(-100%, 50%) rotate(210deg); /* Inferior izquierdo */
