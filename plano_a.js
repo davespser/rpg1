@@ -54,7 +54,6 @@ export function createPlane(position = { x: 0, y: 0, z: 0 },
 function createStoneGeometry(size) {
   const geometry = new THREE.BufferGeometry();
 
-  // Crear una geometría de plano básico
   const vertices = [];
   const width = size.x;
   const height = size.y;
@@ -166,4 +165,30 @@ function createMetalGeometry(size) {
   return geometry;
 }
 
-// Aquí puedes agregar las demás funciones de geometría como madera, agua, hierba, etc.
+// Función para crear geometría de agua (BufferGeometry + ruido fractal)
+function createWaterGeometry(size) {
+  const geometry = new THREE.BufferGeometry();
+
+  const vertices = [];
+  const width = size.x;
+  const height = size.y;
+  const segments = 30;
+
+  for (let x = 0; x <= segments; x++) {
+    for (let y = 0; y <= segments; y++) {
+      const vertexX = (x / segments) * width - width / 2;
+      const vertexY = (y / segments) * height - height / 2;
+      const vertexZ = Math.sin(x * Math.PI / segments) * Math.cos(y * Math.PI / segments) * 0.5;
+
+      vertices.push(vertexX, vertexY, vertexZ);
+    }
+  }
+
+  geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(vertices), 3));
+
+  const indices = [];
+  for (let x = 0; x < segments; x++) {
+    for (let y = 0; y < segments; y++) {
+      const i1 = x * (segments + 1) + y;
+      const i2 = (x + 1) * (segments + 1) + y;
+      const i3 = (x + 1) * (segments + 1) +
