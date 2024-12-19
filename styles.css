@@ -55,7 +55,7 @@
     transform: translate(-36%, 180%) rotate(210deg); /* Inferior izquierdo */
 }
 .trapezoid-button:nth-child(6) { 
-    transform: translate(33%, 184%) rotate(270deg); /* Superior izquierdo */
+    transform: translate(-68%, 0%) rotate(270deg); /* Superior izquierdo */
 }
 #toggleMenu {
     position: absolute;
