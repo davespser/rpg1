@@ -21,31 +21,26 @@ export function crearMenuRadial() {
     `;
     document.body.insertAdjacentHTML('beforeend', menuHTML);
 
-    // Obtener referencias a los elementos
+    // Obtener referencia al botón para alternar el menú
     const toggleMenu = document.getElementById('toggleMenu');
     const menuRadial = document.getElementById('menuRadial');
-    const buttons = document.querySelectorAll('.trapezoid-button');
 
-    // Verificación inicial de los elementos en el DOM
-    console.log("Menú radial:", menuRadial);
-    console.log("Botones:", buttons);
-    console.log("Botón de alternar menú:", toggleMenu);
-
-    // Mostrar/ocultar menú radial
+    // Mostrar/ocultar el menú radial
     toggleMenu.addEventListener('click', () => {
         menuRadial.classList.toggle('hidden');
         console.log("Estado del menú radial:", menuRadial.classList.contains('hidden') ? "Oculto" : "Visible");
-    });
 
-    // Añadir funcionalidad a los botones
-    buttons.forEach((button, index) => {
-        button.addEventListener('click', () => {
-            button.classList.add('expand');
+        // Obtener los botones del menú cuando se muestra
+        const buttons = document.querySelectorAll('.trapezoid-button');
+        console.log("Botones:", buttons);
 
-            // Remover la clase después de un tiempo para permitir reutilizar la animación
-            setTimeout(() => button.classList.remove('expand'), 1000);
-
-            console.log(`Botón ${menuItems[index].label} clickeado`);
+        // Añadir funcionalidad a los botones
+        buttons.forEach((button, index) => {
+            button.addEventListener('click', () => {
+                button.classList.add('expand');
+                setTimeout(() => button.classList.remove('expand'), 1000);
+                console.log(`Botón ${menuItems[index].label} clickeado`);
+            });
         });
     });
 
