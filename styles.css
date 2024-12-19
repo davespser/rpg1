@@ -5,8 +5,9 @@
     transform: translate(-50%, -50%);
     width: 200px;
     height: 200px;
-    border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(0, 0, 0, 0.8); /* Hexágono negro */
+    clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%); /* Forma de hexágono */
+    border: 2px solid white; /* Línea en el borde */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -29,7 +30,7 @@
 
 .radial-item span {
     font-weight: bold;
-    color: #333;
+    color: #fff; /* Color blanco para los textos */
 }
 
 #toggleMenu {
@@ -40,7 +41,7 @@
     background-color: #007BFF;
     color: white;
     border: none;
-    border-radius: 50%;
+    border-radius: 5px;
     cursor: pointer;
 }
 
