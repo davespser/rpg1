@@ -3,7 +3,7 @@ import * as THREE from 'three';
 // Función para crear el plano con material y geometría según el día
 export function createPlane(position = { x: 0, y: 0, z: 0 }, 
                            rotation = { x: 0, y: 0, z: 0 }, 
-                           size = { x: 10, y: 10, z: 10 }) {
+                           size = { x: 10, y: 10, z: 20 }) {
   const today = new Date();
   const dayOfWeek = today.getDay(); // 0 - Domingo, 1 - Lunes, ..., 6 - Sábado
 
