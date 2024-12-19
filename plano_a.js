@@ -6,7 +6,7 @@ import * as THREE from 'three';
  * @param {Object} rotation - Ángulos de rotación {x, y, z}.
  * @returns {THREE.Mesh} - El plano generado.
  */
-export function createPlane(position = { x: 0, y: 0, z: 0 }, rotation = { x: 0, y: 0, z: 0 }) {
+export function createPlane(position = { x: 0, y: 0, z: 0 }, rotation = { x: 0, y: 0, z: 0 }, scale = { x: 0,y: 0, z: 0}) {
   const today = new Date();
   const dayOfWeek = today.getDay(); // 0 - Domingo, 1 - Lunes, ..., 6 - Sábado
 
