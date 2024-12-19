@@ -56,8 +56,8 @@ async function init() {
         // Crear el plano con material y geometría según el día
 // Puedes pasar las coordenadas y rotación como objetos
         const plane = createPlane(
-        { x: -180, y: 80, z: 0 },  // Posición del plano
-        { x: 0, y: Math.PI / 4, z: 0 } // Rotación del plano
+        { x: -180, y: 0, z: 80 },  // Posición del plano
+        { x: 0, y: Math.PI / 4, z: Math.PI / 4} // Rotación del plano
       );
           scene.add(plane);
         // Cargar modelo con física
