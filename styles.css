@@ -1,40 +1,31 @@
-/* Estilos generales para el cuerpo de la página */
-body {
-    margin: 0;
-    overflow: hidden;
-    /* Evita el rebote de la pantalla al mover el joystick */
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    background-color: #000; /* Fondo negro para un aspecto de juego */
-}
-
-#menu {
+.radial-menu {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
     background-color: rgba(255, 255, 255, 0.8);
-    padding: 10px;
-    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.3s ease;
 }
 
-.hidden {
-    display: none;
+.radial-menu.hidden {
+    opacity: 0;
+    pointer-events: none;
 }
 
-.stat {
-    margin: 5px 0;
+.radial-item {
+    position: absolute;
+    transform: rotate(calc(360deg / var(--total) * var(--i))) translate(100px) rotate(calc(-360deg / var(--total) * var(--i)));
+    transform-origin: center;
+    white-space: nowrap;
 }
 
-h3 {
-    margin-bottom: 10px;
-    font-size: 1.2em;
-}
-
-.stat span {
+.radial-item span {
     font-weight: bold;
     color: #333;
 }
@@ -53,65 +44,4 @@ h3 {
 
 #toggleMenu:hover {
     background-color: #0056b3;
-}
-
-/* Estilo para el canvas del juego */
-#gameCanvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: block;
-    /* Asegura que el canvas se estira correctamente: cover;
-    /* Opcional: para juegos que requieren un aspect ratio específico */
-    /* aspect-ratio: 16/9; */
-}
-
-/* Estilo para el joystick */
-#joystick {
-    position: fixed;
-    bottom: 20px; /* Más espacio desde el borde inferior */
-    left: 20px; /* Más espacio desde el borde izquierdo */
-    width: 80px; /* Tamaño más pequeño para dispositivos móviles */
-    height: 80px;
-    background-color: rgba(255, 255, 255, 0.2); /* Fondo blanco translúcido */
-    border-radius: 50%; /* Forma circular */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer; /* Cambia el cursor al pasar por encima */
-    touch-action: none; /* Evitar desplazamiento accidental */
-    user-select: none; /* Evitar selección de texto accidental */
-}
-
-/* Estilo para el joystick en dispositivos móviles */
-@media (max-width: 768px) {
-    #joystick {
-        bottom: 10px; /* Ajusta para dispositivos más pequeños */
-        left: 10px;
-        width: 100px;
-        height: 100px;
-    }
-
-    #joystick .joystick-handle {
-        width: 50px;
-        height: 50px;
-    }
-}
-
-/* Estilo para el círculo interior del joystick */
-#joystick .joystick-handle {
-    width: 40px;
-    height: 40px;
-    background-color: rgba(0, 255, 0, 0.5); /* Verde translúcido */
-    border-radius: 50%; /* Círculo */
-}
-
-/* Ajustes adicionales para dispositivos móviles */
-@media (max-width: 768px) {
-    #joystick .joystick-handle {
-        width: 50px;
-        height: 50px;
-    }
 }
