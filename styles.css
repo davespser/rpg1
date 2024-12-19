@@ -6,7 +6,7 @@
     width: 200px;
     height: 200px;
     background-color: rgba(0, 0, 0, 0.8); /* Fondo hexagonal negro */
-    clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%); /* Hexágono */
+    clip-path: polygon(50% 0%, 81% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%); /* Hexágono */
     border: 2px solid white;
     display: flex;
     justify-content: center;
@@ -40,19 +40,19 @@
 
 /* Posicionar los botones en los lados del hexágono */
 .trapezoid-button:nth-child(1) { 
-    transform: translate(-45%, -188%) rotate(-30deg); /* Lado superior */
+    transform: translate(-33%, -184%) rotate(-30deg); /* Lado superior */
 }
 .trapezoid-button:nth-child(2) { 
-    transform: translate(35%, -178%) rotate(30deg); /* Superior derecho */
+    transform: translate(36%, -180%) rotate(30deg); /* Superior derecho */
 }
 .trapezoid-button:nth-child(3) { 
-    transform: translate(50%, 50%) rotate(90deg); /* Inferior derecho */
+    transform: translate(68%, 0%) rotate(90deg); /* Inferior derecho */
 }
 .trapezoid-button:nth-child(4) { 
-    transform: translate(-35%, 175%) rotate(150deg); /* Lado inferior */
+    transform: translate(-33%, 180%) rotate(150deg); /* Lado inferior */
 }
 .trapezoid-button:nth-child(5) { 
-    transform: translate(-100%, 50%) rotate(210deg); /* Inferior izquierdo */
+    transform: translate(-68%, 50%) rotate(210deg); /* Inferior izquierdo */
 }
 .trapezoid-button:nth-child(6) { 
     transform: translate(-100%, -50%) rotate(270deg); /* Superior izquierdo */
