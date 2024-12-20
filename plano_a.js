@@ -57,8 +57,8 @@ export function createCube(
             vec3 cpos = position;
 
             float waveSize = 10.0;
-            float tipDistance = 0.3;
-            float centerDistance = 0.1;
+            float tipDistance = 0.1;
+            float centerDistance = 0.05;
 
             if (uv.x > 0.6) {
               cpos.x += sin((iTime / 500.0) + (uv.x * waveSize)) * tipDistance;
@@ -81,7 +81,7 @@ export function createCube(
           uniform float brightness;
 
           void main() {
-            vec3 baseColor = vec3(0.0, 1.0, 0.0); // Color base verde
+            vec3 baseColor = vec3(0.2, 0.5, 0.2); // Color base verde oscuro
             vec3 color = baseColor * contrast;
             color = color + vec3(brightness, brightness, brightness);
             gl_FragColor = vec4(color, 1.0);
@@ -89,8 +89,8 @@ export function createCube(
         `,
         uniforms: {
           iTime: { value: 1.0 },
-          contrast: { value: 1.5 },
-          brightness: { value: 0.1 }
+          contrast: { value: 1.0 },
+          brightness: { value: 0.05 }
         }
       });
       break;
