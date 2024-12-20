@@ -40,21 +40,20 @@ async function init() {
         ]);
 
         // Crear terreno y añadirlo a la escena
-        // Asegúrate de pasar world a createTerrain
-        terrainMesh = createTerrain(imageData, terrainTexture, world);
-        terrainMesh.scale.set(1, 1, 1);
-        terrainMesh.position.set(0, -20, 0); // Ajustar la posición del terreno
-        scene.add(terrainMesh);
-        console.log("Terreno añadido a la escena:", terrainMesh);
+        const { terrain, collider } = createTerrain(imageData, terrainTexture, world);
+        terrain.scale.set(1, 1, 1);  // Ahora accedes a terrain directamente
+        terrain.position.set(0, -20, 0); // Ajustar la posición del terreno
+        scene.add(terrain);  // Añadir el terreno a la escena
+        console.log("Terreno añadido a la escena:", terrain);
 
         // Crear colisionador para el terreno
-        if (terrainMesh.geometry) {
-            createTerrainRigidBody(terrainMesh, world);
+        if (terrain.geometry) {
+            createTerrainRigidBody(terrain, world);
             console.log("Colisionador del terreno creado.");
         }
 
-        addBuildings(scene, terrainMesh);
-        
+        addBuildings(scene, terrain);
+
         const cube = createCube(
             { x: -240, y: 2.5, z: 80 },  // Posición del plano
             { x: 0, y: 0, z: 0}, // Rotación del plano
