@@ -23,6 +23,31 @@ export function createTerrain(imageData, texture, world) {
         const heightValue = imageData.data[index] / 10; // Escala de altura
         position.setZ(i, heightValue);
     }
+    /**
+ * Carga el mapa de altura desde una imagen.
+ * @param {string} path - Ruta del mapa de altura.
+ * @returns {Promise<ImageData>} Promesa con los datos de la imagen.
+ */
+export function cargarMapaDeAltura(path) {
+    return new Promise((resolve, reject) => {
+        new THREE.TextureLoader().load(
+            path,
+            (texture) => {
+                const canvas = document.createElement('canvas');
+                canvas.width = texture.image.width;
+                canvas.height = texture.image.height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(texture.image, 0, 0);
+                resolve(ctx.getImageData(0, 0, canvas.width, canvas.height));
+            },
+            undefined,
+            (err) => {
+                console.error(`Error al cargar el mapa de altura desde ${path}:`, err);
+                reject(err);
+            }
+        );
+    });
+}
 
     position.needsUpdate = true;
     geometry.computeVertexNormals();
