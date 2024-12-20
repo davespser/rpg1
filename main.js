@@ -58,8 +58,8 @@ async function init() {
         const cube = createCube(
         { x: -240, y: 3, z: 80 },  // Posición del plano
         { x: 0, y: 0, z: 0},// rotacion del plano
-        { x: 1, y: 25, z: 180},
-        { x: 100, y: 400, z: 900 }
+        { x: 1, y: 25, z: 360},
+        { x: 100, y: 400, z: 1200 }
       );
           scene.add(cube);
         // Cargar modelo con física
