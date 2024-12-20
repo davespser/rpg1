@@ -64,7 +64,7 @@ async function init() {
         scene.add(cube);
 
         // Crear el cubo con física
-        const resultado = await cargarCubo(1, 2.5, 1, world, scene, true);
+        const resultado = await cargarCubo(1, 1, 1, world, scene, true);
         modelo = resultado.modelo;
         body = resultado.body;
         collider = resultado.collider;
