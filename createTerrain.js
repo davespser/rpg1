@@ -30,58 +30,46 @@ export function loadTexture(texturePath) {
 export function createTerrain(imageData, texture) {
     const width = imageData.width;
     const height = imageData.height;
-    const geometry = new THREE.PlaneGeometry(width, height, width - 1, height - 1);
 
-    // Aplicar los datos del mapa de altura a los vértices
-    const vertices = geometry.attributes.position.array;
-    for (let i = 0, j = 0; i < vertices.length; i += 3, j++) {
-        vertices[i + 2] = imageData.data[j * 4] / 255 * 20; // Escalar la altura
+    // Crear geometría de un plano subdividido
+    const geometry = new THREE.PlaneGeometry(width, height, width - 1, height - 1);
+    const position = geometry.attributes.position;
+    const uv = geometry.attributes.uv;
+
+    // Ajustar la altura de los vértices usando los datos del heightmap
+    for (let i = 0; i < position.count; i++) {
+        const x = i % width;
+        const y = Math.floor(i / width);
+        const index = (y * width + x) * 4; // Índice RGBA
+        const heightValue = imageData.data[index] / 10; // Escalar la altura
+        position.setZ(i, heightValue);
+
+        // Configurar las coordenadas UV
+        uv.setXY(i, x / (width - 1), y / (height - 1));
     }
 
+    // Actualizar atributos de la geometría
+    position.needsUpdate = true;
+    uv.needsUpdate = true;
     geometry.computeVertexNormals();
 
+    // Material para el terreno
     const material = new THREE.MeshStandardMaterial({
         map: texture,
         side: THREE.DoubleSide,
     });
 
-    const terrainMesh = new THREE.Mesh(geometry, material);
-    terrainMesh.rotation.x = -Math.PI / 2;
+    // Crear el terreno como un Mesh
+    const terrain = new THREE.Mesh(geometry, material);
+    terrain.rotation.x = -Math.PI / 2; // Rotar para que quede horizontal
+    terrain.receiveShadow = true;
 
-    return terrainMesh;
-}
+    // Guardar información adicional en userData
+    terrain.userData = {
+        width: width,
+        height: height,
+        geometry: geometry,
+    };
 
-/**
- * Crea un colisionador para el terreno utilizando los vértices e índices de su geometría.
- * @param {THREE.Mesh} terrainMesh - Malla del terreno.
- * @param {RAPIER.World} world - Mundo físico de Rapier.
- */
-export function createTerrainRigidBody(terrainMesh, world) {
-    if (!terrainMesh.geometry) {
-        console.error("El terreno no tiene geometría.");
-        return;
-    }
-
-    // Obtener los vértices e índices del terreno
-    const geometry = terrainMesh.geometry;
-    geometry.computeBoundingBox(); // Asegurarse de que las cajas de límites están calculadas
-
-    const vertices = Array.from(geometry.attributes.position.array);
-    const indices = Array.from(geometry.index.array);
-
-    // Crear el colisionador como un mesh
-    const colliderDesc = RAPIER.ColliderDesc.trimesh(vertices, indices)
-        .setFriction(0.8)        // Fricción para el terreno
-        .setRestitution(0.1);    // Restitución (rebote mínimo)
-
-    // Aplicar la posición y rotación del terreno al colisionador
-    const terrainPosition = terrainMesh.position;
-    const terrainRotation = terrainMesh.quaternion;
-
-    colliderDesc.setTranslation(terrainPosition.x, terrainPosition.y, terrainPosition.z);
-    colliderDesc.setRotation({ x: terrainRotation.x, y: terrainRotation.y, z: terrainRotation.z, w: terrainRotation.w });
-
-    // Añadir el colisionador al mundo físico
-    world.createCollider(colliderDesc);
-    console.log("Colisionador de terreno creado correctamente.");
+    return terrain;
 }
