@@ -57,7 +57,7 @@ async function init() {
 // Puedes pasar las coordenadas y rotación como objetos
         const cube = createCube(
         { x: -240, y: 6, z: -20 },  // Posición del plano
-        { x: 0, y: 160, z: 0},// rotacion del plano
+        { x: 0, y: 9, z: 0},// rotacion del plano
         { x: 550, y: 20, z: 1},
             216
       );
