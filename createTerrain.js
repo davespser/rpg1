@@ -78,6 +78,9 @@ export function createTerrain(imageData, texture, world) {
     const rigidBody = world.createRigidBody(rigidBodyDesc);
     const collider = world.createCollider(colliderDesc, rigidBody);
 
+    // Rotar el colisionador para que coincida con la rotación del terreno
+    collider.rotation = new THREE.Euler(-Math.PI / 2, 0, 0); // Alineación correcta con la rotación del terreno
+
     console.log("Terreno creado con colisionador:", collider);
 
     // Crear un mesh para visualizar el colisionador de forma transparente
