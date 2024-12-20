@@ -59,7 +59,7 @@ async function init() {
         { x: -240, y: 3, z: 80 },  // Posición del plano
         { x: 0, y: 0, z: 0},// rotacion del plano
         { x: 0.5, y: 25, z: 670},
-            216
+        { x: 10, y: 50, z: 200 }
       );
           scene.add(cube);
         // Cargar modelo con física
