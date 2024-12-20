@@ -44,7 +44,7 @@ async function init() {
         scene.add(terrain);
         console.log("Terreno añadido a la escena:", terrain);
 
-        // Crear colisionador visual (esto debe ocurrir después de crear el colisionador)
+        // Crear el visualizador del colisionador (cubo) después de que el colisionador sea inicializado
         const colliderVisualizer = createColliderVisualizer(collider, scene);
 
         // Crear el cuerpo físico para el terreno
@@ -113,6 +113,11 @@ function cargarMapaDeAltura(path) {
  * @returns {THREE.Mesh} El visualizador creado.
  */
 function createColliderVisualizer(collider, scene) {
+    if (!scene) {
+        console.error("La escena no está definida");
+        return;
+    }
+    
     const geometry = new THREE.BoxGeometry(5, 5, 5);
     const material = new THREE.MeshBasicMaterial({
         color: 0xff0000,
