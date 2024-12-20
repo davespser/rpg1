@@ -2,29 +2,33 @@ import * as THREE from 'three';
 import { initScene } from './scene.js';
 import { crearMenuRadial } from './menu.js';
 import { createSky } from './sky.js';
-import { cargarMapaDeAltura, createTerrain } from './terrain.js'; // Importamos las funciones del nuevo script de terreno
+import { cargarMapaDeAltura, createTerrain } from './terrain.js';
+import { initPhysics, stepPhysics } from './physics.js';
 
+let world;
 const { scene, camera, renderer, controls } = initScene();
 crearMenuRadial();
 createSky(scene);
 
-// Ruta de las texturas y el mapa de altura
-const texturePath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa_t.jpg';
-const heightMapPath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa.png'; // Ruta del mapa de altura
+const texturePath = 'path_to_texture.jpg';
+const heightMapPath = 'path_to_heightmap.png';
 
 /**
  * Función principal de inicialización
  */
 async function init() {
     try {
-        // Cargar la textura y el mapa de altura
+        // Inicializar el mundo físico
+        world = await initPhysics();
+
+        // Cargar textura y mapa de altura
         const [terrainTexture, imageData] = await Promise.all([
             new THREE.TextureLoader().load(texturePath),
             cargarMapaDeAltura(heightMapPath),
         ]);
 
-        // Crear terreno y agregarlo a la escena
-        const terrain = createTerrain(imageData, terrainTexture);
+        // Crear terreno y añadirlo a la escena
+        const terrain = createTerrain(imageData, terrainTexture, world);
         scene.add(terrain);
 
         // Configurar la cámara
@@ -34,7 +38,7 @@ async function init() {
         controls.update();
 
         // Iniciar animación
-        animate();  // Llamamos a la animación directamente
+        animate();
 
     } catch (error) {
         console.error('Error durante la inicialización:', error);
@@ -46,6 +50,9 @@ async function init() {
  */
 function animate() {
     requestAnimationFrame(animate);
+
+    // Avanzar la simulación de física
+    if (world) stepPhysics(world);
 
     // Renderizar la escena
     controls.update();
