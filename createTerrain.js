@@ -66,22 +66,10 @@ export function createTerrain(imageData, texture, world) {
     terrain.rotation.x = -Math.PI / 2; // Rotar para que quede horizontal
     terrain.receiveShadow = true;
 
-    // Verificar mundo de física
-    if (!world) {
-        throw new Error("El mundo de física (world) no está definido.");
-    }
-
-    // Verificar geometría e índices
-    if (!geometry.attributes.position) {
-        throw new Error("La geometría del terreno no tiene atributos de posición.");
-    }
-    const vertices = geometry.attributes.position.array;
-    const indices = geometry.index ? geometry.index.array : null;
-    if (!indices) {
-        throw new Error("La geometría del terreno no tiene índices.");
-    }
-
     // Crear el colisionador para el terreno
+    const vertices = geometry.attributes.position.array;
+    const indices = geometry.index.array;
+
     const colliderDesc = RAPIER.ColliderDesc.trimesh(vertices, indices)
         .setFriction(0.8)
         .setRestitution(0.1);
@@ -92,5 +80,6 @@ export function createTerrain(imageData, texture, world) {
 
     console.log("Terreno creado con colisionador:", collider);
 
+    // Devolver tanto el terrain como el collider
     return { terrain, collider };
 }
