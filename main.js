@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import RAPIER from '@dimforge/rapier3d-compat';
 import { initScene } from './scene.js';
 import { crearMenuRadial } from './menu.js';
 import { createSky } from './sky.js';
