@@ -42,8 +42,8 @@ export function cargarModelo(
                 objeto.position.set(posX, posY, posZ);
 
                 // Configuración del colisionador como cápsula estándar
-                const alturaCapsula = 1.0; // Altura de la cápsula
-                const radioCapsula = 3.0;  // Radio de la cápsula
+                const alturaCapsula = 1.5; // Altura de la cápsula
+                const radioCapsula = 2.0;  // Radio de la cápsula
 
                 // Crear cuerpo físico con Rapier
                 const bodyDesc = RAPIER.RigidBodyDesc.dynamic()
