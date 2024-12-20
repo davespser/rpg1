@@ -56,9 +56,9 @@ async function init() {
         // Crear el plano con material y geometría según el día
 // Puedes pasar las coordenadas y rotación como objetos
         const cube = createCube(
-        { x: -240, y: 4.4, z: -20 },  // Posición del plano
+        { x: -240, y: 4, z: 60 },  // Posición del plano
         { x: 0, y: 0, z: 0},// rotacion del plano
-        { x: 0.1, y: 20, z: 550},
+        { x: 0.1, y: 24, z: 550},
             216
       );
           scene.add(cube);
