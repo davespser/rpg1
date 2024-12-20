@@ -30,7 +30,7 @@ export function createTerrain(imageData, texture, world) {
     const material = new THREE.MeshStandardMaterial({ map: texture });
     const terrain = new THREE.Mesh(geometry, material);
     // Rotar el terreno para que quede plano
-terrain.rotation.x = Math.PI / 2;
+terrain.rotation.x = -Math.PI / 2;
     terrain.receiveShadow = true;
 
     // Crear colisionador de Rapier
