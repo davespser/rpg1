@@ -100,7 +100,7 @@ function createWaterGeometry(geometry) {
 function createGrassGeometry(geometry) {
   const positions = geometry.attributes.position.array;
    for (let i = 0; i < positions.length; i += 3) {
-     positions[i + 2] += Math.random() * 1.0;
+     positions[i + 2] += Math.random() * 6.0;
      // z
    } geometry.computeVertexNormals();
   return geometry;
