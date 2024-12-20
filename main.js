@@ -6,9 +6,10 @@ import { Stats } from './stats.js';
 import { initPhysics, createTerrainRigidBody, stepPhysics } from './physics.js';
 import { loadTexture, createTerrain } from './createTerrain.js';
 import { createSky } from './sky.js';
-import { cargarModelo } from './objetos.js';
+import { cargarCubo } from './objetos.js';  // Asegúrate de importar cargarCubo
 import { addBuildings } from './entorno_f.js';
-import { createCube } from  './plano_a.js';
+import { createCube } from './plano_a.js';
+
 // Declaración de variables globales
 let world, modelo, body, collider;
 let terrainMesh;
@@ -18,7 +19,6 @@ const { scene, camera, renderer, controls } = initScene();
 const stats = new Stats();
 crearMenuRadial();
 createSky(scene);
-
 
 // Rutas de las texturas y mapas
 const texturePath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa_t.jpg';
@@ -53,25 +53,24 @@ async function init() {
         }
 
         addBuildings(scene, terrainMesh);
-        
+
         // Crear el plano con material y geometría según el día
         const cube = createCube(
-            { x: -240, y: 2.5, z: 80 },  // Posición del plano
-            { x: 0, y: 0, z: 0 },  // Rotación del plano
+            { x: -240, y: 2.5, z: 80 },  // Posición del cubo
+            { x: 0, y: 0, z: 0 },  // Rotación del cubo
             { x: 1, y: 25, z: 720 },
             { x: 10, y: 50, z: 800 }
         );
         scene.add(cube);
 
-        // Cargar modelo con física
-        const resultado = await cargarModelo(1, 2.5, 1, './negro.glb', world, scene, true);
+        // Crear el cubo con física
+        const resultado = await cargarCubo(1, 2.5, 1, world, scene, true);
         modelo = resultado.modelo;
-        modelo.scale.set(1, 1, 1);
         body = resultado.body;
         collider = resultado.collider;
         scene.add(modelo);
 
-        console.log("Modelo y cuerpo físico añadidos a la escena.");
+        console.log("Cubo y cuerpo físico añadidos a la escena.");
         console.log("Posición inicial del cuerpo físico:", body.translation());
 
         // Configurar la cámara
@@ -124,7 +123,7 @@ function animate() {
     // Actualizar física
     stepPhysics();
 
-    // Sincronizar modelo con cuerpo físico
+    // Sincronizar cubo con cuerpo físico
     if (body && modelo) {
         const translation = body.translation();
         const rotation = body.rotation();
