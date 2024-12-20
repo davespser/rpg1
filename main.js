@@ -19,7 +19,7 @@ createSky(scene);
 
 const texturePath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa_t.jpg';
 const heightMapPath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa.png';
-
+const colliderVisualizer = createColliderVisualizer(collider, scene);
 async function init() {
     try {
         world = await initPhysics();
