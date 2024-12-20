@@ -70,20 +70,20 @@ export function createTerrain(imageData, texture, world) {
     const vertices = geometry.attributes.position.array;
     const indices = geometry.index.array;
 
+    // Crear un collidor físico en RAPIER con la misma orientación
     const colliderDesc = RAPIER.ColliderDesc.trimesh(vertices, indices)
         .setFriction(0.8)
         .setRestitution(0.1);
 
+    // Crear un rigidBody que también será fijo
     const rigidBodyDesc = RAPIER.RigidBodyDesc.fixed();
     const rigidBody = world.createRigidBody(rigidBodyDesc);
     const collider = world.createCollider(colliderDesc, rigidBody);
 
-    // Rotar el colisionador para que coincida con la rotación del terreno
-    collider.rotation = new THREE.Euler(-Math.PI / 2, 0, 0); // Alineación correcta con la rotación del terreno
+    // Asegurarnos que la rotación esté alineada
+    collider.setRotation(new RAPIER.Quaternion(0, 0, -Math.PI / 2, 0));  // Alineación del colisionador
 
-    console.log("Terreno creado con colisionador:", collider);
-
-    // Crear un mesh para visualizar el colisionador de forma transparente
+    // Crear un visualizador para el colisionador
     const visualColliderMaterial = new THREE.MeshBasicMaterial({
         color: 0xff0000, // Color rojo para el colisionador
         wireframe: true,  // Hacerlo solo con líneas
@@ -95,6 +95,8 @@ export function createTerrain(imageData, texture, world) {
 
     // Añadir el visualizador del colisionador a la escena
     terrain.add(visualCollider);
+
+    console.log("Terreno creado con colisionador:", collider);
 
     // Devolver tanto el terrain como el collider
     return { terrain, collider };
