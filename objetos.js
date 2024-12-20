@@ -37,13 +37,13 @@ export function cargarModelo(
                 const objeto = gltf.scene;
 
                 // Escalar y posicionar el modelo con valores estándar
-                const escala = 2; // Escala estándar uniforme
+                const escala = 1; // Escala estándar uniforme
                 objeto.scale.set(escala, escala, escala);
                 objeto.position.set(posX, posY, posZ);
 
                 // Configuración del colisionador como cápsula estándar
                 const alturaCapsula = 1.0; // Altura de la cápsula
-                const radioCapsula = 0.5;  // Radio de la cápsula
+                const radioCapsula = 3.0;  // Radio de la cápsula
 
                 // Crear cuerpo físico con Rapier
                 const bodyDesc = RAPIER.RigidBodyDesc.dynamic()
