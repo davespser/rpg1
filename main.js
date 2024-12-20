@@ -18,6 +18,9 @@ const heightMapPath = 'https://raw.githubusercontent.com/davespser/rpg1/main/cas
  */
 async function init() {
     try {
+        // Cargar RAPIER
+        await RAPIER.init();
+
         // Inicializar el mundo físico
         world = await initPhysics();
 
@@ -47,7 +50,6 @@ async function init() {
         console.error('Error durante la inicialización:', error);
     }
 }
-
 /**
  * Crea el personaje con un cuerpo físico dinámico.
  */
