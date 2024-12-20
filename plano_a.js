@@ -97,14 +97,7 @@ function createWaterGeometry(geometry) {
 }
 
 // Función para modificar la geometría con ruido suave para césped
-function createGrassGeometry(geometry) {
-  // Obtiene el arreglo de posiciones de los vértices
-  const positions = geometry.attributes.position.array;
-  
-  // Recorre el arreglo de posiciones, ajustando la coordenada Z de cada vértice
-  for (let i = 0; i < positions.length; i += 3) {
-    positions[i + 2] += Math.random() * 0.3; // Ajuste aleatorio en la coordenada Z
-  }
+function createGrassGeometry(geometry) { const positions = geometry.attributes.position.array; for (let i = 0; i < positions.length; i += 3) { positions[i + 2] += Math.random() * 0.3; // z } geometry.computeVertexNormals(); return geometry;
   
   // Recalcula las normales de los vértices para reflejar los cambios en la geometría
   geometry.computeVertexNormals();
