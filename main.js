@@ -60,7 +60,7 @@ async function init() {
         { x: 0, y: 0, z: 0},// rotacion del plano
         { x: 250, y: 10, z: 10}
       );
-          scene.add(plane);
+          scene.add(cube);
         // Cargar modelo con física
         const resultado = await cargarModelo(1, 1, 1, './negro.glb', world, scene, true);
         modelo = resultado.modelo;
