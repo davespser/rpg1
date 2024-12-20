@@ -46,6 +46,11 @@ async function init() {
         scene.add(terrain);  // Añadir el terreno a la escena
         console.log("Terreno añadido a la escena:", terrain);
 
+        // Asegurarnos de que la rotación y posición del colisionador esté alineada
+        // Esta parte es importante para el colisionador en RAPIER
+        collider.setTranslation({ x: terrain.position.x, y: terrain.position.y, z: terrain.position.z });
+        collider.setRotation(new RAPIER.Quaternion(0, 0, -Math.PI / 2, 0));
+
         // Crear colisionador para el terreno
         if (terrain.geometry) {
             createTerrainRigidBody(terrain, world);
@@ -53,14 +58,6 @@ async function init() {
         }
 
         addBuildings(scene, terrain);
-
-        const cube = createCube(
-            { x: -240, y: 2.5, z: 80 },  // Posición del plano
-            { x: 0, y: 0, z: 0}, // Rotación del plano
-            { x: 1, y: 25, z: 720 },
-            { x: 10, y: 50, z: 800 }
-        );
-        scene.add(cube);
 
         // Cargar modelo con física
         const resultado = await cargarModelo(1, 1, 1, './negro.glb', world, scene, true);
