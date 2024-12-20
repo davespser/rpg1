@@ -1,11 +1,9 @@
 import * as THREE from 'three';
 import { initScene } from './scene.js';
 import { crearMenuRadial } from './menu.js';
-import { Stats } from './stats.js';
 import { createSky } from './sky.js';
 
 const { scene, camera, renderer, controls } = initScene();
-const stats = new Stats();
 crearMenuRadial();
 createSky(scene);
 
@@ -37,8 +35,6 @@ function animate() {
     // Renderizar la escena
     controls.update();
     renderer.render(scene, camera);
-
-    stats.update();
 }
 
 // Ejecutar la función principal
