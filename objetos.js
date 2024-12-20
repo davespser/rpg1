@@ -16,7 +16,7 @@ import Joystick from './joystick.js';
  */
 export function cargarModelo(
     posX = 0, 
-    posY = 0, 
+    posY = 2.5, 
     posZ = 0, 
     rutaModelo = './negro.glb', 
     world, 
