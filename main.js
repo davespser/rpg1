@@ -10,9 +10,8 @@ const { scene, camera, renderer, controls } = initScene();
 crearMenuRadial();
 createSky(scene);
 
-const texturePath = 'path_to_texture.jpg';
-const heightMapPath = 'path_to_heightmap.png';
-
+const texturePath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa_t.jpg';
+const heightMapPath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa.png'; // Ruta del mapa de altura
 /**
  * Función principal de inicialización
  */
