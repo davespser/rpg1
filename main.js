@@ -46,10 +46,8 @@ async function init() {
         scene.add(terrain);  // Añadir el terreno a la escena
         console.log("Terreno añadido a la escena:", terrain);
 
-        // Asegurarnos de que la rotación y posición del colisionador esté alineada
-        // Esta parte es importante para el colisionador en RAPIER
-        collider.setTranslation({ x: terrain.position.x, y: terrain.position.y, z: terrain.position.z });
-        collider.setRotation(new RAPIER.Quaternion(0, 0, -Math.PI / 2, 0));
+        // Crear el visualizador del colisionador (cubo)
+        const colliderVisualizer = createColliderVisualizer(collider);
 
         // Crear colisionador para el terreno
         if (terrain.geometry) {
@@ -80,6 +78,35 @@ async function init() {
 
         // Iniciar animación
         animate();
+
+        // Actualizar la visualización del colisionador en cada fotograma
+        function update() {
+            updateColliderVisualizer(colliderVisualizer, body);
+        }
+
+        // Llamar a la actualización en cada fotograma de animación
+        animate = function() {
+            requestAnimationFrame(animate);
+
+            // Actualizar física
+            stepPhysics();
+
+            // Sincronizar modelo con cuerpo físico
+            if (body && modelo) {
+                const translation = body.translation();
+                const rotation = body.rotation();
+                modelo.position.set(translation.x, translation.y, translation.z);
+                modelo.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
+            }
+
+            // Actualizar visualizador de colisionador
+            update();
+
+            // Renderizar la escena
+            controls.update();
+            renderer.render(scene, camera);
+        };
+
     } catch (error) {
         console.error('Error durante la inicialización:', error);
     }
