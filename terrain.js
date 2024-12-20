@@ -12,14 +12,17 @@ export function createTerrain(imageData, texture, world) {
     const width = imageData.width;
     const height = imageData.height;
 
-    // Crear geometría del terreno con el doble de subdivisiones
-    const geometry = new THREE.PlaneGeometry(width, height, (width - 1) * 2, (height - 1) * 2);
+    // Asegurarnos de que el terreno sea cuadrado
+    const size = Math.max(width, height);  // Tomamos el tamaño más grande de las dimensiones
+
+    // Crear geometría del terreno con el doble de subdivisiones, asegurando que sea cuadrado
+    const geometry = new THREE.PlaneGeometry(size, size, (size - 1) * 2, (size - 1) * 2);
     const position = geometry.attributes.position;
 
     for (let i = 0; i < position.count; i++) {
-        const x = i % width;
-        const y = Math.floor(i / width);
-        const index = (y * width + x) * 4; // Índice en el mapa de altura
+        const x = i % size;
+        const y = Math.floor(i / size);
+        const index = (y * size + x) * 4; // Índice en el mapa de altura
         const heightValue = imageData.data[index] / 10; // Escala de altura
         position.setZ(i, heightValue);
     }
