@@ -64,7 +64,7 @@ async function init() {
         scene.add(cube);
 
         // Cargar modelo con física
-        const resultado = await cargarModelo(1, 1, 1, './negro.glb', world, scene, true);
+        const resultado = await cargarModelo(1, 2.5, 1, './negro.glb', world, scene, true);
         modelo = resultado.modelo;
         modelo.scale.set(1, 1, 1);
         body = resultado.body;
