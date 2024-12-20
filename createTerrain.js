@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import RAPIER from '@dimforge/rapier3d-compat';
 
 /**
  * Carga una textura desde una URL.
@@ -25,9 +26,10 @@ export function loadTexture(texturePath) {
  * Crea un terreno basado en un heightmap y una textura.
  * @param {ImageData} imageData - Datos del mapa de altura.
  * @param {THREE.Texture} texture - Textura para aplicar al terreno.
- * @returns {THREE.Mesh} El Mesh del terreno.
+ * @param {RAPIER.World} world - Mundo de física RAPIER.
+ * @returns {Object} El Mesh del terreno y el colisionador.
  */
-export function createTerrain(imageData, texture) {
+export function createTerrain(imageData, texture, world) {
     const width = imageData.width;
     const height = imageData.height;
 
@@ -64,12 +66,19 @@ export function createTerrain(imageData, texture) {
     terrain.rotation.x = -Math.PI / 2; // Rotar para que quede horizontal
     terrain.receiveShadow = true;
 
-    // Guardar información adicional en userData
-    terrain.userData = {
-        width: width,
-        height: height,
-        geometry: geometry,
-    };
+    // Crear el colisionador para el terreno
+    const vertices = geometry.attributes.position.array;
+    const indices = geometry.index.array;
 
-    return terrain;
+    const colliderDesc = RAPIER.ColliderDesc.trimesh(vertices, indices)
+        .setFriction(0.8)
+        .setRestitution(0.1);
+
+    const rigidBodyDesc = RAPIER.RigidBodyDesc.fixed();
+    const rigidBody = world.createRigidBody(rigidBodyDesc);
+    const collider = world.createCollider(colliderDesc, rigidBody);
+
+    console.log("Terreno creado con colisionador:", collider);
+
+    return { terrain, collider };
 }
