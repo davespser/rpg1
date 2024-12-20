@@ -49,43 +49,48 @@ export function createCube(
         vertexShader: `
           varying vec2 vUv;
           varying vec2 cloudUV;
-          varying vec3 vColor;
           uniform float iTime;
 
           void main() {
             vUv = uv;
             cloudUV = uv;
-            vColor = color;
             vec3 cpos = position;
 
             float waveSize = 10.0;
             float tipDistance = 0.3;
             float centerDistance = 0.1;
 
-            if (color.x > 0.6) {
+            if (uv.x > 0.6) {
               cpos.x += sin((iTime / 500.0) + (uv.x * waveSize)) * tipDistance;
-            } else if (color.x > 0.0) {
+            } else if (uv.x > 0.0) {
               cpos.x += sin((iTime / 500.0) + (uv.x * waveSize)) * centerDistance;
             }
 
-            float diff = position.x - cpos.x;
             cloudUV.x += iTime / 20000.0;
             cloudUV.y += iTime / 10000.0;
 
-            vec4 worldPosition = vec4(cpos, 1.0);
-            vec4 mvPosition = projectionMatrix * modelViewMatrix * vec4(cpos, 1.0);
-            gl_Position = mvPosition;
+            vec4 mvPosition = modelViewMatrix * vec4(cpos, 1.0);
+            gl_Position = projectionMatrix * mvPosition;
           }
         `,
         fragmentShader: `
-          varying vec3 vColor;
+          varying vec2 vUv;
+          varying vec2 cloudUV;
+          
+          uniform float contrast;
+          uniform float brightness;
 
           void main() {
-            gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+            vec3 baseColor = vec3(0.0, 1.0, 0.0); // Color base verde
+            vec3 color = baseColor * contrast;
+            color = color + vec3(brightness, brightness, brightness);
+            gl_FragColor = vec4(color, 1.0);
           }
         `,
         uniforms: {
-          iTime: { value: 1.0 }
+          iTime: { value: 1.0 },
+          contrast: { value: 1.5 },
+          brightness: { value: 0.1 }
         }
       });
       break;
