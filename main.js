@@ -57,11 +57,14 @@ function createCharacter() {
     // Crear cuerpo físico dinámico
     const characterDesc = RAPIER.RigidBodyDesc.dynamic().setTranslation(0, 10, 0); // Posición inicial
     characterBody = world.createRigidBody(characterDesc);
-    world.createCollider(RAPIER.ColliderDesc.ball(1), characterBody); // Colisionador esférico
+
+    // Crear colisionador de cápsula
+    const colliderDesc = RAPIER.ColliderDesc.capsule(0.5, 1); // Radio y mitad de altura
+    world.createCollider(colliderDesc, characterBody);
 
     // Crear representación visual del personaje
     characterMesh = new THREE.Mesh(
-        new THREE.SphereGeometry(1),
+        new THREE.CapsuleGeometry(0.5, 2), // Radio y altura total
         new THREE.MeshStandardMaterial({ color: 0xff0000 })
     );
     scene.add(characterMesh);
