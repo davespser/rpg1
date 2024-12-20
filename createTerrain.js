@@ -1,3 +1,34 @@
+import * as THREE from 'three';
+import RAPIER from '@dimforge/rapier3d-compat';
+
+/**
+ * Carga una textura desde una URL.
+ * @param {string} texturePath - Ruta de la textura.
+ * @returns {Promise<THREE.Texture>} Promesa que resuelve con la textura cargada.
+ */
+export function loadTexture(texturePath) {
+    return new Promise((resolve, reject) => {
+        const loader = new THREE.TextureLoader();
+        loader.load(
+            texturePath,
+            (texture) => {
+                texture.wrapS = THREE.ClampToEdgeWrapping;
+                texture.wrapT = THREE.ClampToEdgeWrapping;
+                resolve(texture);
+            },
+            undefined,
+            (err) => reject(new Error(`Error al cargar la textura: ${texturePath}\n${err.message}`))
+        );
+    });
+}
+
+/**
+ * Crea un terreno basado en un heightmap y una textura.
+ * @param {ImageData} imageData - Datos del mapa de altura.
+ * @param {THREE.Texture} texture - Textura para aplicar al terreno.
+ * @param {RAPIER.World} world - Mundo de física RAPIER.
+ * @returns {Object} El Mesh del terreno y el colisionador.
+ */
 export function createTerrain(imageData, texture, world) {
     const width = imageData.width;
     const height = imageData.height;
