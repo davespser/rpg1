@@ -45,54 +45,8 @@ export function createCube(
       geometry = createWaterGeometry(geometry);
       break;
     case 5: // Viernes: Césped
-      material = new THREE.ShaderMaterial({
-        vertexShader: `
-          varying vec2 vUv;
-          varying vec2 cloudUV;
-          uniform float iTime;
-
-          void main() {
-            vUv = uv;
-            cloudUV = uv;
-            vec3 cpos = position;
-
-            float waveSize = 10.0;
-            float tipDistance = 0.1;
-            float centerDistance = 0.05;
-
-            if (uv.x > 0.6) {
-              cpos.x += sin((iTime / 500.0) + (uv.x * waveSize)) * tipDistance;
-            } else if (uv.x > 0.0) {
-              cpos.x += sin((iTime / 500.0) + (uv.x * waveSize)) * centerDistance;
-            }
-
-            cloudUV.x += iTime / 20000.0;
-            cloudUV.y += iTime / 10000.0;
-
-            vec4 mvPosition = modelViewMatrix * vec4(cpos, 1.0);
-            gl_Position = projectionMatrix * mvPosition;
-          }
-        `,
-        fragmentShader: `
-          varying vec2 vUv;
-          varying vec2 cloudUV;
-          
-          uniform float contrast;
-          uniform float brightness;
-
-          void main() {
-            vec3 baseColor = vec3(0.2, 0.5, 0.2); // Color base verde oscuro
-            vec3 color = baseColor * contrast;
-            color = color + vec3(brightness, brightness, brightness);
-            gl_FragColor = vec4(color, 1.0);
-          }
-        `,
-        uniforms: {
-          iTime: { value: 1.0 },
-          contrast: { value: 1.0 },
-          brightness: { value: 0.05 }
-        }
-      });
+      material = new THREE.MeshStandardMaterial({ color: 0x228b22, roughness: 1 });
+      geometry = createGrassGeometry(geometry);
       break;
     default: // Otros días
       material = new THREE.MeshStandardMaterial({ color: 0xffffff });
@@ -142,17 +96,13 @@ function createWaterGeometry(geometry) {
   return geometry;
 }
 
-// Animar el material del césped
-function animateGrassMaterial(material) {
-  requestAnimationFrame(() => animateGrassMaterial(material));
-  material.uniforms.iTime.value += 0.01;
-}
-
-// Uso de la función para crear y animar el cubo
-const scene = new THREE.Scene();
-const grassCube = createCube();
-scene.add(grassCube);
-
-if (grassCube.material instanceof THREE.ShaderMaterial) {
-  animateGrassMaterial(grassCube.material);
+// Función para modificar la geometría con ruido suave para césped
+function createGrassGeometry(geometry) {
+  const positions = geometry.attributes.position.array;
+   for (let i = 0; i < positions.length; i += 3) {
+    positions[i + 1] += (Math.random() - 0.5) * 2.0;
+      positions[i + 2] += (Math.random() - 0.5) * 2.0; // y
+     // z
+   } geometry.computeVertexNormals();
+  return geometry;
 }
