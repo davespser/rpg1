@@ -123,7 +123,18 @@ export function createTerrain(imageData, texture, world) {
         colliderVisualizer.position.set(position.x, position.y, position.z);
         colliderVisualizer.rotation.set(rotation.x, rotation.y, rotation.z);
     }
-
+function createColliderVisualizer(collider, scene) {
+    const geometry = new THREE.BoxGeometry(5, 5, 5);
+    const material = new THREE.MeshBasicMaterial({
+        color: 0xff0000,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.5,
+    });
+    const visualizer = new THREE.Mesh(geometry, material);
+    scene.add(visualizer);
+    return visualizer;
+}
     // Actualizar el visualizador de colisionador en cada fotograma de animación
     function animate() {
         requestAnimationFrame(animate);
