@@ -45,8 +45,26 @@ export function createCube(
       geometry = createWaterGeometry(geometry);
       break;
     case 5: // Viernes: Césped
-      material = new THREE.MeshStandardMaterial({ color: 0x228b22, roughness: 1 });
-      geometry = createGrassGeometry(geometry);
+      material = new THREE.ShaderMaterial({
+        vertexShader: `
+          uniform float time;
+          varying vec3 vNormal;
+          void main() {
+            vNormal = normal;
+            vec3 newPosition = position + normal * sin(position.y * 10.0 + time) * 0.5;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
+          }
+        `,
+        fragmentShader: `
+          varying vec3 vNormal;
+          void main() {
+            gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+          }
+        `,
+        uniforms: {
+          time: { value: 1.0 }
+        }
+      });
       break;
     default: // Otros días
       material = new THREE.MeshStandardMaterial({ color: 0xffffff });
@@ -99,10 +117,25 @@ function createWaterGeometry(geometry) {
 // Función para modificar la geometría con ruido suave para césped
 function createGrassGeometry(geometry) {
   const positions = geometry.attributes.position.array;
-   for (let i = 0; i < positions.length; i += 3) {
+  for (let i = 0; i < positions.length; i += 3) {
     positions[i + 1] += (Math.random() - 0.5) * 2.0;
-      positions[i + 2] += (Math.random() - 0.5) * 2.0; // y
-     // z
-   } geometry.computeVertexNormals();
+    positions[i + 2] += (Math.random() - 0.5) * 2.0; // y
+  }
+  geometry.computeVertexNormals();
   return geometry;
+}
+
+// Animar el material del césped
+function animateGrassMaterial(material) {
+  requestAnimationFrame(() => animateGrassMaterial(material));
+  material.uniforms.time.value += 0.01;
+}
+
+// Uso de la función para crear y animar el cubo
+const scene = new THREE.Scene();
+const grassCube = createCube();
+scene.add(grassCube);
+
+if (grassCube.material instanceof THREE.ShaderMaterial) {
+  animateGrassMaterial(grassCube.material);
 }
