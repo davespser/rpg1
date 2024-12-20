@@ -10,7 +10,7 @@ export function createCube(
   const today = new Date();
   const dayOfWeek = today.getDay(); // 0 - Domingo, 1 - Lunes, ..., 6 - Sábado
 
-  let geometry = new THREE.BoxGeometry(size.x, size.y, size.z, subdivisions, subdivisions, subdivisions);
+  let geometry = new THREE.BoxGeometry(size.x, size.y, size.z, subdivisions.x, subdivisions.y, subdivisions.z);
   let material;
 
   // Elegir material y modificar la geometría según el día
@@ -111,4 +111,3 @@ function createGrassGeometry(geometry) {
   
   return geometry;
 }
-
