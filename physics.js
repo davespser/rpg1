@@ -11,7 +11,7 @@ export async function initPhysics() {
     return world;
 }
 
-export function createTerrainRigidBody(terrainMesh, world) {
+export function createTerrainRigidBody(terrainMesh, world, scene) {
     if (!terrainMesh.geometry || !terrainMesh.geometry.attributes.position) {
         console.error("La geometría del terreno no es válida.");
         return;
@@ -22,7 +22,7 @@ export function createTerrainRigidBody(terrainMesh, world) {
     const size = new THREE.Vector3();
     boundingBox.getSize(size);
 
-    // Crear un colisionador tipo cuboid en lugar de trimesh
+    // Crear un colisionador tipo cuboid
     const colliderDesc = RAPIER.ColliderDesc.cuboid(
         size.x / 2,
         size.y / 2,
@@ -42,7 +42,15 @@ export function createTerrainRigidBody(terrainMesh, world) {
     const collider = world.createCollider(colliderDesc, rigidBody);
 
     console.log("Colisionador del terreno creado como cuboid:", collider);
-    return { rigidBody, collider };
+
+    // Visualización del colisionador con BoxHelper de THREE.js
+    const boxHelper = new THREE.BoxHelper(terrainMesh, 0xffff00);
+    scene.add(boxHelper);
+
+    // Actualizar el helper en cada paso
+    boxHelper.update();
+
+    return { rigidBody, collider, boxHelper };
 }
 
 export function stepPhysics() {
