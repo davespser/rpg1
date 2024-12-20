@@ -31,7 +31,7 @@ export function createTerrainRigidBody(terrainMesh, world) {
 
     // Crear descripción del colisionador como un TriMesh
     const colliderDesc = RAPIER.ColliderDesc.trimesh(vertices, indices)
-        .setFriction(1.6)        // Fricción para el terreno
+        .setFriction(0.8)        // Fricción para el terreno
         .setRestitution(0.1)     // Restitución (rebote mínimo)
         .setRotation(rotationQuaternion);
 
