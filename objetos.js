@@ -49,9 +49,10 @@ export function cargarModelo(
                 const bodyDesc = RAPIER.RigidBodyDesc.dynamic()
                     .setTranslation(posX, posY + alturaCapsula + 1, posZ); // Altura inicial
                 const body = world.createRigidBody(bodyDesc);
-                const colliderDesc = RAPIER.ColliderDesc.capsule(alturaCapsula, radioCapsula);
-                .setFriction(0.8)
-                const collider = world.createCollider(colliderDesc, body);
+              const colliderDesc = RAPIER.ColliderDesc.capsule(alturaCapsula, radioCapsula)
+    .setFriction(0.8);
+const collider = world.createCollider(colliderDesc, body);
+
 
                 // Aplicar el constraint para bloquear rotaciones en los ejes X y Z
                 body.lockRotations();  // Bloquea la rotación en los tres ejes (X, Y, Z)
