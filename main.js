@@ -64,7 +64,7 @@ function createCharacter() {
 
     // Crear representación visual del personaje
     characterMesh = new THREE.Mesh(
-        new THREE.CapsuleGeometry(5, 20), // Radio y altura total
+        new THREE.CapsuleGeometry(50, 200), // Radio y altura total
         new THREE.MeshStandardMaterial({ color: 0xff0000 })
     );
     scene.add(characterMesh);
