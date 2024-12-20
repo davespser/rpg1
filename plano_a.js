@@ -101,10 +101,7 @@ function createGrassGeometry(geometry) {
   const positions = geometry.attributes.position.array;
    for (let i = 0; i < positions.length; i += 3) {
      positions[i + 2] += Math.random() * 1.0;
-     // z } geometry.computeVertexNormals(); return geometry;
-   }
-  // Recalcula las normales de los vértices para reflejar los cambios en la geometría
-  geometry.computeVertexNormals();
-  
+     // z
+   } geometry.computeVertexNormals();
   return geometry;
 }
