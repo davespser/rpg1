@@ -80,6 +80,11 @@ export function createTerrain(imageData, texture, world) {
 
     console.log("Terreno creado con colisionador:", collider);
 
+    // Crear un helper visual del colisionador para verlo en la escena
+    const helper = new THREE.AxesHelper(5); // Tamaño del helper
+    helper.position.set(0, 0, 0); // Establecer la posición en el centro del colisionador
+    terrain.add(helper); // Agregar el helper al mesh del terreno para que se vea en la escena
+
     // Devolver tanto el terrain como el collider
     return { terrain, collider };
 }
