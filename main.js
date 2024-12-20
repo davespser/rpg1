@@ -37,7 +37,8 @@ async function init() {
         console.log("Terreno añadido a la escena:", terrain);
 
         // Crear el visualizador del colisionador (cubo)
-        const colliderVisualizer = createColliderVisualizer(collider);
+        // En main.js, al llamar a createColliderVisualizer
+const colliderVisualizer = createColliderVisualizer(collider, scene);
 
         if (terrain.geometry) {
             createTerrainRigidBody(terrain, world);
