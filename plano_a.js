@@ -5,7 +5,7 @@ export function createCube(
   position = { x: 0, y: 0, z: 0 },
   rotation = { x: 0, y: 0, z: 0 },
   size = { x: 10, y: 10, z: 10 },
-  subdivisions = { x: 10, y: 400, z: 50 }
+  subdivisions = { x: 10, y: 400, z: 600 }
 ) {
   const today = new Date();
   const dayOfWeek = today.getDay(); // 0 - Domingo, 1 - Lunes, ..., 6 - Sábado
@@ -100,7 +100,7 @@ function createWaterGeometry(geometry) {
 function createGrassGeometry(geometry) {
   const positions = geometry.attributes.position.array;
    for (let i = 0; i < positions.length; i += 3) {
-     positions[i + 2] += Math.random() * 0.3;
+     positions[i + 2] += Math.random() * 1.0;
      // z } geometry.computeVertexNormals(); return geometry;
    }
   // Recalcula las normales de los vértices para reflejar los cambios en la geometría
