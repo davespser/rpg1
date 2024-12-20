@@ -59,7 +59,7 @@ function createCharacter() {
     characterBody = world.createRigidBody(characterDesc);
 
     // Crear colisionador de cápsula
-    const colliderDesc = RAPIER.ColliderDesc.capsule(0.5, 1); // Radio y mitad de altura
+    const colliderDesc = RAPIER.ColliderDesc.capsule(5, 10); // Radio y mitad de altura
     world.createCollider(colliderDesc, characterBody);
 
     // Crear representación visual del personaje
