@@ -5,7 +5,7 @@ import { createSky } from './sky.js';
 import { cargarMapaDeAltura, createTerrain } from './terrain.js';
 import { initPhysics, stepPhysics } from './physics.js';
 
-let world;
+let world, characterBody, characterMesh;
 const { scene, camera, renderer, controls } = initScene();
 crearMenuRadial();
 createSky(scene);
@@ -31,6 +31,9 @@ async function init() {
         const terrain = createTerrain(imageData, terrainTexture, world);
         scene.add(terrain);
 
+        // Crear personaje dinámico
+        createCharacter();
+
         // Configurar la cámara
         camera.position.set(250, 100, 250);
         camera.lookAt(0, 0, 0);
@@ -46,6 +49,33 @@ async function init() {
 }
 
 /**
+ * Crea el personaje con un cuerpo físico dinámico.
+ */
+function createCharacter() {
+    // Crear cuerpo físico dinámico
+    const characterDesc = RAPIER.RigidBodyDesc.dynamic().setTranslation(0, 10, 0); // Posición inicial
+    characterBody = world.createRigidBody(characterDesc);
+    world.createCollider(RAPIER.ColliderDesc.ball(1), characterBody); // Colisionador esférico
+
+    // Crear representación visual del personaje
+    characterMesh = new THREE.Mesh(
+        new THREE.SphereGeometry(1),
+        new THREE.MeshStandardMaterial({ color: 0xff0000 })
+    );
+    scene.add(characterMesh);
+}
+
+/**
+ * Sincroniza la posición del personaje visual con la física.
+ */
+function syncCharacter() {
+    if (characterBody && characterMesh) {
+        const translation = characterBody.translation();
+        characterMesh.position.set(translation.x, translation.y, translation.z);
+    }
+}
+
+/**
  * Función de animación principal.
  */
 function animate() {
@@ -53,6 +83,9 @@ function animate() {
 
     // Avanzar la simulación de física
     if (world) stepPhysics(world);
+
+    // Sincronizar personaje
+    syncCharacter();
 
     // Renderizar la escena
     controls.update();
