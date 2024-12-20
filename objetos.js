@@ -16,12 +16,12 @@ import Joystick from './joystick.js';
  */
 export function cargarModelo(
     posX = 0, 
-    posY = 2, 
+    posY = 1, 
     posZ = 0, 
     rutaModelo = './negro.glb', 
     world, 
     scene, 
-    debug = false
+    debug = true
 ) {
     if (!scene || !world) {
         console.error("La escena o el mundo físico no están definidos.");
