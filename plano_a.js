@@ -47,22 +47,45 @@ export function createCube(
     case 5: // Viernes: Césped
       material = new THREE.ShaderMaterial({
         vertexShader: `
-          uniform float time;
-          varying vec3 vNormal;
+          varying vec2 vUv;
+          varying vec2 cloudUV;
+          varying vec3 vColor;
+          uniform float iTime;
+
           void main() {
-            vNormal = normal;
-            vec3 newPosition = position + normal * sin(position.y * 10.0 + time) * 0.5;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
+            vUv = uv;
+            cloudUV = uv;
+            vColor = color;
+            vec3 cpos = position;
+
+            float waveSize = 10.0;
+            float tipDistance = 0.3;
+            float centerDistance = 0.1;
+
+            if (color.x > 0.6) {
+              cpos.x += sin((iTime / 500.0) + (uv.x * waveSize)) * tipDistance;
+            } else if (color.x > 0.0) {
+              cpos.x += sin((iTime / 500.0) + (uv.x * waveSize)) * centerDistance;
+            }
+
+            float diff = position.x - cpos.x;
+            cloudUV.x += iTime / 20000.0;
+            cloudUV.y += iTime / 10000.0;
+
+            vec4 worldPosition = vec4(cpos, 1.0);
+            vec4 mvPosition = projectionMatrix * modelViewMatrix * vec4(cpos, 1.0);
+            gl_Position = mvPosition;
           }
         `,
         fragmentShader: `
-          varying vec3 vNormal;
+          varying vec3 vColor;
+
           void main() {
             gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
           }
         `,
         uniforms: {
-          time: { value: 1.0 }
+          iTime: { value: 1.0 }
         }
       });
       break;
@@ -114,21 +137,10 @@ function createWaterGeometry(geometry) {
   return geometry;
 }
 
-// Función para modificar la geometría con ruido suave para césped
-function createGrassGeometry(geometry) {
-  const positions = geometry.attributes.position.array;
-  for (let i = 0; i < positions.length; i += 3) {
-    positions[i + 1] += (Math.random() - 0.5) * 2.0;
-    positions[i + 2] += (Math.random() - 0.5) * 2.0; // y
-  }
-  geometry.computeVertexNormals();
-  return geometry;
-}
-
 // Animar el material del césped
 function animateGrassMaterial(material) {
   requestAnimationFrame(() => animateGrassMaterial(material));
-  material.uniforms.time.value += 0.01;
+  material.uniforms.iTime.value += 0.01;
 }
 
 // Uso de la función para crear y animar el cubo
