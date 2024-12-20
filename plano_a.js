@@ -5,7 +5,7 @@ export function createCube(
   position = { x: 0, y: 0, z: 0 },
   rotation = { x: 0, y: 0, z: 0 },
   size = { x: 10, y: 10, z: 10 },
-  subdivisions = 4
+  subdivisions = 9
 ) {
   const today = new Date();
   const dayOfWeek = today.getDay(); // 0 - Domingo, 1 - Lunes, ..., 6 - Sábado
