@@ -46,22 +46,23 @@ async function init() {
         scene.add(terrainMesh);
         console.log("Terreno añadido a la escena:", terrainMesh);
 
-        // Crear colisionador para el terreno
+        // Crear colisionador para el terreno (asegurarse de pasar `scene` aquí)
         if (terrainMesh.geometry) {
-            createTerrainRigidBody(terrainMesh, world);
+            createTerrainRigidBody(terrainMesh, world, scene);  // Pasar `scene` correctamente
             console.log("Colisionador del terreno creado.");
         }
 
         addBuildings(scene, terrainMesh);
+        
         // Crear el plano con material y geometría según el día
-// Puedes pasar las coordenadas y rotación como objetos
         const cube = createCube(
-        { x: -240, y: 2.5, z: 80 },  // Posición del plano
-        { x: 0, y: 0, z: 0},// rotacion del plano
-        { x: 1, y: 25, z: 720},
-        { x: 10, y: 50, z: 800 }
-      );
-          scene.add(cube);
+            { x: -240, y: 2.5, z: 80 },  // Posición del plano
+            { x: 0, y: 0, z: 0 },  // Rotación del plano
+            { x: 1, y: 25, z: 720 },
+            { x: 10, y: 50, z: 800 }
+        );
+        scene.add(cube);
+
         // Cargar modelo con física
         const resultado = await cargarModelo(1, 1, 1, './negro.glb', world, scene, true);
         modelo = resultado.modelo;
@@ -72,7 +73,7 @@ async function init() {
 
         console.log("Modelo y cuerpo físico añadidos a la escena.");
         console.log("Posición inicial del cuerpo físico:", body.translation());
-        
+
         // Configurar la cámara
         camera.position.set(250, 10, 300);
         camera.lookAt(modelo.position);
