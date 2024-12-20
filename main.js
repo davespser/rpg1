@@ -42,7 +42,7 @@ async function init() {
         // Crear terreno y añadirlo a la escena
         terrainMesh = createTerrain(imageData, terrainTexture);
         terrainMesh.scale.set(1, 1, 1);
-        terrainMesh.position.set(0, -20, 0); // Ajustar la posición del terreno
+        terrainMesh.position.set(0, 0, 0); // Ajustar la posición del terreno
         scene.add(terrainMesh);
         console.log("Terreno añadido a la escena:", terrainMesh);
 
