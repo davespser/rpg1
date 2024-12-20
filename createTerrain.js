@@ -1,34 +1,3 @@
-import * as THREE from 'three';
-import RAPIER from '@dimforge/rapier3d-compat';
-
-/**
- * Carga una textura desde una URL.
- * @param {string} texturePath - Ruta de la textura.
- * @returns {Promise<THREE.Texture>} Promesa que resuelve con la textura cargada.
- */
-export function loadTexture(texturePath) {
-    return new Promise((resolve, reject) => {
-        const loader = new THREE.TextureLoader();
-        loader.load(
-            texturePath,
-            (texture) => {
-                texture.wrapS = THREE.ClampToEdgeWrapping;
-                texture.wrapT = THREE.ClampToEdgeWrapping;
-                resolve(texture);
-            },
-            undefined,
-            (err) => reject(new Error(`Error al cargar la textura: ${texturePath}\n${err.message}`))
-        );
-    });
-}
-
-/**
- * Crea un terreno basado en un heightmap y una textura.
- * @param {ImageData} imageData - Datos del mapa de altura.
- * @param {THREE.Texture} texture - Textura para aplicar al terreno.
- * @param {RAPIER.World} world - Mundo de física RAPIER.
- * @returns {Object} El Mesh del terreno y el colisionador.
- */
 export function createTerrain(imageData, texture, world) {
     const width = imageData.width;
     const height = imageData.height;
@@ -66,10 +35,22 @@ export function createTerrain(imageData, texture, world) {
     terrain.rotation.x = -Math.PI / 2; // Rotar para que quede horizontal
     terrain.receiveShadow = true;
 
-    // Crear el colisionador para el terreno
-    const vertices = geometry.attributes.position.array;
-    const indices = geometry.index.array;
+    // Verificar mundo de física
+    if (!world) {
+        throw new Error("El mundo de física (world) no está definido.");
+    }
 
+    // Verificar geometría e índices
+    if (!geometry.attributes.position) {
+        throw new Error("La geometría del terreno no tiene atributos de posición.");
+    }
+    const vertices = geometry.attributes.position.array;
+    const indices = geometry.index ? geometry.index.array : null;
+    if (!indices) {
+        throw new Error("La geometría del terreno no tiene índices.");
+    }
+
+    // Crear el colisionador para el terreno
     const colliderDesc = RAPIER.ColliderDesc.trimesh(vertices, indices)
         .setFriction(0.8)
         .setRestitution(0.1);
