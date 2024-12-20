@@ -17,6 +17,11 @@ export function createTerrainRigidBody(terrainMesh, world, scene) {
         return;
     }
 
+    if (!scene) {
+        console.error("La escena no está definida.");
+        return;
+    }
+
     // Extraer los límites de la geometría
     const boundingBox = new THREE.Box3().setFromObject(terrainMesh);
     const size = new THREE.Vector3();
@@ -45,13 +50,14 @@ export function createTerrainRigidBody(terrainMesh, world, scene) {
 
     // Visualización del colisionador con BoxHelper de THREE.js
     const boxHelper = new THREE.BoxHelper(terrainMesh, 0xffff00);
-    scene.add(boxHelper);
+    scene.add(boxHelper);  // Asegúrate de que scene esté definida
 
     // Actualizar el helper en cada paso
     boxHelper.update();
 
     return { rigidBody, collider, boxHelper };
 }
+
 
 export function stepPhysics() {
     if (world) {
