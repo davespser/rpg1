@@ -58,7 +58,7 @@ async function init() {
         const cube = createCube(
         { x: -230, y: 0, z: 50 },  // Posición del plano
         { x: 0, y: 0, z: 0},// rotacion del plano
-        { x: 250, y: 10, z: 10}
+        { x: 10, y: 10, z: 250}
       );
           scene.add(cube);
         // Cargar modelo con física
