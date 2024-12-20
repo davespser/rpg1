@@ -12,8 +12,8 @@ export function createTerrain(imageData, texture, world) {
     const width = imageData.width;
     const height = imageData.height;
 
-    // Crear geometría del terreno
-    const geometry = new THREE.PlaneGeometry(width, height, width - 1, height - 1);
+    // Crear geometría del terreno con el doble de subdivisiones
+    const geometry = new THREE.PlaneGeometry(width, height, (width - 1) * 2, (height - 1) * 2);
     const position = geometry.attributes.position;
 
     for (let i = 0; i < position.count; i++) {
@@ -30,7 +30,7 @@ export function createTerrain(imageData, texture, world) {
     const material = new THREE.MeshStandardMaterial({ map: texture });
     const terrain = new THREE.Mesh(geometry, material);
     // Rotar el terreno para que quede plano
-terrain.rotation.x = -Math.PI / 2;
+    terrain.rotation.x = -Math.PI / 2;
     terrain.receiveShadow = true;
 
     // Crear colisionador de Rapier
