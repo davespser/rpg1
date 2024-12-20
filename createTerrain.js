@@ -77,7 +77,7 @@ export function createTerrain(imageData, texture, world) {
     const rigidBodyDesc = RAPIER.RigidBodyDesc.fixed();
     const rigidBody = world.createRigidBody(rigidBodyDesc);
     const collider = world.createCollider(colliderDesc, rigidBody);
-
+    Collider.rotation.x = -Math.PI / 2;
     console.log("Terreno creado con colisionador:", collider);
 
     // Crear un mesh para visualizar el colisionador de forma transparente
