@@ -6,7 +6,7 @@ import { Stats } from './stats.js';
 import { initPhysics, createTerrainRigidBody, stepPhysics } from './physics.js';
 import { loadTexture, createTerrain } from './createTerrain.js';
 import { createSky } from './sky.js';
-import { cargarCubo } from './objetos.js';  // Asegúrate de importar cargarCubo
+import { PhysicsBox } from './objetos.js';  // Asegúrate de importar cargarCubo
 import { addBuildings } from './entorno_f.js';
 import { createCube } from './plano_a.js';
 
@@ -64,21 +64,15 @@ async function init() {
         scene.add(cube);
 
         // Crear el cubo con física
-        const resultado = await cargarCubo(1, 1, 1, world, scene, true);
-        modelo = resultado.modelo;
-        body = resultado.body;
-        collider = resultado.collider;
-        scene.add(modelo);
-
-        console.log("Cubo y cuerpo físico añadidos a la escena.");
-        console.log("Posición inicial del cuerpo físico:", body.translation());
+              const physicsBox = new PhysicsBox(scene, world, 2); // Tamaño del cubo es 2
+        console.log("Cubo de física creado.");
 
         // Configurar la cámara
         camera.position.set(250, 10, 300);
-        camera.lookAt(modelo.position);
+        camera.lookAt(physicsBox.mesh.position);
 
         // Actualizar controles de la cámara
-        controls.target.copy(modelo.position);
+        controls.target.copy(physicsBox.mesh.position);
         controls.update();
 
         // Iniciar animación
@@ -123,20 +117,15 @@ function animate() {
     // Actualizar física
     stepPhysics();
 
-    // Sincronizar cubo con cuerpo físico
-    if (body && modelo) {
-        const translation = body.translation();
-        const rotation = body.rotation();
-        modelo.position.set(translation.x, translation.y, translation.z);
-        modelo.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
-    }
+    // Actualizar el cubo de física
+    physicsBox.update();
 
     // Renderizar la escena
     controls.update();
     renderer.render(scene, camera);
 
     // Actualizar estadísticas (si es necesario)
-    // stats.update();
+    stats.update();
 }
 
 // Ejecutar la función principal
