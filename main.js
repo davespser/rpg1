@@ -40,7 +40,7 @@ async function init() {
         ]);
 
         // Crear terreno y añadirlo a la escena
-        const { terrain, collider } = createTerrain(imageData, terrainTexture, world);
+        let { terrain, collider } = createTerrain(imageData, terrainTexture, world);
         terrain.scale.set(1, 1, 1);  // Ahora accedes a terrain directamente
         terrain.position.set(0, -20, 0); // Ajustar la posición del terreno
         scene.add(terrain);  // Añadir el terreno a la escena
