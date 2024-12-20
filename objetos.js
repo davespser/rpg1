@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import RAPIER from '@dimforge/rapier3d-compat';
+import RAPIER from '@dimforge/rapier3d-compat'; 
 /**
  * Cargar un cubo con un colisionador de cubo en Rapier
  * @param {number} posX - Posición X inicial del cubo.
