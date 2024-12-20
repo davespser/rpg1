@@ -6,10 +6,9 @@ import { Stats } from './stats.js';
 import { initPhysics, createTerrainRigidBody, stepPhysics } from './physics.js';
 import { loadTexture, createTerrain } from './createTerrain.js';
 import { createSky } from './sky.js';
-import { PhysicsBox } from './objetos.js';  // Asegúrate de importar cargarCubo
+import { cargarModelo } from './objetos.js';
 import { addBuildings } from './entorno_f.js';
-import { createCube } from './plano_a.js';
-
+import { createCube } from  './plano_a.js';
 // Declaración de variables globales
 let world, modelo, body, collider;
 let terrainMesh;
@@ -19,6 +18,7 @@ const { scene, camera, renderer, controls } = initScene();
 const stats = new Stats();
 crearMenuRadial();
 createSky(scene);
+
 
 // Rutas de las texturas y mapas
 const texturePath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa_t.jpg';
@@ -42,37 +42,43 @@ async function init() {
         // Crear terreno y añadirlo a la escena
         terrainMesh = createTerrain(imageData, terrainTexture);
         terrainMesh.scale.set(1, 1, 1);
-        terrainMesh.position.set(0, 0, 0); // Ajustar la posición del terreno
+        terrainMesh.position.set(0, -20, 0); // Ajustar la posición del terreno
         scene.add(terrainMesh);
         console.log("Terreno añadido a la escena:", terrainMesh);
 
-        // Crear colisionador para el terreno (asegurarse de pasar `scene` aquí)
+        // Crear colisionador para el terreno
         if (terrainMesh.geometry) {
-            createTerrainRigidBody(terrainMesh, world, scene);  // Pasar `scene` correctamente
+            createTerrainRigidBody(terrainMesh, world);
             console.log("Colisionador del terreno creado.");
         }
 
         addBuildings(scene, terrainMesh);
-
         // Crear el plano con material y geometría según el día
+// Puedes pasar las coordenadas y rotación como objetos
         const cube = createCube(
-            { x: -240, y: 2.5, z: 80 },  // Posición del cubo
-            { x: 0, y: 0, z: 0 },  // Rotación del cubo
-            { x: 1, y: 25, z: 720 },
-            { x: 10, y: 50, z: 800 }
-        );
-        scene.add(cube);
+        { x: -240, y: 2.5, z: 80 },  // Posición del plano
+        { x: 0, y: 0, z: 0},// rotacion del plano
+        { x: 1, y: 25, z: 720},
+        { x: 10, y: 50, z: 800 }
+      );
+          scene.add(cube);
+        // Cargar modelo con física
+        const resultado = await cargarModelo(1, 1, 1, './negro.glb', world, scene, true);
+        modelo = resultado.modelo;
+        modelo.scale.set(1, 1, 1);
+        body = resultado.body;
+        collider = resultado.collider;
+        scene.add(modelo);
 
-        // Crear el cubo con física
-              const physicsBox = new PhysicsBox(scene, world, 2); // Tamaño del cubo es 2
-        console.log("Cubo de física creado.");
-
+        console.log("Modelo y cuerpo físico añadidos a la escena.");
+        console.log("Posición inicial del cuerpo físico:", body.translation());
+        
         // Configurar la cámara
         camera.position.set(250, 10, 300);
-        camera.lookAt(physicsBox.mesh.position);
+        camera.lookAt(modelo.position);
 
         // Actualizar controles de la cámara
-        controls.target.copy(physicsBox.mesh.position);
+        controls.target.copy(modelo.position);
         controls.update();
 
         // Iniciar animación
@@ -117,15 +123,20 @@ function animate() {
     // Actualizar física
     stepPhysics();
 
-    // Actualizar el cubo de física
-    physicsBox.update();
+    // Sincronizar modelo con cuerpo físico
+    if (body && modelo) {
+        const translation = body.translation();
+        const rotation = body.rotation();
+        modelo.position.set(translation.x, translation.y, translation.z);
+        modelo.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
+    }
 
     // Renderizar la escena
     controls.update();
     renderer.render(scene, camera);
 
     // Actualizar estadísticas (si es necesario)
-    stats.update();
+    // stats.update();
 }
 
 // Ejecutar la función principal
