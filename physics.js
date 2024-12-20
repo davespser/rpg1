@@ -11,53 +11,42 @@ export async function initPhysics() {
     return world;
 }
 
-export function createTerrainRigidBody(terrainMesh, world, scene) {
+export function createTerrainRigidBody(terrainMesh, world) {
     if (!terrainMesh.geometry || !terrainMesh.geometry.attributes.position) {
         console.error("La geometría del terreno no es válida.");
         return;
     }
 
-    if (!scene) {
-        console.error("La escena no está definida.");
+    // Extraer los vértices e índices de la geometría
+    const vertices = terrainMesh.geometry.attributes.position.array;
+    const indices = terrainMesh.geometry.index ? terrainMesh.geometry.index.array : null;
+
+    if (!indices) {
+        console.error("La geometría del terreno no tiene índices. No se puede crear un colisionador.");
         return;
     }
 
-    // Extraer los límites de la geometría
-    const boundingBox = new THREE.Box3().setFromObject(terrainMesh);
-    const size = new THREE.Vector3();
-    boundingBox.getSize(size);
+    // Ajustar la rotación en X (-90°) para coincidir con Three.js
+    const rotationQuaternion = { x: Math.sqrt(0.5), y: 0, z: 0, w: Math.sqrt(0.5) };
 
-    // Crear un colisionador tipo cuboid
-    const colliderDesc = RAPIER.ColliderDesc.cuboid(
-        size.x / 2,
-        size.y / 2,
-        size.z / 2
-    ).setFriction(0.8)        // Fricción para el terreno
-     .setRestitution(0.1);    // Restitución (rebote mínimo)
+    // Crear descripción del colisionador como un TriMesh
+    const colliderDesc = RAPIER.ColliderDesc.trimesh(vertices, indices)
+        .setFriction(0.8)        // Fricción para el terreno
+        .setRestitution(0.1)     // Restitución (rebote mínimo)
+        .setRotation(rotationQuaternion);
 
     // Configurar el cuerpo rígido fijo (estático)
     const rigidBodyDesc = RAPIER.RigidBodyDesc.fixed().setTranslation(
-        terrainMesh.position.x,
-        terrainMesh.position.y,
-        terrainMesh.position.z
+        terrainMesh.position.x, terrainMesh.position.y +30, terrainMesh.position.z
     );
 
     // Crear el cuerpo físico y colisionador
     const rigidBody = world.createRigidBody(rigidBodyDesc);
     const collider = world.createCollider(colliderDesc, rigidBody);
 
-    console.log("Colisionador del terreno creado como cuboid:", collider);
-
-    // Visualización del colisionador con BoxHelper de THREE.js
-    const boxHelper = new THREE.BoxHelper(terrainMesh, 0xffff00);
-    scene.add(boxHelper);  // Asegúrate de que scene esté definida
-
-    // Actualizar el helper en cada paso
-    boxHelper.update();
-
-    return { rigidBody, collider, boxHelper };
+    console.log("Colisionador del terreno creado:", collider);
+    return { rigidBody, collider };
 }
-
 
 export function stepPhysics() {
     if (world) {
