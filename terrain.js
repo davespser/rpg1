@@ -29,7 +29,7 @@ export function createTerrain(imageData, texture, world) {
 
     const material = new THREE.MeshStandardMaterial({ map: texture });
     const terrain = new THREE.Mesh(geometry, material);
-    terrain.rotation.x = -Math.PI / 2;
+    terrain.rotation.x = 0;
     terrain.receiveShadow = true;
 
     // Crear colisionador de Rapier
