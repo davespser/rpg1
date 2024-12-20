@@ -23,7 +23,25 @@ export function createTerrain(imageData, texture, world) {
         const heightValue = imageData.data[index] / 10; // Escala de altura
         position.setZ(i, heightValue);
     }
-    /**
+
+    position.needsUpdate = true;
+    geometry.computeVertexNormals();
+
+    const material = new THREE.MeshStandardMaterial({ map: texture });
+    const terrain = new THREE.Mesh(geometry, material);
+    terrain.rotation.x = -Math.PI / 2;
+    terrain.receiveShadow = true;
+
+    // Crear colisionador de Rapier
+    const vertices = geometry.attributes.position.array;
+    const indices = geometry.index.array;
+    const colliderDesc = RAPIER.ColliderDesc.trimesh(vertices, indices);
+    world.createCollider(colliderDesc);
+
+    return terrain;
+}
+
+/**
  * Carga el mapa de altura desde una imagen.
  * @param {string} path - Ruta del mapa de altura.
  * @returns {Promise<ImageData>} Promesa con los datos de la imagen.
@@ -47,21 +65,4 @@ export function cargarMapaDeAltura(path) {
             }
         );
     });
-}
-
-    position.needsUpdate = true;
-    geometry.computeVertexNormals();
-
-    const material = new THREE.MeshStandardMaterial({ map: texture });
-    const terrain = new THREE.Mesh(geometry, material);
-    terrain.rotation.x = -Math.PI / 2;
-    terrain.receiveShadow = true;
-
-    // Crear colisionador de Rapier
-    const vertices = geometry.attributes.position.array;
-    const indices = geometry.index.array;
-    const colliderDesc = RAPIER.ColliderDesc.trimesh(vertices, indices);
-    world.createCollider(colliderDesc);
-
-    return terrain;
 }
