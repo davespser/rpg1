@@ -16,7 +16,7 @@ import Joystick from './joystick.js';
  */
 export function cargarModelo(
     posX = 0, 
-    posY = 1, 
+    posY = 0, 
     posZ = 0, 
     rutaModelo = './negro.glb', 
     world, 
@@ -47,7 +47,7 @@ export function cargarModelo(
 
                 // Crear cuerpo físico con Rapier
                 const bodyDesc = RAPIER.RigidBodyDesc.dynamic()
-                    .setTranslation(posX, posY + alturaCapsula, posZ); // Altura inicial
+                    .setTranslation(posX, posY + alturaCapsula + 1, posZ); // Altura inicial
                 const body = world.createRigidBody(bodyDesc);
                 const colliderDesc = RAPIER.ColliderDesc.capsule(alturaCapsula, radioCapsula);
                 const collider = world.createCollider(colliderDesc, body);
