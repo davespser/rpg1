@@ -3,7 +3,7 @@ import { createTerrain } from './terrain.js';
 import { initScene } from './scene.js';
 import { crearMenuRadial } from './menu.js';
 import { createSky } from './sky.js';
-import { createCube } from './poano_a.js
+import { createCube } from './plano_a.js';
 const { scene, camera, renderer, controls } = initScene();
 crearMenuRadial();
 createSky(scene);
