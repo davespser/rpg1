@@ -24,14 +24,27 @@ export function createTerrainFromGLB(path, world) {
                     if (child.isMesh) {
                         child.receiveShadow = true;
                         child.castShadow = true;
-                        // Añadir colisionador para cada mesh en el GLB
-                        const colliderDesc = RAPIER.ColliderDesc.trimesh(
-                            child.geometry.attributes.position.array,
-                            child.geometry.index.array
+
+                        // Crear un colisionador de tipo caja (box) para cada malla del modelo
+                        const boundingBox = new THREE.Box3().setFromObject(child); // Crear un BoundingBox
+                        const boxSize = boundingBox.getSize(new THREE.Vector3()); // Obtener el tamaño de la caja
+
+                        // Crear el colisionador box en RAPIER
+                        const colliderDesc = RAPIER.ColliderDesc.box(
+                            boxSize.x * 0.5, // Mitad del ancho
+                            boxSize.y * 0.5, // Mitad de la altura
+                            boxSize.z * 0.5  // Mitad de la profundidad
                         );
-                        world.createCollider(colliderDesc);
+
+                        // Posicionar el colisionador en la misma posición que la malla
+                        world.createCollider(colliderDesc, child.position);
+
+                        // Opción para ajustar la posición del modelo si es necesario
+                        // child.position.set(0, 0, 0); // Ajustar la posición si lo necesitas
                     }
                 });
+
+                // Devolver el terreno cargado para agregarlo a la escena
                 resolve(terrain);
             },
             undefined,
