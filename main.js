@@ -1,18 +1,18 @@
 import * as THREE from 'three';
 import RAPIER from '@dimforge/rapier3d-compat';
+import { GLTFLoader } from 'GLTFLoader';
 import { initScene } from './scene.js';
 import { crearMenuRadial } from './menu.js';
 import { createSky } from './sky.js';
-import { cargarMapaDeAltura, createTerrain } from './terrain.js';
 import { initPhysics, stepPhysics } from './physics.js';
 
-let world, characterBody, characterMesh;
+let world, characterBody, characterMesh, terrain;
 const { scene, camera, renderer, controls } = initScene();
 crearMenuRadial();
 createSky(scene);
 
-const texturePath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa_t.jpg';
-const heightMapPath = 'https://raw.githubusercontent.com/davespser/rpg1/main/casa.png'; // Ruta del mapa de altura
+const modelPath = 'https://raw.githubusercontent.com/davespser/rpg1/main/LAFUENTE.glb'; // Ruta del modelo GLB
+
 /**
  * Función principal de inicialización
  */
@@ -24,15 +24,8 @@ async function init() {
         // Inicializar el mundo físico
         world = await initPhysics();
 
-        // Cargar textura y mapa de altura
-        const [terrainTexture, imageData] = await Promise.all([
-            new THREE.TextureLoader().load(texturePath),
-            cargarMapaDeAltura(heightMapPath),
-        ]);
-
-        // Crear terreno y añadirlo a la escena
-        const terrain = createTerrain(imageData, terrainTexture, world);
-        scene.add(terrain);
+        // Cargar y añadir el terreno (modelo GLB)
+        await loadTerrain();
 
         // Crear personaje dinámico
         createCharacter();
@@ -50,6 +43,42 @@ async function init() {
         console.error('Error durante la inicialización:', error);
     }
 }
+
+/**
+ * Carga y añade el terreno a la escena.
+ */
+async function loadTerrain() {
+    return new Promise((resolve, reject) => {
+        const loader = new GLTFLoader();
+        loader.load(
+            modelPath,
+            (gltf) => {
+                terrain = gltf.scene;
+                terrain.position.set(0, 0, 0); // Ajusta la posición del terreno si es necesario
+                terrain.traverse((child) => {
+                    if (child.isMesh) {
+                        child.receiveShadow = true;
+                        child.castShadow = true;
+                        // Añadir colisionador para cada mesh en el GLB
+                        const colliderDesc = RAPIER.ColliderDesc.trimesh(
+                            child.geometry.attributes.position.array,
+                            child.geometry.index.array
+                        );
+                        world.createCollider(colliderDesc);
+                    }
+                });
+                scene.add(terrain);
+                resolve();
+            },
+            undefined,
+            (error) => {
+                console.error(`Error al cargar el modelo GLB desde ${modelPath}:`, error);
+                reject(error);
+            }
+        );
+    });
+}
+
 /**
  * Crea el personaje con un cuerpo físico dinámico.
  */
@@ -64,7 +93,7 @@ function createCharacter() {
 
     // Crear representación visual del personaje
     characterMesh = new THREE.Mesh(
-        new THREE.CapsuleGeometry(50, 200), // Radio y altura total
+        new THREE.CapsuleGeometry(5, 20), // Radio y altura total
         new THREE.MeshStandardMaterial({ color: 0xff0000 })
     );
     scene.add(characterMesh);
