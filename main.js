@@ -112,11 +112,19 @@ function syncCharacter() {
 /**
  * Función de animación principal.
  */
+/**
+ * Función de animación principal.
+ */
 function animate() {
     requestAnimationFrame(animate);
 
+    // Controlar el tiempo de fotograma
+    const startTime = performance.now();
+
     // Avanzar la simulación de física
-    if (world) stepPhysics(world);
+    if (world) {
+        world.step();
+    }
 
     // Sincronizar personaje
     syncCharacter();
@@ -124,7 +132,15 @@ function animate() {
     // Renderizar la escena
     controls.update();
     renderer.render(scene, camera);
+
+    const endTime = performance.now();
+    const frameDuration = endTime - startTime;
+
+    if (frameDuration > 16) {  // 16 ms = ~60 FPS
+        console.warn(`La duración del fotograma es demasiado alta: ${frameDuration}ms`);
+    }
 }
+
 
 // Ejecutar la función principal
 init();
