@@ -14,7 +14,8 @@ createSky(scene);
 async function init() {
     try {
         // Crear el plano que actuará como terreno con la textura de imagen
-        const terrain = createTerrain(1000, 1000, 50, 50, 'https://github.com/davespser/rpg1/blob/main/IMG_20241221_161743.png'); // Ancho, Alto, Segmentos, Ruta de la textura
+        const terrain = createTerrain(1000, 1000, 50, 50, 'https://raw.githubusercontent.com/davespser/rpg1/main/IMG_20241221_161743.png
+'); // Ancho, Alto, Segmentos, Ruta de la textura
         scene.add(terrain);
 
         // Configurar la cámara
