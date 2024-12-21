@@ -3,10 +3,12 @@ import { createCube } from './plano_a.js';  // Importar la función desde plane_
 
 // Inicializar la escena, cámara y renderizador
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
+const { scene, camera, renderer, controls } = initScene();
+crearMenuRadial();
+createSky(scene);
+
+import { createSky } from './sky.js';
+
 
 // Crear un cubo utilizando la función importada
 const cube = createCube(
