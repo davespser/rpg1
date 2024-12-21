@@ -2,14 +2,14 @@ import * as THREE from 'three';
 import { createCube } from './plano_a.js';  // Importar la función desde plane_a.js
 
 // Inicializar la escena, cámara y renderizador
+
+
+import { createSky } from './sky.js';
+
 const scene = new THREE.Scene();
 const { scene, camera, renderer, controls } = initScene();
 crearMenuRadial();
 createSky(scene);
-
-import { createSky } from './sky.js';
-
-
 // Crear un cubo utilizando la función importada
 const cube = createCube(
   { x: 0, y: 5, z: 0 },          // Posición del cubo
