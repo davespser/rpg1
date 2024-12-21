@@ -17,6 +17,15 @@ async function init() {
         const terrain = createTerrain(1000, 1000, 50, 50, 'https://github.com/davespser/rpg1/blob/main/IMG_20241221_161743.png'); // Ancho, Alto, Segmentos, Ruta de la textura
         scene.add(terrain);
 
+        const cube = createCube(
+  { x: 0, y: 5, z: 0 },          // Posición del cubo
+  { x: 0, y: Math.PI / 4, z: 0 }, // Rotación del cubo
+  { x: 10, y: 10, z: 10 },        // Tamaño del cubo
+  { x: 10, y: 10, z: 10 }         // Subdivisiones
+);
+
+// Agregar el cubo a la escena
+scene.add(cube);
         // Configurar la cámara
         camera.position.set(250, 100, 250);
         camera.lookAt(0, 0, 0);
