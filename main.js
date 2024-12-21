@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { createCube } from './plane_a.js';  // Importar la función desde plane_a.js
+import { createCube } from './plano_a.js';  // Importar la función desde plane_a.js
 
 // Inicializar la escena, cámara y renderizador
 const scene = new THREE.Scene();
