@@ -6,7 +6,7 @@ import { createCube } from './plano_a.js';  // Importar la función desde plane_
 
 import { createSky } from './sky.js';
 
-const scene = new THREE.Scene();
+
 const { scene, camera, renderer, controls } = initScene();
 crearMenuRadial();
 createSky(scene);
