@@ -1,40 +1,46 @@
 import * as THREE from 'three';
-import { createCube } from './plano_a.js';  // Importar la función desde plane_a.js
-
-// Inicializar la escena, cámara y renderizador
-
-
+import { createTerrain } from './terrain.js';
+import { initScene } from './scene.js';
+import { crearMenuRadial } from './menu.js';
 import { createSky } from './sky.js';
-
-
+import { createCube } from './poano_a.js
 const { scene, camera, renderer, controls } = initScene();
 crearMenuRadial();
 createSky(scene);
-// Crear un cubo utilizando la función importada
-const cube = createCube(
-  { x: 0, y: 5, z: 0 },          // Posición del cubo
-  { x: 0, y: Math.PI / 4, z: 0 }, // Rotación del cubo
-  { x: 10, y: 10, z: 10 },        // Tamaño del cubo
-  { x: 10, y: 10, z: 10 }         // Subdivisiones
-);
 
-// Agregar el cubo a la escena
-scene.add(cube);
+/**
+ * Función principal de inicialización
+ */
+async function init() {
+    try {
+        // Crear el plano que actuará como terreno con la textura de imagen
+        const terrain = createTerrain(1000, 1000, 50, 50, 'https://github.com/davespser/rpg1/blob/main/IMG_20241221_161743.png'); // Ancho, Alto, Segmentos, Ruta de la textura
+        scene.add(terrain);
 
-// Configurar la cámara
-camera.position.z = 50;
+        // Configurar la cámara
+        camera.position.set(250, 100, 250);
+        camera.lookAt(0, 0, 0);
+        controls.target.set(0, 0, 0);
+        controls.update();
 
-// Función de animación
-function animate() {
-  requestAnimationFrame(animate);
-  
-  // Rotar el cubo para visualizar el cambio
-  cube.rotation.x += 0.01;
-  cube.rotation.y += 0.01;
+        // Iniciar animación
+        animate();
 
-  // Renderizar la escena
-  renderer.render(scene, camera);
+    } catch (error) {
+        console.error('Error durante la inicialización:', error);
+    }
 }
 
-// Ejecutar la animación
-animate();
+/**
+ * Función de animación principal.
+ */
+function animate() {
+    requestAnimationFrame(animate);
+
+    // Actualizar controles y renderizar la escena
+    controls.update();
+    renderer.render(scene, camera);
+}
+
+// Ejecutar la función principal
+init();
