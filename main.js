@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import { createTerrain } from './terrain.js';
 import { initScene } from './scene.js';
 import { crearMenuRadial } from './menu.js';
