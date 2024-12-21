@@ -8,7 +8,7 @@ import { createLuces } from './luces.js';
 const { scene, camera, renderer, controls } = initScene();
 crearMenuRadial();
 createSky(scene);
-
+createLuces();
 /**
  * Función principal de inicialización
  */
