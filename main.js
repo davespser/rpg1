@@ -5,7 +5,7 @@ import { initScene } from './scene.js';
 import { crearMenuRadial } from './menu.js';
 import { createSky } from './sky.js';
 import { initPhysics, stepPhysics } from './physics.js';
-import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+import { DRACOLoader } from 'DRACOLoader';
 
 let world, characterBody, characterMesh, terrain;
 const { scene, camera, renderer, controls } = initScene();
