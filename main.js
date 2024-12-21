@@ -6,7 +6,7 @@ import { crearMenuRadial } from './menu.js';
 import { createSky } from './sky.js';
 import { initPhysics, stepPhysics } from './physics.js';
 import { DRACOLoader } from 'DRACOLoader';
-
+import { createTerrainFromGLB } from './terrain.js';
 let world, characterBody, characterMesh, terrain;
 const { scene, camera, renderer, controls } = initScene();
 crearMenuRadial();
