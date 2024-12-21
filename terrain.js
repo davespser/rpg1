@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'GLTFLoader';
 import RAPIER from '@dimforge/rapier3d-compat';
 import { DRACOLoader } from 'DRACOLoader';
+
 /**
  * Carga y crea un terreno a partir de un modelo GLB.
  * @param {string} path - Ruta del modelo GLB.
@@ -10,6 +11,9 @@ import { DRACOLoader } from 'DRACOLoader';
  */
 export function createTerrainFromGLB(path, world) {
     const loader = new GLTFLoader();
+    const dracoLoader = new DRACOLoader();
+    dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
+    loader.setDRACOLoader(dracoLoader);
 
     return new Promise((resolve, reject) => {
         loader.load(
@@ -38,42 +42,3 @@ export function createTerrainFromGLB(path, world) {
         );
     });
 }
-
-// Ejemplo de uso en tu escena principal
-const scene = new THREE.Scene();
-const world = new RAPIER.World({ x: 0, y: -9.81, z: 0 });
-
-createTerrainFromGLB('https://raw.githubusercontent.com/davespser/rpg1/main/LAFUENTE.glb', world)
-    .then((terrain) => {
-        terrain.position.set(0, 0, 0); // Ajustar la posición del terreno si es necesario
-        scene.add(terrain);
-    })
-    .catch((error) => {
-        console.error('Error al crear el terreno:', error);
-    });
-
-function animate() {
-    requestAnimationFrame(animate);
-    // Actualizar el mundo de física
-    world.step();
-    // Renderizar la escena
-    renderer.render(scene, camera);
-}
-
-// Inicializar tu escena, cámara y renderizador
-function init() {
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    renderer = new THREE.WebGLRenderer();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
-
-    camera.position.z = 50;
-
-    // Luz
-    const light = new THREE.DirectionalLight(0xffffff, 1);
-    light.position.set(1, 1, 1).normalize();
-    scene.add(light);
-}
-
-init();
-animate();
