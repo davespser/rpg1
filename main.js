@@ -13,7 +13,9 @@ crearMenuRadial();
 createSky(scene);
 
 const modelPath = 'https://raw.githubusercontent.com/davespser/rpg1/main/LAFUENTE.glb'; // Ruta del modelo GLB
-const dracoLoader = new DRACOLoader(); dracoLoader.setDecoderPath('https://github.com/davespser/rpg1/blob/main/draco_decoder.js');
+const dracoLoader = new DRACOLoader();
+dracoLoader.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.171.0/examples/js/libs/draco/'); // Asegúrate de que esta ruta es correcta
+
 /**
  * Función principal de inicialización
  */
@@ -51,6 +53,7 @@ async function init() {
 async function loadTerrain() {
     return new Promise((resolve, reject) => {
         const loader = new GLTFLoader();
+        loader.setDRACOLoader(dracoLoader);
         loader.load(
             modelPath,
             (gltf) => {
@@ -113,9 +116,6 @@ function syncCharacter() {
 /**
  * Función de animación principal.
  */
-/**
- * Función de animación principal.
- */
 function animate() {
     requestAnimationFrame(animate);
 
@@ -141,7 +141,6 @@ function animate() {
         console.warn(`La duración del fotograma es demasiado alta: ${frameDuration}ms`);
     }
 }
-
 
 // Ejecutar la función principal
 init();
