@@ -20,8 +20,8 @@ async function init() {
         const cube = createCube(
   { x: 0, y: 5, z: 0 },          // Posición del cubo
   { x: 0, y: Math.PI / 4, z: 0 }, // Rotación del cubo
-  { x: 10, y: 10, z: 10 },        // Tamaño del cubo
-  { x: 10, y: 10, z: 10 }         // Subdivisiones
+  { x: 1, y: 50, z: 750 },        // Tamaño del cubo
+  { x: 10, y: 50, z: 400 }         // Subdivisiones
 );
 
 // Agregar el cubo a la escena
