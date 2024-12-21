@@ -1,6 +1,4 @@
-import * as THREE from 'three';
-import { GLTFLoader } from 'GLTFLoader';
-import { createTerrainFromGLB } from './terrain.js';
+import { createTerrain } from './terrain.js';
 import { initScene } from './scene.js';
 import { crearMenuRadial } from './menu.js';
 import { createSky } from './sky.js';
@@ -9,15 +7,13 @@ const { scene, camera, renderer, controls } = initScene();
 crearMenuRadial();
 createSky(scene);
 
-const modelPath = 'https://raw.githubusercontent.com/davespser/rpg1/main/LAFUENTE.glb'; // Ruta del modelo GLB
-
 /**
  * Función principal de inicialización
  */
 async function init() {
     try {
-        // Cargar y añadir el terreno (modelo GLB)
-        const terrain = await createTerrainFromGLB(modelPath);
+        // Crear el plano que actuará como terreno
+        const terrain = createTerrain(1000, 1000, 50, 50); // Ancho, Alto, Segmentos en X y Y
         scene.add(terrain);
 
         // Configurar la cámara
