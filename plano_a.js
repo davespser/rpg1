@@ -34,9 +34,9 @@ export function createCube(
 function create5DGeometry(size) {
   const vertices = [];
   const edges = [];
-  const dimension = 5;
+  const dimension = 5; // 5 dimensiones
 
-  // Crear vértices del hipercubo 5D
+  // Crear vértices del hipercubo 5D (32 vértices en total)
   for (let i = 0; i < Math.pow(2, dimension); i++) {
     const vertex = [];
     for (let d = 0; d < dimension; d++) {
@@ -55,16 +55,26 @@ function create5DGeometry(size) {
     }
   }
 
+  // Proyectar vértices a 3D
+  const projectedVertices = vertices.map((v) => new THREE.Vector3(v[0], v[1], v[2]));
+
   // Crear geometría con líneas
   const geometry = new THREE.BufferGeometry();
-  const positions = [];
+  const linePositions = [];
   for (const edge of edges) {
     const [start, end] = edge;
-    positions.push(...start.slice(0, 3), ...end.slice(0, 3));
+    linePositions.push(...start.slice(0, 3), ...end.slice(0, 3));
   }
 
-  geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-  return geometry;
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+
+  // Agregar la animación (rota el hipercubo)
+  function animate5D(delta) {
+    geometry.rotateX(delta * 0.1);
+    geometry.rotateY(delta * 0.1);
+  }
+
+  return { geometry, animate5D };
 }
 
 // Animar el hipercubo 5D
