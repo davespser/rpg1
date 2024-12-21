@@ -1,20 +1,25 @@
 import * as THREE from 'three';
 
 /**
- * Crea un plano que actúa como terreno.
+ * Crea un plano que actúa como terreno con una textura de imagen.
  * @param {number} width - Ancho del plano.
  * @param {number} height - Altura del plano.
  * @param {number} segmentsX - Número de segmentos en el eje X.
  * @param {number} segmentsY - Número de segmentos en el eje Y.
+ * @param {string} texturePath - Ruta de la imagen para la textura del plano.
  * @returns {THREE.Mesh} El plano que representa el terreno.
  */
-export function createTerrain(width, height, segmentsX, segmentsY) {
+export function createTerrain(width, height, segmentsX, segmentsY, texturePath) {
+    // Cargar la textura de la imagen desde la URL proporcionada
+    const textureLoader = new THREE.TextureLoader();
+    const terrainTexture = textureLoader.load(texturePath);
+
     // Crear la geometría del plano
     const geometry = new THREE.PlaneGeometry(width, height, segmentsX, segmentsY);
 
-    // Crear un material básico para el plano
+    // Crear el material con la textura
     const material = new THREE.MeshStandardMaterial({
-        color: 0x228B22,  // Color verde para simular césped
+        map: terrainTexture,  // Aplicar la textura al material
         side: THREE.DoubleSide,  // Asegura que el plano sea visible desde ambos lados
     });
 
