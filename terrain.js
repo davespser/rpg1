@@ -42,8 +42,11 @@ export function createTerrain(imageData, texture, world) {
     const scale = { x: width, y: 1, z: height }; // Escalar para que coincida con el terreno
     const colliderDesc = RAPIER.ColliderDesc.heightfield(heights, width, height, scale);
     world.createCollider(colliderDesc);
-
+    const debugRender = new RAPIER.DebugRender(world, THREE);
+scene.add(debugRender.mesh);
+debugRender.update();
     return terrain;
+    
 }
 
 /**
