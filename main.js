@@ -1,45 +1,38 @@
 import * as THREE from 'three';
-import { createTerrain } from './terrain.js';
-import { initScene } from './scene.js';
-import { crearMenuRadial } from './menu.js';
-import { createSky } from './sky.js';
+import { createCube } from './plane_a.js';  // Importar la función desde plane_a.js
 
-const { scene, camera, renderer, controls } = initScene();
-crearMenuRadial();
-createSky(scene);
+// Inicializar la escena, cámara y renderizador
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
 
-/**
- * Función principal de inicialización
- */
-async function init() {
-    try {
-        // Crear el plano que actuará como terreno con la textura de imagen
-        const terrain = createTerrain(1000, 1000, 50, 50, 'https://raw.githubusercontent.com/davespser/rpg1/main/IMG_20241221_161743.png');
-        scene.add(terrain);
-        // Configurar la cámara
-        camera.position.set(250, 100, 250);
-        camera.lookAt(0, 0, 0);
-        controls.target.set(0, 0, 0);
-        controls.update();
+// Crear un cubo utilizando la función importada
+const cube = createCube(
+  { x: 0, y: 5, z: 0 },          // Posición del cubo
+  { x: 0, y: Math.PI / 4, z: 0 }, // Rotación del cubo
+  { x: 10, y: 10, z: 10 },        // Tamaño del cubo
+  { x: 10, y: 10, z: 10 }         // Subdivisiones
+);
 
-        // Iniciar animación
-        animate();
+// Agregar el cubo a la escena
+scene.add(cube);
 
-    } catch (error) {
-        console.error('Error durante la inicialización:', error);
-    }
-}
+// Configurar la cámara
+camera.position.z = 50;
 
-/**
- * Función de animación principal.
- */
+// Función de animación
 function animate() {
-    requestAnimationFrame(animate);
+  requestAnimationFrame(animate);
+  
+  // Rotar el cubo para visualizar el cambio
+  cube.rotation.x += 0.01;
+  cube.rotation.y += 0.01;
 
-    // Actualizar controles y renderizar la escena
-    controls.update();
-    renderer.render(scene, camera);
+  // Renderizar la escena
+  renderer.render(scene, camera);
 }
 
-// Ejecutar la función principal
-init();
+// Ejecutar la animación
+animate();
