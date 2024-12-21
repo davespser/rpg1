@@ -14,7 +14,7 @@ createSky(scene);
 
 const modelPath = 'https://raw.githubusercontent.com/davespser/rpg1/main/LAFUENTE.glb'; // Ruta del modelo GLB
 const dracoLoader = new DRACOLoader();
-dracoLoader.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.171.0/examples/js/libs/draco/'); // Asegúrate de que esta ruta es correcta
+dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/'); // Asegúrate de que esta ruta es correcta
 
 /**
  * Función principal de inicialización
