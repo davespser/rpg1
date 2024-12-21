@@ -17,12 +17,14 @@ export function createTerrain(imageData, texture, world) {
     const position = geometry.attributes.position;
 
     // Ajustar las alturas de los vértices según el mapa de altura
+    const heights = [];
     for (let i = 0; i < position.count; i++) {
         const x = i % width;  // Coordenada X en el mapa de altura
         const y = Math.floor(i / width);  // Coordenada Y en el mapa de altura
         const index = (y * width + x) * 4; // Índice en el mapa de altura (RGBA)
         const heightValue = imageData.data[index] / 10; // Escala de altura (ajustable)
         position.setZ(i, heightValue); // Modificar la posición Z del vértice
+        heights.push(heightValue); // Almacenar el valor de altura para Rapier
     }
 
     position.needsUpdate = true; // Actualizar la geometría
@@ -36,10 +38,9 @@ export function createTerrain(imageData, texture, world) {
     terrain.rotation.x = -Math.PI / 2;
     terrain.receiveShadow = true;
 
-    // Crear colisionador de Rapier
-    const vertices = geometry.attributes.position.array;
-    const indices = geometry.index.array;
-    const colliderDesc = RAPIER.ColliderDesc.trimesh(vertices, indices);
+    // Crear colisionador de tipo Heightfield en Rapier
+    const scale = { x: width, y: 1, z: height }; // Escalar para que coincida con el terreno
+    const colliderDesc = RAPIER.ColliderDesc.heightfield(heights, width, height, scale);
     world.createCollider(colliderDesc);
 
     return terrain;
