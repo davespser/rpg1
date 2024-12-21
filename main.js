@@ -4,11 +4,11 @@ import { initScene } from './scene.js';
 import { crearMenuRadial } from './menu.js';
 import { createSky } from './sky.js';
 import { createCube } from './plano_a.js';
-import { createLuces } from './luces.js';
+import { crearLuces } from './luces.js';
 const { scene, camera, renderer, controls } = initScene();
 crearMenuRadial();
 createSky(scene);
-createLuces();
+crearLuces();
 /**
  * Función principal de inicialización
  */
