@@ -9,22 +9,30 @@ import RAPIER from '@dimforge/rapier3d-compat';
  * @returns {THREE.Mesh} Terreno como un objeto 3D.
  */
 export function createTerrain(imageData, texture, world) {
-    const width = imageData.width;  // Ancho del mapa de altura
-    const height = imageData.height;  // Alto del mapa de altura
+    const width = 720;  // Ancho fijo
+    const height = 720; // Alto fijo
 
-    // Crear geometría del terreno usando las dimensiones reales
+    // Crear geometría del terreno usando las dimensiones definidas
     const geometry = new THREE.PlaneGeometry(width, height, width - 1, height - 1);
     const position = geometry.attributes.position;
 
-    // Ajustar las alturas de los vértices según el mapa de altura
-    const heights = [];
+    // Crear un arreglo 1D para las alturas
+    const heights = new Float32Array(width * height);
+    for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+            const index = (y * width + x) * 4; // Índice en el mapa de altura (RGBA)
+            const heightValue = imageData.data[index] / 10; // Escala de altura (ajustable)
+            const idx = y * width + x; // Índice en el arreglo de alturas
+            heights[idx] = heightValue; // Guardar el valor de altura
+        }
+    }
+
+    // Ajustar las alturas de los vértices de la geometría
     for (let i = 0; i < position.count; i++) {
         const x = i % width;  // Coordenada X en el mapa de altura
         const y = Math.floor(i / width);  // Coordenada Y en el mapa de altura
-        const index = (y * width + x) * 4; // Índice en el mapa de altura (RGBA)
-        const heightValue = imageData.data[index] / 10; // Escala de altura (ajustable)
-        position.setZ(i, heightValue); // Modificar la posición Z del vértice
-        heights.push(heightValue); // Almacenar el valor de altura para Rapier
+        const idx = y * width + x; // Índice en el arreglo de alturas
+        position.setZ(i, heights[idx]); // Modificar la posición Z del vértice
     }
 
     position.needsUpdate = true; // Actualizar la geometría
@@ -39,14 +47,11 @@ export function createTerrain(imageData, texture, world) {
     terrain.receiveShadow = true;
 
     // Crear colisionador de tipo Heightfield en Rapier
-    const scale = { x: width, y: 1, z: height }; // Escalar para que coincida con el terreno
+    const scale = { x: 1, y: 1, z: 1 }; // Escalar para que coincida con el terreno
     const colliderDesc = RAPIER.ColliderDesc.heightfield(heights, width, height, scale);
     world.createCollider(colliderDesc);
-    const debugRender = new RAPIER.DebugRender(world, THREE);
-scene.add(debugRender.mesh);
-debugRender.update();
+
     return terrain;
-    
 }
 
 /**
@@ -60,10 +65,10 @@ export function cargarMapaDeAltura(path) {
             path,
             (texture) => {
                 const canvas = document.createElement('canvas');
-                canvas.width = texture.image.width;
-                canvas.height = texture.image.height;
+                canvas.width = 720; // Ancho fijo
+                canvas.height = 720; // Alto fijo
                 const ctx = canvas.getContext('2d');
-                ctx.drawImage(texture.image, 0, 0);
+                ctx.drawImage(texture.image, 0, 0, 720, 720); // Escalar la imagen a 720x720
                 resolve(ctx.getImageData(0, 0, canvas.width, canvas.height));
             },
             undefined,
