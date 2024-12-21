@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'GLTFLoader';
 import RAPIER from '@dimforge/rapier3d-compat';
-
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 /**
  * Carga y crea un terreno a partir de un modelo GLB.
  * @param {string} path - Ruta del modelo GLB.
