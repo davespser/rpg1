@@ -13,7 +13,7 @@ crearMenuRadial();
 createSky(scene);
 
 const modelPath = 'https://raw.githubusercontent.com/davespser/rpg1/main/LAFUENTE.glb'; // Ruta del modelo GLB
-
+const dracoLoader = new DRACOLoader(); dracoLoader.setDecoderPath('https://github.com/davespser/rpg1/blob/main/draco_decoder.js');
 /**
  * Función principal de inicialización
  */
