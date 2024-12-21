@@ -8,7 +8,6 @@ import { crearLuces } from './luces.js';
 const { scene, camera, renderer, controls } = initScene();
 crearMenuRadial();
 createSky(scene);
-crearLuces();
 /**
  * Función principal de inicialización
  */
@@ -17,7 +16,7 @@ async function init() {
         // Crear el plano que actuará como terreno con la textura de imagen
         const terrain = createTerrain(1000, 1000, 50, 50, 'https://github.com/davespser/rpg1/blob/main/IMG_20241221_161743.png'); // Ancho, Alto, Segmentos, Ruta de la textura
         scene.add(terrain);
-
+        const { luzAmbiental, luzDireccional, luzPuntual } = crearLuces(scene)
         const cube = createCube(
   { x: 0, y: 5, z: 0 },          // Posición del cubo
   { x: 0, y: Math.PI / 4, z: 0 }, // Rotación del cubo
