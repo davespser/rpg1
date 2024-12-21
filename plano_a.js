@@ -48,6 +48,10 @@ export function createCube(
       material = new THREE.MeshStandardMaterial({ color: 0x228b22, roughness: 1 });
       geometry = createGrassGeometry(geometry);
       break;
+    case 6: // Sábado: Geometría 5D
+      material = new THREE.LineBasicMaterial({ color: 0xffa500 });
+      geometry = create5DGeometry(size);
+      break;
     default: // Otros días
       material = new THREE.MeshStandardMaterial({ color: 0xffffff });
   }
@@ -99,10 +103,50 @@ function createWaterGeometry(geometry) {
 // Función para modificar la geometría con ruido suave para césped
 function createGrassGeometry(geometry) {
   const positions = geometry.attributes.position.array;
-   for (let i = 0; i < positions.length; i += 3) {
-    positions[i + 1] += (Math.random() - 0.5) * 2.0;
-      positions[i + 2] += (Math.random() - 0.5) * 2.0; // y
-     // z
-   } geometry.computeVertexNormals();
+  for (let i = 0; i < positions.length; i += 3) {
+    positions[i + 1] += (Math.random() - 0.5) * 2.0; // y
+    positions[i + 2] += (Math.random() - 0.5) * 2.0; // z
+  }
+  geometry.computeVertexNormals();
+  return geometry;
+}
+
+// Función para crear un hipercubo 5D proyectado en 3D
+function create5DGeometry(size) {
+  const vertices = [];
+  const edges = [];
+  const dimension = 5; // 5 dimensiones
+
+  // Crear vértices del hipercubo 5D (32 vértices en total)
+  for (let i = 0; i < Math.pow(2, dimension); i++) {
+    const vertex = [];
+    for (let d = 0; d < dimension; d++) {
+      vertex.push((i & (1 << d)) ? size.x / 2 : -size.x / 2);
+    }
+    vertices.push(vertex);
+  }
+
+  // Crear conexiones entre vértices (aristas del hipercubo)
+  for (let i = 0; i < vertices.length; i++) {
+    for (let j = 0; j < dimension; j++) {
+      const neighbor = i ^ (1 << j); // Cambiar un bit
+      if (neighbor > i) {
+        edges.push([vertices[i], vertices[neighbor]]);
+      }
+    }
+  }
+
+  // Proyectar vértices a 3D
+  const projectedVertices = vertices.map((v) => new THREE.Vector3(v[0], v[1], v[2]));
+
+  // Crear geometría con líneas
+  const geometry = new THREE.BufferGeometry();
+  const linePositions = [];
+  for (const edge of edges) {
+    const [start, end] = edge;
+    linePositions.push(...start.slice(0, 3), ...end.slice(0, 3));
+  }
+
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
   return geometry;
 }
