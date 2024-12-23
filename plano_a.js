@@ -17,30 +17,51 @@ export function createCube(
   switch (dayOfWeek) {
     case 1: // Lunes: Piedra
     material = new THREE.MeshStandardMaterial({
-        color: 0x8b4513,  // Color marrón terroso para la piedra
-        roughness: 0.9,   // Alta rugosidad para evitar reflejos
+        color: 0x8b4513,  // Marrón base
+        roughness: 0.95,  // Rugosidad alta, casi sin reflejos
         metalness: 0,     // Sin propiedades metálicas
-        flatShading: true // Sombreado plano para un acabado más rugoso
+        flatShading: true // Resaltar bordes e imperfecciones
     });
 
-    // Crear geometría con pequeñas irregularidades
+    // Personalizar el shader para añadir ruido procedural
+    material.onBeforeCompile = (shader) => {
+        shader.fragmentShader = shader.fragmentShader.replace(
+            '#include <dithering_fragment>',
+            `
+            // Ruido procedural simple
+            float random(vec2 st) {
+                return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
+            }
+
+            // Variar el color según la posición
+            vec3 variation = vec3(random(vUv * 5.0) * 0.2);
+            vec4 baseColor = vec4(diffuseColor.rgb + variation, diffuseColor.a);
+
+            gl_FragColor = baseColor;
+            #include <dithering_fragment>
+            `
+        );
+    };
+
+    // Crear geometría con más irregularidades
     geometry = createStoneGeometry(geometry);
 
     const positionAttribute = geometry.attributes.position;
     const vertexCount = positionAttribute.count;
 
-    // Añadir imperfecciones en la geometría para simular una superficie de piedra
+    // Variar los vértices con un rango más amplio para mayor rugosidad
     for (let i = 0; i < vertexCount; i++) {
         const x = positionAttribute.getX(i);
         const y = positionAttribute.getY(i);
         const z = positionAttribute.getZ(i);
 
-        positionAttribute.setX(i, x + (Math.random() - 0.5) * 0.05);
-        positionAttribute.setY(i, y + (Math.random() - 0.5) * 0.05);
-        positionAttribute.setZ(i, z + (Math.random() - 0.5) * 0.05);
+        // Desplazamiento más notorio
+        positionAttribute.setX(i, x + (Math.random() - 0.5) * 0.2);
+        positionAttribute.setY(i, y + (Math.random() - 0.5) * 0.2);
+        positionAttribute.setZ(i, z + (Math.random() - 0.5) * 0.2);
     }
 
-    positionAttribute.needsUpdate = true; // Actualizar los cambios en la geometría
+    positionAttribute.needsUpdate = true; // Aplicar cambios
     break;
     case 2: // Martes: Hielo
       material = new THREE.MeshStandardMaterial({
