@@ -21,7 +21,7 @@ async function init() {
   { x: 0, y: 5, z: 0 },          // Posición del cubo
   { x: 0, y: Math.PI / 4, z: 0 }, // Rotación del cubo
   { x: 1, y: 50, z: 750 },        // Tamaño del cubo
-  { x: 10, y: 50, z: 400 }         // Subdivisiones
+  { x: 10, y: 50, z: 100 }         // Subdivisiones
 );
 
 // Agregar el cubo a la escena
