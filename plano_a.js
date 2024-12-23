@@ -16,52 +16,47 @@ export function createCube(
   // Elegir material y modificar la geometría según el día
   switch (dayOfWeek) {
     case 1: // Lunes: Piedra
-    material = new THREE.MeshStandardMaterial({
-        color: 0x8b4513,  // Marrón base
-        roughness: 0.95,  // Rugosidad alta, casi sin reflejos
-        metalness: 0,     // Sin propiedades metálicas
-        flatShading: true // Resaltar bordes e imperfecciones
-    });
-
-    // Personalizar el shader para añadir ruido procedural
-    material.onBeforeCompile = (shader) => {
-        shader.fragmentShader = shader.fragmentShader.replace(
-            '#include <dithering_fragment>',
-            `
-            // Ruido procedural simple
+    material = new THREE.ShaderMaterial({
+        vertexShader: `
+            varying vec2 vUv;
+            void main() {
+                vUv = uv;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+        `,
+        fragmentShader: `
+            varying vec2 vUv;
+            
+            // Ruido Perlin simple
             float random(vec2 st) {
                 return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
             }
 
-            // Variar el color según la posición
-            vec3 variation = vec3(random(vUv * 5.0) * 0.2);
-            vec4 baseColor = vec4(diffuseColor.rgb + variation, diffuseColor.a);
+            float noise(vec2 st) {
+                vec2 i = floor(st);
+                vec2 f = fract(st);
 
-            gl_FragColor = baseColor;
-            #include <dithering_fragment>
-            `
-        );
-    };
+                float a = random(i);
+                float b = random(i + vec2(1.0, 0.0));
+                float c = random(i + vec2(0.0, 1.0));
+                float d = random(i + vec2(1.0, 1.0));
 
-    // Crear geometría con más irregularidades
+                vec2 u = f * f * (3.0 - 2.0 * f);
+
+                return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
+            }
+
+            void main() {
+                vec2 uv = vUv * 10.0; // Escala de ruido
+                float n = noise(uv);
+                vec3 color = mix(vec3(0.4, 0.3, 0.2), vec3(0.2, 0.1, 0.1), n); // Marrón rugoso
+                gl_FragColor = vec4(color, 1.0);
+            }
+        `,
+    });
+
+    // Añade irregularidades geométricas
     geometry = createStoneGeometry(geometry);
-
-    const positionAttribute = geometry.attributes.position;
-    const vertexCount = positionAttribute.count;
-
-    // Variar los vértices con un rango más amplio para mayor rugosidad
-    for (let i = 0; i < vertexCount; i++) {
-        const x = positionAttribute.getX(i);
-        const y = positionAttribute.getY(i);
-        const z = positionAttribute.getZ(i);
-
-        // Desplazamiento más notorio
-        positionAttribute.setX(i, x + (Math.random() - 0.5) * 0.2);
-        positionAttribute.setY(i, y + (Math.random() - 0.5) * 0.2);
-        positionAttribute.setZ(i, z + (Math.random() - 0.5) * 0.2);
-    }
-
-    positionAttribute.needsUpdate = true; // Aplicar cambios
     break;
     case 2: // Martes: Hielo
       material = new THREE.MeshStandardMaterial({
