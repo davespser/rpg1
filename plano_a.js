@@ -16,9 +16,32 @@ export function createCube(
   // Elegir material y modificar la geometría según el día
   switch (dayOfWeek) {
     case 1: // Lunes: Piedra
-      material = new THREE.MeshStandardMaterial({ color: 0x8b4513, roughness: 1 });
-      geometry = createStoneGeometry(geometry);
-      break;
+    material = new THREE.MeshStandardMaterial({
+        color: 0x8b4513,  // Color marrón terroso para la piedra
+        roughness: 0.9,   // Alta rugosidad para evitar reflejos
+        metalness: 0,     // Sin propiedades metálicas
+        flatShading: true // Sombreado plano para un acabado más rugoso
+    });
+
+    // Crear geometría con pequeñas irregularidades
+    geometry = createStoneGeometry(geometry);
+
+    const positionAttribute = geometry.attributes.position;
+    const vertexCount = positionAttribute.count;
+
+    // Añadir imperfecciones en la geometría para simular una superficie de piedra
+    for (let i = 0; i < vertexCount; i++) {
+        const x = positionAttribute.getX(i);
+        const y = positionAttribute.getY(i);
+        const z = positionAttribute.getZ(i);
+
+        positionAttribute.setX(i, x + (Math.random() - 0.5) * 0.05);
+        positionAttribute.setY(i, y + (Math.random() - 0.5) * 0.05);
+        positionAttribute.setZ(i, z + (Math.random() - 0.5) * 0.05);
+    }
+
+    positionAttribute.needsUpdate = true; // Actualizar los cambios en la geometría
+    break;
     case 2: // Martes: Hielo
       material = new THREE.MeshStandardMaterial({
         color: 0xadd8e6,
