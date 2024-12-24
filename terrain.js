@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import SimplexNoise from './modulos/SimplexNoise.js';
-import { vec3 } from './modulos/gl-matrix.js';
+import * as GLMatrix from './modulos/gl-matrix.js';
+
+const { vec3 } = GLMatrix;
 
 let elevationRandom = null;
 
