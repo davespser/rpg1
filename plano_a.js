@@ -59,13 +59,32 @@ export function createCube(
     geometry = createStoneGeometry(geometry);
     break;
     case 2: // Martes: Hielo
-      material = new THREE.MeshStandardMaterial({
-        color: 0xadd8e6,
-        roughness: 0.3,
-        metalness: 0.8,
-      });
-      geometry = createIceGeometry(geometry);
-      break;
+    material = new THREE.ShaderMaterial({
+        transparent: true,
+        vertexShader: `
+            varying vec2 vUv;
+            void main() {
+                vUv = uv;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+        `,
+        fragmentShader: `
+            varying vec2 vUv;
+
+            float random(vec2 st) {
+                return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
+            }
+
+            void main() {
+                vec3 baseColor = vec3(0.6, 0.8, 1.0); // Azul claro
+                float alpha = 0.7 + random(vUv) * 0.3; // Variación en transparencia
+                gl_FragColor = vec4(baseColor, alpha);
+            }
+        `,
+    });
+
+    geometry = createIceGeometry(geometry);
+    break;
     case 3: // Miércoles: Metal
       material = new THREE.MeshStandardMaterial({
         color: 0xb0c4de,
