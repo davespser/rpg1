@@ -30,7 +30,7 @@ async function init() {
             baseAmplitude: 10, // Amplitud base del ruido
             power: 1, // Potencia de la elevación
             elevationOffset: 0, // Desplazamiento de elevación
-            iterationsOffsets: [[0, 0], [1, 1], [2, 2]] // Desplazamientos para las iteraciones
+            iterationsOffsets: [[0, 0], [1, 1], [2, 2], [3, 3]] // Desplazamientos para las iteraciones
         };
 
         // Generar el terreno usando los datos proporcionados
