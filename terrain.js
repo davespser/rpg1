@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { ConstNode, AssignNode, CacheNode, Node } from 'three/nodes';
+import { ConstNode, CacheNode, Node } from 'three/nodes';
 
 /**
  * Crea un terreno procedural con elevación y colores personalizados usando only allowed nodes.
@@ -14,11 +14,8 @@ export function createAdvancedTerrain() {
     // Geometría del plano
     const geometry = new THREE.PlaneGeometry(width, height, segmentsX, segmentsY);
 
-    // Usar AssignNode para modificar posiciones (simulando desplazamiento)
-    const positionNode = new AssignNode(new Node(), new Node()); // Esta línea es un ejemplo de uso de AssignNode
-
-    // Usar CacheNode y ConstNode para almacenar valores de altura y color
-    const elevationNode = new CacheNode(new ConstNode(10.0)); // Usar CacheNode para almacenar una constante de elevación
+    // Usar CacheNode para almacenar el valor de elevación
+    const elevationNode = new CacheNode(new ConstNode(10.0)); // Usar CacheNode para almacenar la elevación
     const displacementNode = new CacheNode(elevationNode); // Aplicar el desplazamiento de la elevación
 
     // Colores de terreno usando ConstNode (para los diferentes tipos de terreno)
@@ -27,7 +24,7 @@ export function createAdvancedTerrain() {
     const colorRock = new ConstNode(0xBFB88D);  // Color de roca
     const colorSnow = new ConstNode(0xFFFFFF);  // Color de nieve
 
-    // Para determinar el color basado en la altura, usaremos CacheNode y ConstNode
+    // Para determinar el color basado en la altura, usaremos CacheNode
     const terrainColor = new CacheNode(colorGrass); // Almacenamos el color de hierba
 
     // Crear material con ShaderMaterial usando los nodos disponibles
@@ -36,9 +33,11 @@ export function createAdvancedTerrain() {
             varying vec3 vPosition;
             varying vec3 vColor;
 
+            uniform vec3 terrainColor;  // Definir terrainColor como un uniform
+
             void main() {
                 vPosition = position;
-                vColor = vec3(terrainColor); // Usar el color almacenado
+                vColor = terrainColor; // Usar el color almacenado
                 gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
             }
         `,
@@ -51,7 +50,7 @@ export function createAdvancedTerrain() {
             }
         `,
         uniforms: {
-            terrainColor: { value: terrainColor }
+            terrainColor: { value: new THREE.Color(0x85D534) } // Definir el valor del color de terreno
         },
         wireframe: false
     });
