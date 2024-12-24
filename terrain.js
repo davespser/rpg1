@@ -1,39 +1,36 @@
 import * as THREE from 'three';
 
 /**
- * Crea un plano que actúa como terreno con una textura de imagen.
- * @param {number} width - Ancho del plano.
- * @param {number} height - Altura del plano.
- * @param {number} segmentsX - Número de segmentos en el eje X.
- * @param {number} segmentsY - Número de segmentos en el eje Y.
- * @param {string} texturePath - Ruta de la imagen para la textura del plano.
- * @returns {THREE.Mesh} El plano que representa el terreno.
+ * Crea un terreno procedural de 512x512 con desplazamiento de vértices.
+ * @returns {THREE.Mesh} El terreno procedural.
  */
-export function createTerrain(width, height, segmentsX, segmentsY, texturePath) {
-    // Cargar la textura de la imagen desde la URL proporcionada
-    const textureLoader = new THREE.TextureLoader();
-    const terrainTexture = textureLoader.load(texturePath);
+export function createProceduralTerrain() {
+    const width = 512;
+    const height = 512;
+    const segments = 128; // Segmentos para detalles del terreno
 
     // Crear la geometría del plano
-    const geometry = new THREE.PlaneGeometry(width, height, segmentsX, segmentsY);
+    const geometry = new THREE.PlaneGeometry(width, height, segments, segments);
 
-    // Crear el material con la textura
+    // Desplazamiento procedural usando ruido simple
+    const positions = geometry.attributes.position.array;
+    for (let i = 0; i < positions.length; i += 3) {
+        positions[i + 2] = Math.random() * 15 - 7.5; // Desplazamiento aleatorio entre -7.5 y 7.5
+    }
+    geometry.computeVertexNormals(); // Recalcular normales para iluminación correcta
+
+    // Crear el material básico para el terreno
     const material = new THREE.MeshStandardMaterial({
-        map: terrainTexture,  // Aplicar la textura al material
-        side: THREE.DoubleSide,  // Asegura que el plano sea visible desde ambos lados
+        color: 0x228b22,  // Color verde similar a césped
+        wireframe: false,  // Cambia a `true` para ver el wireframe
     });
 
     // Crear la malla con la geometría y el material
     const terrain = new THREE.Mesh(geometry, material);
 
-    // Asegurarse de que el plano esté horizontal
-    terrain.rotation.x = - Math.PI / 2;
-
-    // Ajustar la posición del plano (opcional)
-    terrain.position.set(0, 0, 0);
-
-    // Habilitar sombras en el terreno
-    terrain.receiveShadow = true;
+    // Asegurar que el plano esté horizontal
+    terrain.rotation.x = -Math.PI / 2;
+    terrain.receiveShadow = true; // Permitir sombras si hay luces en la escena
 
     return terrain;
 }
