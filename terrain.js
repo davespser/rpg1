@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { NodeMaterial, FloatNode, ColorNode, PositionNode, MultiplyNode, AddNode, NoiseNode, StepNode, SmoothstepNode } from 'three/nodes';
+import { NodeMaterial, FloatNode, ColorNode, PositionNode, MultiplyNode, NoiseNode, StepNode, SmoothstepNode } from 'three/examples/jsm/nodes/Nodes.js';
 
 /**
  * Crea un terreno procedural con elevación y colores personalizados usando three.nodes.
@@ -24,7 +24,10 @@ export function createAdvancedTerrain() {
 
     const warpedPosition = new MultiplyNode(noiseNode, warpFrequency);
     const elevationNode = new MultiplyNode(warpedPosition, strength);
-    const displacementNode = new AddNode(positionNode, elevationNode);
+
+    // En lugar de AddNode, simplemente sumamos utilizando el nodo `Add` o podemos combinar mediante otros métodos
+    const displacementNode = new MultiplyNode(positionNode, new FloatNode(1.0)); // Simula un desplazamiento básico
+    displacementNode = new MultiplyNode(displacementNode, elevationNode); // Para aplicar el desplazamiento basado en la elevación
 
     // Nodos de color (basados en la altura del terreno)
     const colorSand = new ColorNode(0xFFE894);  // Color de arena
@@ -40,30 +43,9 @@ export function createAdvancedTerrain() {
     const terrainColor = new MultiplyNode(smoothStep, colorGrass);
     
     // Crear material con nodos
-    const material = new THREE.ShaderMaterial({
-        vertexShader: `
-            varying vec3 vPosition;
-            varying vec3 vColor;
-
-            void main() {
-                vPosition = position;
-                vColor = vec3(terrainColor);
-                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-            }
-        `,
-        fragmentShader: `
-            varying vec3 vPosition;
-            varying vec3 vColor;
-
-            void main() {
-                gl_FragColor = vec4(vColor, 1.0);
-            }
-        `,
-        uniforms: {
-            terrainColor: { value: terrainColor }
-        },
-        wireframe: false
-    });
+    const material = new NodeMaterial();
+    material.color = terrainColor; // Asignar el color basado en los nodos
+    material.vertex = displacementNode; // Aplicar desplazamiento a la geometría
 
     // Crear malla
     const terrain = new THREE.Mesh(geometry, material);
