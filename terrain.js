@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import SimplexNoise from './modulos/SimplexNoise.js';
+import SimplexNoise from './modulos/SimplexNoise.js';  // Asumiendo que SimplexNoise está bien configurado
 import * as GLMatrix from './modulos/gl-matrix.js';
 
 const { vec3 } = GLMatrix;
@@ -11,211 +11,95 @@ const linearStep = (edgeMin, edgeMax, value) => {
     return Math.max(0.0, Math.min(1.0, (value - edgeMin) / (edgeMax - edgeMin)));
 };
 
-// Función para calcular la elevación
-const getElevation = (
-    x, y, lacunarity, persistence, iterations,
-    baseFrequency, baseAmplitude, power, elevationOffset, iterationsOffsets
-) => {
-    let elevation = 0;
-    let frequency = baseFrequency;
-    let amplitude = 1;
-    let normalisation = 0;
-
-    for (let i = 0; i < iterations; i++) {
-        const noise = elevationRandom.noise2D(
-            x * frequency + iterationsOffsets[i][0],
-            y * frequency + iterationsOffsets[i][1]
-        );
-        elevation += noise * amplitude;
-        normalisation += amplitude;
-        amplitude *= persistence;
-        frequency *= lacunarity;
-    }
-
-    elevation /= normalisation;
-    elevation = Math.pow(Math.abs(elevation), power) * Math.sign(elevation);
-    elevation *= baseAmplitude;
-    elevation += elevationOffset;
-
-    return elevation;
+// Función para calcular la elevación usando SimplexNoise
+const getElevation = (x, y, frequency, amplitude) => {
+    const noise = elevationRandom.noise2D(x * frequency, y * frequency);
+    return noise * amplitude;
 };
 
-// Función principal que genera el terreno
+// Función para generar un terreno procedural
 export const generateTerrain = (data) => {
-    const {
-        id, size, x: baseX, z: baseZ, seed, subdivisions,
-        lacunarity, persistence, iterations, baseFrequency,
-        baseAmplitude, power, elevationOffset, iterationsOffsets
-    } = data;
-
+    const { size, subdivisions, seed } = data;
     const segments = subdivisions + 1;
+    
+    // Inicializar SimplexNoise con la semilla
     elevationRandom = new SimplexNoise(seed);
-    const grassRandom = new SimplexNoise(seed);
 
-    // Elevation
-    const overflowElevations = new Float32Array((segments + 1) * (segments + 1));
-    const elevations = new Float32Array(segments * segments);
+    // Inicializar los arrays de las posiciones y elevaciones
+    const positions = new Float32Array(segments * segments * 3);
+    const normals = new Float32Array(segments * segments * 3);
+    const uv = new Float32Array(segments * segments * 2);
+    const indices = new Uint16Array(subdivisions * subdivisions * 6);
 
-    for (let iX = 0; iX < segments + 1; iX++) {
-        const x = baseX + (iX / subdivisions - 0.5) * size;
+    // Generación de las posiciones del terreno y cálculo de elevaciones
+    for (let iZ = 0; iZ < segments; iZ++) {
+        for (let iX = 0; iX < segments; iX++) {
+            const x = (iX / subdivisions - 0.5) * size;
+            const z = (iZ / subdivisions - 0.5) * size;
+            
+            // Obtener la elevación del terreno con SimplexNoise
+            const elevation = getElevation(x, z, 0.1, 10);
 
-        for (let iZ = 0; iZ < segments + 1; iZ++) {
-            const z = baseZ + (iZ / subdivisions - 0.5) * size;
-            const elevation = getElevation(
-                x, z, lacunarity, persistence, iterations,
-                baseFrequency, baseAmplitude, power, elevationOffset, iterationsOffsets
-            );
+            // Almacenar las posiciones (x, y, z)
+            const i = (iZ * segments + iX) * 3;
+            positions[i] = x;
+            positions[i + 1] = elevation;
+            positions[i + 2] = z;
 
-            const i = iZ * (segments + 1) + iX;
-            overflowElevations[i] = elevation;
-
-            if (iX < segments && iZ < segments) {
-                const i = iZ * segments + iX;
-                elevations[i] = elevation;
-            }
+            // Almacenar las coordenadas UV
+            const uvIndex = (iZ * segments + iX) * 2;
+            uv[uvIndex] = iX / (segments - 1);
+            uv[uvIndex + 1] = iZ / (segments - 1);
         }
     }
 
-    // Positions
-    const skirtCount = subdivisions * 4 + 4;
-    const positions = new Float32Array(segments * segments * 3 + skirtCount * 3);
+    // Calcular las normales (simple cálculo basado en los vecinos)
+    for (let iZ = 0; iZ < segments - 1; iZ++) {
+        for (let iX = 0; iX < segments - 1; iX++) {
+            const i = (iZ * segments + iX) * 3;
+            const p0 = vec3.fromValues(positions[i], positions[i + 1], positions[i + 2]);
+            const p1 = vec3.fromValues(positions[i + 3], positions[i + 4], positions[i + 5]);
+            const p2 = vec3.fromValues(positions[i + segments * 3], positions[i + segments * 3 + 1], positions[i + segments * 3 + 2]);
 
-    for (let iZ = 0; iZ < segments; iZ++) {
-        const z = baseZ + (iZ / subdivisions - 0.5) * size;
-        for (let iX = 0; iX < segments; iX++) {
-            const x = baseX + (iX / subdivisions - 0.5) * size;
-            const elevation = elevations[iZ * segments + iX];
-            const iStride = (iZ * segments + iX) * 3;
+            const edge1 = vec3.create();
+            const edge2 = vec3.create();
 
-            positions[iStride] = x;
-            positions[iStride + 1] = elevation;
-            positions[iStride + 2] = z;
-        }
-    }
-
-    // Normals
-    const normals = new Float32Array(segments * segments * 3 + skirtCount * 3);
-    const interSegmentX = -size / subdivisions;
-    const interSegmentZ = -size / subdivisions;
-
-    for (let iZ = 0; iZ < segments; iZ++) {
-        for (let iX = 0; iX < segments; iX++) {
-            const iOverflowStride = iZ * (segments + 1) + iX;
-            const currentElevation = overflowElevations[iOverflowStride];
-            const neighbourXElevation = overflowElevations[iOverflowStride + 1];
-            const neighbourZElevation = overflowElevations[iOverflowStride + segments + 1];
-
-            const deltaX = vec3.fromValues(
-                interSegmentX,
-                currentElevation - neighbourXElevation,
-                0
-            );
-
-            const deltaZ = vec3.fromValues(
-                0,
-                currentElevation - neighbourZElevation,
-                interSegmentZ
-            );
+            vec3.sub(edge1, p1, p0);
+            vec3.sub(edge2, p2, p0);
 
             const normal = vec3.create();
-            vec3.cross(normal, deltaZ, deltaX);
+            vec3.cross(normal, edge1, edge2);
             vec3.normalize(normal, normal);
 
-            const iStride = (iZ * segments + iX) * 3;
-
-            // Asegurarnos de que los valores no sean NaN o undefined antes de asignar
-            if (!isNaN(normal[0]) && !isNaN(normal[1]) && !isNaN(normal[2])) {
-                normals[iStride] = normal[0];
-                normals[iStride + 1] = normal[1];
-                normals[iStride + 2] = normal[2];
-            } else {
-                // Si hay un valor NaN, asignamos un valor por defecto
-                normals[iStride] = 0;
-                normals[iStride + 1] = 1;  // Normal hacia arriba
-                normals[iStride + 2] = 0;
-            }
+            const normalIndex = (iZ * segments + iX) * 3;
+            normals[normalIndex] = normal[0];
+            normals[normalIndex + 1] = normal[1];
+            normals[normalIndex + 2] = normal[2];
         }
     }
 
-    // UV Mapping
-    const uv = new Float32Array(segments * segments * 2 + skirtCount * 2);
-
-    for (let iZ = 0; iZ < segments; iZ++) {
-        for (let iX = 0; iX < segments; iX++) {
-            const iStride = (iZ * segments + iX) * 2;
-            uv[iStride] = iX / (segments - 1);
-            uv[iStride + 1] = iZ / (segments - 1);
-        }
-    }
-
-    // Índices y Textura
-    const indicesCount = subdivisions * subdivisions;
-    const indices = new (indicesCount < 65535 ? Uint16Array : Uint32Array)(indicesCount * 6);
-
+    // Generación de los índices para la malla
+    let idx = 0;
     for (let iZ = 0; iZ < subdivisions; iZ++) {
         for (let iX = 0; iX < subdivisions; iX++) {
-            const row = subdivisions + 1;
-            const a = iZ * row + iX;
-            const b = iZ * row + (iX + 1);
-            const c = (iZ + 1) * row + iX;
-            const d = (iZ + 1) * row + (iX + 1);
+            const a = iZ * (subdivisions + 1) + iX;
+            const b = iZ * (subdivisions + 1) + iX + 1;
+            const c = (iZ + 1) * (subdivisions + 1) + iX;
+            const d = (iZ + 1) * (subdivisions + 1) + iX + 1;
 
-            const iStride = (iZ * subdivisions + iX) * 6;
-            indices[iStride] = a;
-            indices[iStride + 1] = d;
-            indices[iStride + 2] = b;
-
-            indices[iStride + 3] = d;
-            indices[iStride + 4] = a;
-            indices[iStride + 5] = c;
-        }
-    }
-
-    const texture = new Float32Array(segments * segments * 4);
-    for (let iZ = 0; iZ < segments; iZ++) {
-        for (let iX = 0; iX < segments; iX++) {
-            const iPositionStride = (iZ * segments + iX) * 3;
-            const position = vec3.fromValues(
-                positions[iPositionStride],
-                positions[iPositionStride + 1],
-                positions[iPositionStride + 2]
-            );
-
-            const iNormalStride = (iZ * segments + iX) * 3;
-            const normal = vec3.fromValues(
-                normals[iNormalStride],
-                normals[iNormalStride + 1],
-                normals[iNormalStride + 2]
-            );
-
-            const upward = Math.max(0, normal[1]);
-            let grass = 0;
-
-            if (position[1] > 0) {
-                const grassFrequency = 0.05;
-                let grassNoise = grassRandom.noise2D(
-                    position[0] * grassFrequency + iterationsOffsets[0][0],
-                    position[2] * grassFrequency + iterationsOffsets[0][0]
-                );
-                grassNoise = linearStep(-0.5, 0, grassNoise);
-                const grassUpward = linearStep(0.9, 1, upward);
-                grass = grassNoise * grassUpward;
-            }
-
-            const iTextureStride = (iZ * segments + iX) * 4;
-            texture[iTextureStride] = normals[iNormalStride];
-            texture[iTextureStride + 1] = normals[iNormalStride + 1];
-            texture[iTextureStride + 2] = normals[iNormalStride + 2];
-            texture[iTextureStride + 3] = position[1];
+            indices[idx++] = a;
+            indices[idx++] = b;
+            indices[idx++] = d;
+            indices[idx++] = a;
+            indices[idx++] = d;
+            indices[idx++] = c;
         }
     }
 
     return {
-        id,
         positions,
         normals,
-        indices,
-        texture,
         uv,
+        indices,
     };
 };
