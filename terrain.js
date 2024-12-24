@@ -1,125 +1,59 @@
 import * as THREE from 'three';
-import SimplexNoise from './modulos/SimplexNoise.js';  // Asumiendo que SimplexNoise está bien configurado
-import * as GLMatrix from './modulos/gl-matrix.js';
+    import SimplexNoise from './modulos/SimplexNoise.js';
+import { vec3 } from 'gl-matrix';
 
-const { vec3 } = GLMatrix;
+/**
+ * Genera un terreno sencillo utilizando SimplexNoise para las elevaciones.
+ * @param {number} size Tamaño del terreno (tamaño total de la cuadrícula).
+ * @param {number} subdivisions Número de subdivisiones del terreno (cuadrícula).
+ * @param {number} seed Semilla para la generación del ruido.
+ * @returns {Object} Objeto con los datos del terreno (posiciones, normales, índices, UV).
+ */
+export function generateTerrain(size, subdivisions, seed) {
+    const segments = subdivisions + 1;  // Número de puntos en la malla
+    const simplex = new SimplexNoise(seed);
+    const positions = [];
+    const normals = [];
+    const uvs = [];
+    const indices = [];
 
-let elevationRandom = null;
-
-// Función auxiliar para interpolación lineal
-const linearStep = (edgeMin, edgeMax, value) => {
-    return Math.max(0.0, Math.min(1.0, (value - edgeMin) / (edgeMax - edgeMin)));
-};
-
-// Función para calcular la elevación usando SimplexNoise
-const getElevation = (x, y, frequency, amplitude) => {
-    const noise = elevationRandom.noise2D(x * frequency, y * frequency);
-    return noise * amplitude;
-};
-
-// Función para generar un terreno procedural
-export const generateTerrain = (data) => {
-    const { size, subdivisions, seed } = data;
-    const segments = subdivisions + 1;
-    
-    // Inicializar SimplexNoise con la semilla
-    elevationRandom = new SimplexNoise(seed);
-
-    // Inicializar los arrays de las posiciones y elevaciones
-    const positions = new Float32Array(segments * segments * 3);
-    const normals = new Float32Array(segments * segments * 3);
-    const uv = new Float32Array(segments * segments * 2);
-    const indices = new Uint16Array(subdivisions * subdivisions * 6);
-
-    // Generación de las posiciones del terreno y cálculo de elevaciones
+    // Generar la malla
     for (let iZ = 0; iZ < segments; iZ++) {
         for (let iX = 0; iX < segments; iX++) {
-            const x = (iX / subdivisions - 0.5) * size;
-            const z = (iZ / subdivisions - 0.5) * size;
-            
-            // Obtener la elevación del terreno con SimplexNoise
-            const elevation = getElevation(x, z, 0.1, 10);
+            const x = (iX / subdivisions) * size - size / 2;
+            const z = (iZ / subdivisions) * size - size / 2;
+            const y = simplex.noise2D(x * 0.1, z * 0.1) * 10;  // Elevación con SimplexNoise
 
-            // Almacenar las posiciones (x, y, z)
-            const i = (iZ * segments + iX) * 3;
-            positions[i] = x;
-            positions[i + 1] = elevation;
-            positions[i + 2] = z;
+            // Guardar las posiciones de los vértices
+            positions.push(x, y, z);
 
-            // Almacenar las coordenadas UV
-            const uvIndex = (iZ * segments + iX) * 2;
-            uv[uvIndex] = iX / (segments - 1);
-            uv[uvIndex + 1] = iZ / (segments - 1);
+            // Calculamos una normal simple (solo hacia arriba)
+            const normal = vec3.fromValues(0, 1, 0);
+            normals.push(...normal);
+
+            // Coordenadas UV
+            uvs.push(iX / subdivisions, iZ / subdivisions);
         }
     }
 
-    // Calcular las normales promediando las normales de los triángulos adyacentes
+    // Generar los índices para los triángulos (cuadrícula de triángulos)
     for (let iZ = 0; iZ < subdivisions; iZ++) {
         for (let iX = 0; iX < subdivisions; iX++) {
-            const a = (iZ * segments + iX) * 3;
-            const b = (iZ * segments + iX + 1) * 3;
-            const c = ((iZ + 1) * segments + iX) * 3;
-            const d = ((iZ + 1) * segments + iX + 1) * 3;
+            const row = segments;
+            const a = iZ * row + iX;
+            const b = iZ * row + (iX + 1);
+            const c = (iZ + 1) * row + iX;
+            const d = (iZ + 1) * row + (iX + 1);
 
-            // Vértices de los triángulos
-            const p0 = vec3.fromValues(positions[a], positions[a + 1], positions[a + 2]);
-            const p1 = vec3.fromValues(positions[b], positions[b + 1], positions[b + 2]);
-            const p2 = vec3.fromValues(positions[c], positions[c + 1], positions[c + 2]);
-            const p3 = vec3.fromValues(positions[d], positions[d + 1], positions[d + 2]);
-
-            // Normal del primer triángulo
-            const edge1 = vec3.create();
-            const edge2 = vec3.create();
-            vec3.sub(edge1, p1, p0);
-            vec3.sub(edge2, p2, p0);
-            const normal1 = vec3.create();
-            vec3.cross(normal1, edge1, edge2);
-            vec3.normalize(normal1, normal1);
-
-            // Normal del segundo triángulo
-            const edge3 = vec3.create();
-            const edge4 = vec3.create();
-            vec3.sub(edge3, p2, p1);
-            vec3.sub(edge4, p3, p1);
-            const normal2 = vec3.create();
-            vec3.cross(normal2, edge3, edge4);
-            vec3.normalize(normal2, normal2);
-
-            // Promediamos las normales
-            const normal = vec3.create();
-            vec3.add(normal, normal1, normal2);
-            vec3.normalize(normal, normal);
-
-            // Almacenamos la normal
-            const normalIndex = (iZ * segments + iX) * 3;
-            normals[normalIndex] = normal[0];
-            normals[normalIndex + 1] = normal[1];
-            normals[normalIndex + 2] = normal[2];
-        }
-    }
-
-    // Generación de los índices para la malla
-    let idx = 0;
-    for (let iZ = 0; iZ < subdivisions; iZ++) {
-        for (let iX = 0; iX < subdivisions; iX++) {
-            const a = iZ * (subdivisions + 1) + iX;
-            const b = iZ * (subdivisions + 1) + iX + 1;
-            const c = (iZ + 1) * (subdivisions + 1) + iX;
-            const d = (iZ + 1) * (subdivisions + 1) + iX + 1;
-
-            indices[idx++] = a;
-            indices[idx++] = b;
-            indices[idx++] = d;
-            indices[idx++] = a;
-            indices[idx++] = d;
-            indices[idx++] = c;
+            indices.push(a, b, d);
+            indices.push(a, d, c);
         }
     }
 
     return {
-        positions,
-        normals,
-        uv,
-        indices,
+        positions: new Float32Array(positions),
+        normals: new Float32Array(normals),
+        uvs: new Float32Array(uvs),
+        indices: new Uint16Array(indices)
     };
-};
+}
