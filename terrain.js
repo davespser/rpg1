@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { NodeMaterial, AttributeNode, ConstNode, PropertyNode, ContextNode, NodeUniform, UniformNode, TempNode, VaryingNode } from 'three/nodes';
+import { AttributeNode, ConstNode, PropertyNode, ContextNode, UniformNode, VarNode, Node } from 'three/nodes';
 
 /**
  * Crea un terreno procedural con elevación y colores personalizados usando los nodos disponibles.
@@ -19,8 +19,6 @@ export function createAdvancedTerrain() {
     const noiseTexture = new THREE.TextureLoader().load('noise.png');
     const noiseNode = new UniformNode(noiseTexture); // Textura de ruido
     const positionFrequency = new ConstNode(0.175);
-    const warpFrequency = new ConstNode(6.0);
-    const warpStrength = new ConstNode(1.0);
     const strength = new ConstNode(10.0);
 
     // Nodos de color (basados en la altura del terreno)
@@ -30,9 +28,9 @@ export function createAdvancedTerrain() {
     const colorRock = new ConstNode(new THREE.Color(0xBFB88D));  // Color de roca
 
     // Crear material con nodos
-    const material = new NodeMaterial();
+    const material = new Node();
 
-    // Asignar nodos al material
+    // Configurar shaders manualmente
     material.vertexShader = `
         varying vec2 vUv;
 
