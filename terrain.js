@@ -122,9 +122,18 @@ export const generateTerrain = (data) => {
             vec3.normalize(normal, normal);
 
             const iStride = (iZ * segments + iX) * 3;
-            normals[iStride] = normal[0];
-            normals[iStride + 1] = normal[1];
-            normals[iStride + 2] = normal[2];
+
+            // Asegurarnos de que los valores no sean NaN o undefined antes de asignar
+            if (!isNaN(normal[0]) && !isNaN(normal[1]) && !isNaN(normal[2])) {
+                normals[iStride] = normal[0];
+                normals[iStride + 1] = normal[1];
+                normals[iStride + 2] = normal[2];
+            } else {
+                // Si hay un valor NaN, asignamos un valor por defecto
+                normals[iStride] = 0;
+                normals[iStride + 1] = 1;  // Normal hacia arriba
+                normals[iStride + 2] = 0;
+            }
         }
     }
 
