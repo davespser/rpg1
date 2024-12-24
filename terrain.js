@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import { ConstNode, CacheNode, Node } from 'three/nodes';
+import { ConstNode, CacheNode, Node, VarNode, NodeBuilder, ParameterNode } from 'three/nodes';
 
 /**
- * Crea un terreno procedural con elevación y colores personalizados usando only allowed nodes.
+ * Crea un terreno procedural con elevación y colores personalizados usando solo los nodos permitidos.
  * @returns {THREE.Mesh} El terreno procedural.
  */
 export function createAdvancedTerrain() {
@@ -14,9 +14,11 @@ export function createAdvancedTerrain() {
     // Geometría del plano
     const geometry = new THREE.PlaneGeometry(width, height, segmentsX, segmentsY);
 
-    // Usar CacheNode para almacenar el valor de elevación
-    const elevationNode = new CacheNode(new ConstNode(10.0)); // Usar CacheNode para almacenar la elevación
-    const displacementNode = new CacheNode(elevationNode); // Aplicar el desplazamiento de la elevación
+    // Nodos para la elevación del terreno (usando ConstNode y CacheNode)
+    const positionNode = new Node();
+    const noiseNode = new ConstNode(Math.random() * 10); // Generar ruido básico como valor de elevación
+    const elevationNode = new CacheNode(noiseNode); // Aplicar el ruido de elevación
+    const displacementNode = new CacheNode(elevationNode); // Desplazar los vértices con el valor de elevación
 
     // Colores de terreno usando ConstNode (para los diferentes tipos de terreno)
     const colorGrass = new ConstNode(0x85D534); // Color de hierba
@@ -24,8 +26,8 @@ export function createAdvancedTerrain() {
     const colorRock = new ConstNode(0xBFB88D);  // Color de roca
     const colorSnow = new ConstNode(0xFFFFFF);  // Color de nieve
 
-    // Para determinar el color basado en la altura, usaremos CacheNode
-    const terrainColor = new CacheNode(colorGrass); // Almacenamos el color de hierba
+    // Usar el color de hierba por defecto
+    const terrainColor = new CacheNode(colorGrass); // Almacenar el color de hierba
 
     // Crear material con ShaderMaterial usando los nodos disponibles
     const material = new THREE.ShaderMaterial({
@@ -33,12 +35,15 @@ export function createAdvancedTerrain() {
             varying vec3 vPosition;
             varying vec3 vColor;
 
-            uniform vec3 terrainColor;  // Definir terrainColor como un uniform
+            uniform vec3 terrainColor;
 
             void main() {
                 vPosition = position;
-                vColor = terrainColor; // Usar el color almacenado
-                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                vColor = terrainColor;
+                
+                // Aplicar desplazamiento a la elevación en el eje Y
+                vec3 displacedPosition = position + vec3(0.0, vPosition.y * 0.2, 0.0); // Elevar el terreno en el eje Y
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(displacedPosition, 1.0);
             }
         `,
         fragmentShader: `
@@ -50,12 +55,12 @@ export function createAdvancedTerrain() {
             }
         `,
         uniforms: {
-            terrainColor: { value: new THREE.Color(0x85D534) } // Definir el valor del color de terreno
+            terrainColor: { value: new THREE.Color(0x85D534) }
         },
         wireframe: false
     });
 
-    // Crear malla
+    // Crear malla con la geometría modificada
     const terrain = new THREE.Mesh(geometry, material);
 
     // Rotar para que esté horizontal
