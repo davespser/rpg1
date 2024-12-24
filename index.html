@@ -6,11 +6,12 @@
     <title>Proyecto con Three.js y Rapier</title>
     <link rel="stylesheet" href="./styles.css">
     
-    <!-- Import Map para usar Three.js y Rapier desde archivos locales -->
+    <!-- Import Map para usar Three.js, three/nodes y Rapier desde archivos locales -->
     <script type="importmap">
     {
         "imports": {
             "three": "https://cdn.jsdelivr.net/npm/three@0.171.0/+esm",
+            "three/nodes": "https://cdn.jsdelivr.net/npm/three@0.171.0/src/nodes/Nodes.js",  <!-- CDN para three/nodes -->
             "@dimforge/rapier3d-compat": "https://cdn.skypack.dev/@dimforge/rapier3d-compat",
             "OrbitControls": "https://unpkg.com/three@0.168.0/examples/jsm/controls/OrbitControls.js",
             "GLTFLoader": "https://cdn.jsdelivr.net/npm/three@0.171.0/examples/jsm/loaders/GLTFLoader.js",
