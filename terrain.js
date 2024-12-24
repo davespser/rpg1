@@ -5,10 +5,10 @@ import * as THREE from 'three';
  * @returns {THREE.Mesh} El terreno procedural.
  */
 export function createAdvancedTerrain() {
-    const width = 512;
-    const height = 512;
-    const segmentsX = 256;
-    const segmentsY = 256;
+    const width = 1024;
+    const height = 1024;
+    const segmentsX = 512;
+    const segmentsY = 512;
 
     // Geometría del plano
     const geometry = new THREE.PlaneGeometry(width, height, segmentsX, segmentsY);
