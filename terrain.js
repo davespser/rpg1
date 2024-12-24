@@ -1,7 +1,8 @@
 import * as THREE from 'three';
+import { NodeMaterial, FloatNode, ColorNode, PositionNode, MultiplyNode, AddNode, NoiseNode, StepNode, SmoothstepNode, DisplacementNode } from 'three/nodes';
 
 /**
- * Crea un terreno procedural con elevación y colores personalizados.
+ * Crea un terreno procedural con elevación y colores personalizados usando three.nodes.
  * @returns {THREE.Mesh} El terreno procedural.
  */
 export function createAdvancedTerrain() {
@@ -12,74 +13,36 @@ export function createAdvancedTerrain() {
 
     // Geometría del plano
     const geometry = new THREE.PlaneGeometry(width, height, segmentsX, segmentsY);
+    
+    // Nodos para la elevación
+    const positionNode = new PositionNode();
+    const noiseNode = new NoiseNode(positionNode, 3); // Usar el nodo de ruido para la elevación
+    const positionFrequency = new FloatNode(0.175);
+    const warpFrequency = new FloatNode(6.0);
+    const warpStrength = new FloatNode(1.0);
+    const strength = new FloatNode(10.0);
 
-    // Material Shader
-    const material = new THREE.ShaderMaterial({
-        vertexShader: `
-            varying vec3 vPosition;
-            varying vec2 vUv;
+    const warpedPosition = new MultiplyNode(noiseNode, warpFrequency);
+    const elevationNode = new MultiplyNode(warpedPosition, strength);
+    const displacementNode = new AddNode(positionNode, elevationNode);
 
-            uniform float positionFrequency;
-            uniform float warpFrequency;
-            uniform float warpStrength;
-            uniform float strength;
+    // Nodos de color (basados en la altura del terreno)
+    const colorSand = new ColorNode(0xFFE894);  // Color de arena
+    const colorGrass = new ColorNode(0x85D534); // Color de hierba
+    const colorSnow = new ColorNode(0xFFFFFF);  // Color de nieve
+    const colorRock = new ColorNode(0xBFB88D);  // Color de roca
 
-            float noise(vec3 pos) {
-                return fract(sin(dot(pos.xyz, vec3(12.9898, 78.233, 45.164))) * 43758.5453);
-            }
-
-            void main() {
-                vUv = uv;
-                vPosition = position.xyz;
-
-                vec3 warpedPosition = position.xyz;
-                warpedPosition += noise(position.xyz * positionFrequency * warpFrequency) * warpStrength;
-
-                float elevation = 0.0;
-                for (float i = 1.0; i <= 3.0; i++) {
-                    float frequency = positionFrequency * i * 2.0;
-                    float amplitude = 1.0 / (i * 2.0);
-                    elevation += noise(warpedPosition * frequency) * amplitude;
-                }
-
-                elevation = pow(abs(elevation), 2.0) * sign(elevation) * strength;
-
-                vec3 newPosition = position.xyz;
-                newPosition.z += elevation;
-                gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
-            }
-        `,
-        fragmentShader: `
-            varying vec3 vPosition;
-            varying vec2 vUv;
-
-            uniform vec3 colorSand;
-            uniform vec3 colorGrass;
-            uniform vec3 colorSnow;
-            uniform vec3 colorRock;
-
-            void main() {
-                float height = vPosition.z;
-
-                vec3 terrainColor = mix(colorSand, colorGrass, smoothstep(0.0, 10.0, height));
-                terrainColor = mix(terrainColor, colorRock, smoothstep(10.0, 20.0, height));
-                terrainColor = mix(terrainColor, colorSnow, smoothstep(20.0, 30.0, height));
-
-                gl_FragColor = vec4(terrainColor, 1.0);
-            }
-        `,
-        uniforms: {
-            positionFrequency: { value: 0.175 },
-            warpFrequency: { value: 6.0 },
-            warpStrength: { value: 1.0 },
-            strength: { value: 10.0 },
-            colorSand: { value: new THREE.Color('#ffe894') },
-            colorGrass: { value: new THREE.Color('#85d534') },
-            colorSnow: { value: new THREE.Color('#ffffff') },
-            colorRock: { value: new THREE.Color('#bfbd8d') }
-        },
-        wireframe: false,
-    });
+    const heightNode = new FloatNode(1.0); // Usar la altura Z para determinar el color
+    const stepSand = new StepNode(heightNode, 10.0);
+    const stepRock = new StepNode(heightNode, 20.0);
+    
+    const smoothStep = new SmoothstepNode(stepSand, stepRock);
+    const terrainColor = new MultiplyNode(smoothStep, colorGrass);
+    
+    // Crear material con nodos
+    const material = new NodeMaterial();
+    material.color = terrainColor;
+    material.vertex = displacementNode; // Aplicar desplazamiento a la geometría
 
     // Crear malla
     const terrain = new THREE.Mesh(geometry, material);
