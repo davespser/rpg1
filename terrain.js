@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { NodeMaterial, FloatNode, ColorNode, PositionNode, MultiplyNode, NoiseNode, StepNode, SmoothstepNode } from 'three/examples/jsm/nodes/Nodes.js';
+import { NodeMaterial, FloatNode, ColorNode, PositionNode, MultiplyNode, NoiseNode, StepNode, SmoothstepNode } from 'three/nodes';
 
 /**
  * Crea un terreno procedural con elevación y colores personalizados usando three.nodes.
@@ -25,7 +25,7 @@ export function createAdvancedTerrain() {
     const warpedPosition = new MultiplyNode(noiseNode, warpFrequency);
     const elevationNode = new MultiplyNode(warpedPosition, strength);
 
-    // En lugar de AddNode, simplemente sumamos utilizando el nodo `Add` o podemos combinar mediante otros métodos
+    // En lugar de AddNode, simplemente sumamos utilizando otros métodos
     const displacementNode = new MultiplyNode(positionNode, new FloatNode(1.0)); // Simula un desplazamiento básico
     displacementNode = new MultiplyNode(displacementNode, elevationNode); // Para aplicar el desplazamiento basado en la elevación
 
