@@ -1,7 +1,8 @@
 import * as THREE from 'three';
     import SimplexNoise from './modulos/SimplexNoise.js';
-import { vec3 } from 'gl-matrix';
+import * as GLMatrix from './modulos/gl-matrix.js';
 
+const { vec3 } = GLMatrix;
 /**
  * Genera un terreno sencillo utilizando SimplexNoise para las elevaciones.
  * @param {number} size Tamaño del terreno (tamaño total de la cuadrícula).
