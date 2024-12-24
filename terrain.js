@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { NodeMaterial, FloatNode, ColorNode, PositionNode, MultiplyNode, NoiseNode, StepNode, SmoothstepNode } from 'three/nodes';
+import { NodeMaterial, FloatNode, ConstNode, PositionNode, MultiplyNode, StepNode, SmoothstepNode } from 'three/nodes';
 
 /**
  * Crea un terreno procedural con elevación y colores personalizados usando three.nodes.
@@ -16,35 +16,29 @@ export function createAdvancedTerrain() {
     
     // Nodos para la elevación
     const positionNode = new PositionNode();
-    const noiseNode = new NoiseNode(positionNode, 3); // Usar el nodo de ruido para la elevación
-    const positionFrequency = new FloatNode(0.175);
-    const warpFrequency = new FloatNode(6.0);
-    const warpStrength = new FloatNode(1.0);
-    const strength = new FloatNode(10.0);
-
-    const warpedPosition = new MultiplyNode(noiseNode, warpFrequency);
-    const elevationNode = new MultiplyNode(warpedPosition, strength);
-
-    // En lugar de AddNode, simplemente sumamos utilizando otros métodos
-    const displacementNode = new MultiplyNode(positionNode, new FloatNode(1.0)); // Simula un desplazamiento básico
-    displacementNode = new MultiplyNode(displacementNode, elevationNode); // Para aplicar el desplazamiento basado en la elevación
+    const noiseNode = new MultiplyNode(positionNode, new ConstNode(0.175)); // Usar multiplicación con ConstNode
+    const warpNode = new MultiplyNode(noiseNode, new ConstNode(6.0));
+    const strengthNode = new MultiplyNode(warpNode, new ConstNode(10.0));
+    
+    // Generar desplazamiento de la posición
+    const displacementNode = new MultiplyNode(positionNode, strengthNode);
 
     // Nodos de color (basados en la altura del terreno)
-    const colorSand = new ColorNode(0xFFE894);  // Color de arena
-    const colorGrass = new ColorNode(0x85D534); // Color de hierba
-    const colorSnow = new ColorNode(0xFFFFFF);  // Color de nieve
-    const colorRock = new ColorNode(0xBFB88D);  // Color de roca
-
-    const heightNode = new FloatNode(1.0); // Usar la altura Z para determinar el color
-    const stepSand = new StepNode(heightNode, 10.0);
-    const stepRock = new StepNode(heightNode, 20.0);
+    const colorGrass = new ConstNode(0x85D534); // Color de hierba
+    const colorSand = new ConstNode(0xFFE894);  // Color de arena
+    const colorRock = new ConstNode(0xBFB88D);  // Color de roca
+    const colorSnow = new ConstNode(0xFFFFFF);  // Color de nieve
+    
+    // Usar nodos Step y Smoothstep para determinar la transición de colores
+    const stepSand = new StepNode(displacementNode, new ConstNode(10.0));
+    const stepRock = new StepNode(displacementNode, new ConstNode(20.0));
     
     const smoothStep = new SmoothstepNode(stepSand, stepRock);
-    const terrainColor = new MultiplyNode(smoothStep, colorGrass);
-    
+    const terrainColor = new MultiplyNode(smoothStep, colorGrass); // Mezclar colores
+
     // Crear material con nodos
     const material = new NodeMaterial();
-    material.color = terrainColor; // Asignar el color basado en los nodos
+    material.color = terrainColor;
     material.vertex = displacementNode; // Aplicar desplazamiento a la geometría
 
     // Crear malla
