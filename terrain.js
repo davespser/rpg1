@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import { ConstNode, CacheNode, Node, VarNode, NodeBuilder, ParameterNode } from 'three/nodes';
+import { NodeBuilder, ConstNode, CacheNode, ParameterNode } from 'three/nodes';
 
 /**
- * Crea un terreno procedural con elevación y colores personalizados usando solo los nodos permitidos.
+ * Crea un terreno procedural con elevación usando los nodos permitidos.
  * @returns {THREE.Mesh} El terreno procedural.
  */
 export function createAdvancedTerrain() {
@@ -14,20 +14,15 @@ export function createAdvancedTerrain() {
     // Geometría del plano
     const geometry = new THREE.PlaneGeometry(width, height, segmentsX, segmentsY);
 
-    // Nodos para la elevación del terreno (usando ConstNode y CacheNode)
-    const positionNode = new Node();
-    const noiseNode = new ConstNode(Math.random() * 10); // Generar ruido básico como valor de elevación
-    const elevationNode = new CacheNode(noiseNode); // Aplicar el ruido de elevación
-    const displacementNode = new CacheNode(elevationNode); // Desplazar los vértices con el valor de elevación
+    // Crear un NodeBuilder para manipular la geometría de los vértices
+    const builder = new NodeBuilder();
 
-    // Colores de terreno usando ConstNode (para los diferentes tipos de terreno)
-    const colorGrass = new ConstNode(0x85D534); // Color de hierba
-    const colorSand = new ConstNode(0xFFE894);  // Color de arena
-    const colorRock = new ConstNode(0xBFB88D);  // Color de roca
-    const colorSnow = new ConstNode(0xFFFFFF);  // Color de nieve
+    // Crear un valor de elevación usando un ConstNode (puedes reemplazarlo con algo más dinámico como ruido)
+    const heightNode = new ConstNode(1.0); // Puedes cambiar esto a un valor diferente para experimentar
+    const displacementNode = heightNode; // Usamos este nodo para controlar la elevación en el eje Y
 
-    // Usar el color de hierba por defecto
-    const terrainColor = new CacheNode(colorGrass); // Almacenar el color de hierba
+    // Establecer la posición de los vértices en el eje Y para que sea dinámico
+    builder.addVertexDisplacement(displacementNode);
 
     // Crear material con ShaderMaterial usando los nodos disponibles
     const material = new THREE.ShaderMaterial({
@@ -35,14 +30,14 @@ export function createAdvancedTerrain() {
             varying vec3 vPosition;
             varying vec3 vColor;
 
-            uniform vec3 terrainColor;
+            uniform float displacement;
 
             void main() {
                 vPosition = position;
-                vColor = terrainColor;
-                
-                // Aplicar desplazamiento a la elevación en el eje Y
-                vec3 displacedPosition = position + vec3(0.0, vPosition.y * 0.2, 0.0); // Elevar el terreno en el eje Y
+                vec3 displacedPosition = position;
+                displacedPosition.y += displacement; // Elevar el terreno en el eje Y
+
+                vColor = vec3(0.5, 1.0, 0.5); // Color de hierba (puedes cambiarlo)
                 gl_Position = projectionMatrix * modelViewMatrix * vec4(displacedPosition, 1.0);
             }
         `,
@@ -55,7 +50,7 @@ export function createAdvancedTerrain() {
             }
         `,
         uniforms: {
-            terrainColor: { value: new THREE.Color(0x85D534) }
+            displacement: { value: 10.0 } // Controlar cuánto se eleva el terreno
         },
         wireframe: false
     });
