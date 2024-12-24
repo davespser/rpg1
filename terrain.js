@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { NodeBuilder, ConstNode, CacheNode, ParameterNode } from 'three/nodes';
+import { ConstNode, NodeBuilder } from 'three/nodes';
 
 /**
  * Crea un terreno procedural con elevación usando los nodos permitidos.
@@ -14,15 +14,8 @@ export function createAdvancedTerrain() {
     // Geometría del plano
     const geometry = new THREE.PlaneGeometry(width, height, segmentsX, segmentsY);
 
-    // Crear un NodeBuilder para manipular la geometría de los vértices
-    const builder = new NodeBuilder();
-
-    // Crear un valor de elevación usando un ConstNode (puedes reemplazarlo con algo más dinámico como ruido)
-    const heightNode = new ConstNode(1.0); // Puedes cambiar esto a un valor diferente para experimentar
-    const displacementNode = heightNode; // Usamos este nodo para controlar la elevación en el eje Y
-
-    // Establecer la posición de los vértices en el eje Y para que sea dinámico
-    builder.addVertexDisplacement(displacementNode);
+    // Crear un nodo constante para el desplazamiento en el eje Y (se puede reemplazar por ruido o fórmula)
+    const displacementNode = new ConstNode(5.0); // Valor de desplazamiento (ajustar según sea necesario)
 
     // Crear material con ShaderMaterial usando los nodos disponibles
     const material = new THREE.ShaderMaterial({
@@ -35,9 +28,9 @@ export function createAdvancedTerrain() {
             void main() {
                 vPosition = position;
                 vec3 displacedPosition = position;
-                displacedPosition.y += displacement; // Elevar el terreno en el eje Y
+                displacedPosition.y += displacement; // Desplazamiento en el eje Y
 
-                vColor = vec3(0.5, 1.0, 0.5); // Color de hierba (puedes cambiarlo)
+                vColor = vec3(0.5, 1.0, 0.5); // Color de hierba
                 gl_Position = projectionMatrix * modelViewMatrix * vec4(displacedPosition, 1.0);
             }
         `,
@@ -50,12 +43,12 @@ export function createAdvancedTerrain() {
             }
         `,
         uniforms: {
-            displacement: { value: 10.0 } // Controlar cuánto se eleva el terreno
+            displacement: { value: displacementNode.value } // Pasar el valor del desplazamiento
         },
         wireframe: false
     });
 
-    // Crear malla con la geometría modificada
+    // Crear malla con la geometría y material
     const terrain = new THREE.Mesh(geometry, material);
 
     // Rotar para que esté horizontal
