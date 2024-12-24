@@ -16,7 +16,7 @@ export function createAdvancedTerrain() {
 
     // Nodos para la elevación
     const positionNode = new AttributeNode('position', 'vec3');
-    const noiseTexture = new THREE.TextureLoader().load('https://github.com/davespser/rpg1/blob/8513fc93782bc45a389d738d2b9af6843abb77b1/noise.png');
+    const noiseTexture = new THREE.TextureLoader().load('https://raw.githubusercontent.com/davespser/rpg1/8513fc93782bc45a389d738d2b9af6843abb77b1/noise.png');
     const noiseNode = new UniformNode(noiseTexture); // Textura de ruido
     const positionFrequency = new ConstNode(0.175);
     const strength = new ConstNode(10.0);
