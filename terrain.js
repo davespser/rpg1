@@ -53,24 +53,44 @@ export const generateTerrain = (data) => {
         }
     }
 
-    // Calcular las normales (simple cálculo basado en los vecinos)
-    for (let iZ = 0; iZ < segments - 1; iZ++) {
-        for (let iX = 0; iX < segments - 1; iX++) {
-            const i = (iZ * segments + iX) * 3;
-            const p0 = vec3.fromValues(positions[i], positions[i + 1], positions[i + 2]);
-            const p1 = vec3.fromValues(positions[i + 3], positions[i + 4], positions[i + 5]);
-            const p2 = vec3.fromValues(positions[i + segments * 3], positions[i + segments * 3 + 1], positions[i + segments * 3 + 2]);
+    // Calcular las normales promediando las normales de los triángulos adyacentes
+    for (let iZ = 0; iZ < subdivisions; iZ++) {
+        for (let iX = 0; iX < subdivisions; iX++) {
+            const a = (iZ * segments + iX) * 3;
+            const b = (iZ * segments + iX + 1) * 3;
+            const c = ((iZ + 1) * segments + iX) * 3;
+            const d = ((iZ + 1) * segments + iX + 1) * 3;
 
+            // Vértices de los triángulos
+            const p0 = vec3.fromValues(positions[a], positions[a + 1], positions[a + 2]);
+            const p1 = vec3.fromValues(positions[b], positions[b + 1], positions[b + 2]);
+            const p2 = vec3.fromValues(positions[c], positions[c + 1], positions[c + 2]);
+            const p3 = vec3.fromValues(positions[d], positions[d + 1], positions[d + 2]);
+
+            // Normal del primer triángulo
             const edge1 = vec3.create();
             const edge2 = vec3.create();
-
             vec3.sub(edge1, p1, p0);
             vec3.sub(edge2, p2, p0);
+            const normal1 = vec3.create();
+            vec3.cross(normal1, edge1, edge2);
+            vec3.normalize(normal1, normal1);
 
+            // Normal del segundo triángulo
+            const edge3 = vec3.create();
+            const edge4 = vec3.create();
+            vec3.sub(edge3, p2, p1);
+            vec3.sub(edge4, p3, p1);
+            const normal2 = vec3.create();
+            vec3.cross(normal2, edge3, edge4);
+            vec3.normalize(normal2, normal2);
+
+            // Promediamos las normales
             const normal = vec3.create();
-            vec3.cross(normal, edge1, edge2);
+            vec3.add(normal, normal1, normal2);
             vec3.normalize(normal, normal);
 
+            // Almacenamos la normal
             const normalIndex = (iZ * segments + iX) * 3;
             normals[normalIndex] = normal[0];
             normals[normalIndex + 1] = normal[1];
